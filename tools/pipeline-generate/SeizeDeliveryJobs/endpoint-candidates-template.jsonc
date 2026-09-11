@@ -19,7 +19,7 @@
         ]
     },
     // ${AreaName}区域的送货终点候选：一次缩放 + 一次视口求解，判本区域全部已启用终点。
-    // 命中的候选把自己的 next 交回框架（顶掉本节点 next），前往对应落点叶子；全部未中则本节点识别失败。
+    // 命中的候选把自己的 next 交回框架（顶掉本节点 next），前往对应落点叶子；全部未中则继续扫描下一委托。
     // 候选开关 = 它 next 那个落点叶子的 enabled（task 选项逐个打开），关掉的候选直接跳过、连认都不认。
     // 守卫经门控只路由到对应区域节点，地图本就以终点为中心打开，故本区域候选基本在屏内、无需跨区域拖动。
     "SeizeDeliveryJobsEndpointCandidates${AreaId}": {
@@ -30,6 +30,9 @@
             "zone": "${Zone}",
             "icon": "${Icon}",
             "candidates": "${Candidates}"
-        }
+        },
+        "on_error": [
+            "SeizeDeliveryJobsEndpointNotMatched"
+        ]
     }
 }
