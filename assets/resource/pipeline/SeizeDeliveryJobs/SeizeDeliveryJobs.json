@@ -30,11 +30,14 @@
         "next": [
             "SeizeDeliveryJobsExistDueTask",
             "SeizeDeliveryJobsFailedChanceExhausted",
-            "SeizeDeliveryJobsPrepareAtDijiang"
+            "SeizeDeliveryJobsPrepareAtDijiang",
+            "SeizeDeliveryJobsJobListIsWulingFilter",
+            "SeizeDeliveryJobsJobListSelectWulingFilterPre"
         ]
     },
     "SeizeDeliveryJobsPrepareAtDijiang": {
         "desc": "确认可以抢单后，传送到帝江号-舰桥，避免角色标识遮挡送货点",
+        "enabled": false,
         "recognition": "DirectHit",
         "pre_delay": 0,
         "action": "Custom",
