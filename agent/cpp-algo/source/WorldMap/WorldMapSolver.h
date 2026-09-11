@@ -27,8 +27,6 @@ public:
     static std::optional<PlayerMarkerHit>
         DetectPlayerMarker(const cv::Mat& screen, const cv::Point2d& expected, const PlayerMarkerConfig& cfg);
 
-    static std::optional<DeliveryLabelHit> DetectDeliveryLabel(const cv::Mat& screen, const cv::Point2d& expected);
-
     // 屏幕上不被 UI 遮挡、图标能完整显出来的区域
     static cv::Rect SafeArea(const cv::Size& screenSize, const ScreenMapRoi& roi, int margin);
 
