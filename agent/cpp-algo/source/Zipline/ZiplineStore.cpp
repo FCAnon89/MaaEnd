@@ -208,9 +208,8 @@ size_t ZiplineStore::claimLegacyRecords(const std::string& account_id, const std
     // 这个账号名下已经有记录时一条都不认领：认领是给「升级后还没导过任何坐标」的人兜底的，
     // 名下已经有账号级数据说明新旧两套坐标可能同时存在，此时把旧数据算进当前账号，一旦用户
     // 换号就会静默用错坐标。
-    const bool has_account_records = std::any_of(maps_.begin(), maps_.end(), [&](const ZiplineMapRecord& record) {
-        return record.account_id == account_id;
-    });
+    const bool has_account_records =
+        std::any_of(maps_.begin(), maps_.end(), [&](const ZiplineMapRecord& record) { return record.account_id == account_id; });
     if (has_account_records) {
         LogInfo << "ZiplineStore: account already has records, leave legacy records unclaimed" << VAR(account_id);
         return 0;
