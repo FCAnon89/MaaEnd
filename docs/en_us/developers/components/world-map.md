@@ -94,7 +94,7 @@ The switch has to sit ahead of recognition, and that part matters: candidates st
 
 With `candidates` this table applies per candidate: any candidate hitting makes the node hit, and the node misses only when the whole set misses.
 
-The player's own marker is drawn on top of the icon, which is what stops the icon from being recognised — and the reason it is covered is precisely that the character is already standing there. In that case the node reports a **hit** at the expected position, because a marker landing there is itself evidence that the viewport was solved correctly. This branch only applies to icons flagged `occluded_by_player` in the table.
+The player's own marker is drawn on top of the icon, which is what stops the icon from being recognised — and the reason it is covered is precisely that the character is already standing there. In that case the node reports a **hit** at the expected position, because a marker landing there is itself evidence that the viewport was solved correctly. This branch only applies to icons flagged `occluded_by_player` in the table. Dynamic delivery points also set `player_occlusion_requires_delivery_label`: the orange delivery label above the point must be recognised as well, proving that the player is covering this job's destination rather than merely standing on another candidate.
 
 A mismatched unlock state makes that candidate **fail immediately without retrying** — that is a rule, not a recognition failure, and retrying changes nothing.
 
@@ -192,6 +192,7 @@ The icon table is `assets/resource/image/SceneManager/MapIcons.json`, one entry 
 | `radius` | `0` | Above zero, the icon floats within this radius (base map pixels) and is searched across that range instead of confirmed in a small fixed window |
 | `gold_ratio` | `0` | Gold pixel fraction required to read as unlocked. Zero skips the check entirely, which also leaves `state` with nothing to judge |
 | `occluded_by_player` | `false` | This kind of icon gets covered by the player marker, so the marker fallback is allowed when it cannot be recognised |
+| `player_occlusion_requires_delivery_label` | `false` | Also require the orange delivery label above the point before accepting the player-marker fallback; used only for dynamic delivery points |
 
 The table sits beside the templates it names and resolves through the same resource layers: a client whose icons are drawn differently ships its own templates and its own thresholds in its own layer.
 

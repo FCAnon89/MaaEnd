@@ -560,16 +560,29 @@ Probe ProbeTarget(FindSession& session, const Target& target, std::size_t index,
             }
             const auto marker = WorldMapSolver::DetectPlayerMarker(view.screen, expected, markerCfg);
             if (marker) {
-                // 图标被标记盖住认不出，但标记落在这里就佐证了视口没解错，可以照期望位置交坐标
-                LogInfo << "WorldMap: player marker covers the icon, taking the expected position" << VAR(param.zone)
-                        << VAR(marker->center.x) << VAR(marker->center.y) << VAR(marker->area) << VAR(marker->solidity);
-                detail.emplace("icon", param.icon);
-                detail.emplace("player_marker", true);
-                WriteDetail(out_detail, detail);
-                if (out_box != nullptr) {
-                    *out_box = PointBox(expected);
+                std::optional<DeliveryLabelHit> deliveryLabel;
+                if (session.spec->playerOcclusionRequiresDeliveryLabel) {
+                    deliveryLabel = WorldMapSolver::DetectDeliveryLabel(view.screen, expected);
                 }
-                return Probe::Hit;
+                if (!session.spec->playerOcclusionRequiresDeliveryLabel || deliveryLabel) {
+                    // 图标被标记盖住认不出，但标记落在这里就佐证了视口没解错，可以照期望位置交坐标
+                    LogInfo << "WorldMap: player marker covers the icon, taking the expected position" << VAR(param.zone)
+                            << VAR(marker->center.x) << VAR(marker->center.y) << VAR(marker->area) << VAR(marker->solidity);
+                    detail.emplace("icon", param.icon);
+                    detail.emplace("player_marker", true);
+                    if (deliveryLabel) {
+                        detail.emplace("delivery_label", true);
+                        detail.emplace("delivery_label_area", deliveryLabel->area);
+                    }
+                    WriteDetail(out_detail, detail);
+                    if (out_box != nullptr) {
+                        *out_box = PointBox(expected);
+                    }
+                    return Probe::Hit;
+                }
+
+                LogInfo << "WorldMap: player marker found without the delivery label" << VAR(param.zone) << VAR(marker->center.x)
+                        << VAR(marker->center.y);
             }
         }
 

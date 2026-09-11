@@ -46,6 +46,7 @@ struct IconEntry
     double radius = 0.0;
     double gold_ratio = 0.0;
     bool occluded_by_player = false;
+    bool player_occlusion_requires_delivery_label = false;
 
     MEO_JSONIZATION(
         templates,
@@ -55,7 +56,8 @@ struct IconEntry
         MEO_OPT gate,
         MEO_OPT radius,
         MEO_OPT gold_ratio,
-        MEO_OPT occluded_by_player);
+        MEO_OPT occluded_by_player,
+        MEO_OPT player_occlusion_requires_delivery_label);
 };
 
 // HSV 的 S 通道。地图底色也能很艳，所以只在模板圈定的那些像素上取
@@ -547,6 +549,7 @@ void WorldMapSolver::LoadIconTable()
         spec.spot.radiusBase = entry.radius;
         spec.spot.minGoldRatio = entry.gold_ratio;
         spec.occludedByPlayer = entry.occluded_by_player;
+        spec.playerOcclusionRequiresDeliveryLabel = entry.player_occlusion_requires_delivery_label;
         _iconTable.emplace(name, std::move(spec));
     }
 
@@ -758,6 +761,51 @@ std::optional<PlayerMarkerHit>
             .area = area,
             .solidity = solidity,
         };
+    }
+    return best;
+}
+
+std::optional<DeliveryLabelHit> WorldMapSolver::DetectDeliveryLabel(const cv::Mat& screen, const cv::Point2d& expected)
+{
+    if (screen.empty()) {
+        return std::nullopt;
+    }
+
+    // 「送货点」是固定屏幕尺寸的橙色横签，中心在点位上方约 25 像素。
+    // 只在这个小窗口里找横向连通块，避免把地图上其他金色图标当成标签。
+    cv::Rect window(static_cast<int>(std::lround(expected.x)) - 34, static_cast<int>(std::lround(expected.y)) - 45, 69, 37);
+    window &= cv::Rect(0, 0, screen.cols, screen.rows);
+    if (window.empty()) {
+        return std::nullopt;
+    }
+
+    cv::Mat patch = screen(window);
+    if (patch.channels() == 4) {
+        cv::cvtColor(patch, patch, cv::COLOR_BGRA2BGR);
+    }
+    if (patch.channels() != 3) {
+        return std::nullopt;
+    }
+
+    cv::Mat hsv;
+    cv::cvtColor(patch, hsv, cv::COLOR_BGR2HSV);
+    cv::Mat mask;
+    cv::inRange(hsv, cv::Scalar(5, 120, 120), cv::Scalar(30, 255, 255), mask);
+
+    cv::Mat labels;
+    cv::Mat stats;
+    cv::Mat centroids;
+    const int count = cv::connectedComponentsWithStats(mask, labels, stats, centroids, 8, CV_32S);
+    std::optional<DeliveryLabelHit> best;
+    for (int i = 1; i < count; ++i) {
+        const int area = stats.at<int>(i, cv::CC_STAT_AREA);
+        const int width = stats.at<int>(i, cv::CC_STAT_WIDTH);
+        const int height = stats.at<int>(i, cv::CC_STAT_HEIGHT);
+        if (area < 200 || width < 24 || height < 8 || width <= height || (best && area <= best->area)) {
+            continue;
+        }
+
+        best = DeliveryLabelHit { .area = area };
     }
     return best;
 }

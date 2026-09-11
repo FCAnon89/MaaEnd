@@ -36,6 +36,8 @@
     "DeliveryPoint": {
         "templates": [
             "../SeizeDeliveryJobs/DeliveryPoint.png"
-        ]
+        ],
+        "occluded_by_player": true,
+        "player_occlusion_requires_delivery_label": true
     }
 }

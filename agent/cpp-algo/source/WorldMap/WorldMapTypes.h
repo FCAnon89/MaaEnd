@@ -93,6 +93,10 @@ struct IconSpec
     // 角色标记压在这类图标之上：认不出图标时，标记落在期望位置就是认不出的原因。
     // 只对会与角色重合的点位成立，别的图标开了只会放宽误判
     bool occludedByPlayer = false;
+
+    // 送货点是动态任务点：角色站在候选坐标不代表这一单就送往这里。
+    // 表里开了这项时，角色标记外还必须在上方看到当前任务的橙色送货标签
+    bool playerOcclusionRequiresDeliveryLabel = false;
 };
 
 // 角色标记是压在图标之上的实心白三角。判据是「近白连通块 + 面积落区间 + 凸实」，
@@ -105,6 +109,11 @@ struct PlayerMarkerConfig
     int minArea = 60;
     int maxArea = 300;
     double minSolidity = 0.80;
+};
+
+struct DeliveryLabelHit
+{
+    int area = 0;
 };
 
 // 屏幕 <-> 底图的相似变换：base = (screen - roiOrigin) * scale + baseOrigin
