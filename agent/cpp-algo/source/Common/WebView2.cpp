@@ -147,6 +147,19 @@ void WebView2::setClearSiteDataBeforeNavigation(bool enabled)
     clear_site_data_before_navigation_ = enabled;
 }
 
+void WebView2::ClearSiteDataAndNavigate()
+{
+    if (!postToUiThread([this]() {
+            clearSiteData([this](bool ok) {
+                if (ok) {
+                    navigateInitialUrl();
+                }
+            });
+        })) {
+        LogWarn << "WebView2::ClearSiteDataAndNavigate: webview is not open";
+    }
+}
+
 void WebView2::SetTouchEmulation(bool enabled)
 {
     if (isOpened()) {
@@ -687,6 +700,11 @@ void WebView2::setClearSiteDataBeforeNavigation(bool enabled)
     if (isOpened()) {
         LogWarn << "WebView2::setClearSiteDataBeforeNavigation: ignored, must be called before Open()" << VAR(enabled);
     }
+}
+
+void WebView2::ClearSiteDataAndNavigate()
+{
+    LogWarn << "WebView2::ClearSiteDataAndNavigate: no webview on this platform";
 }
 
 void WebView2::SetTouchEmulation(bool enabled)

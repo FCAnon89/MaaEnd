@@ -64,6 +64,10 @@ public:
     // 仅在 Open() 之前调用有效；清理失败时 Open() 返回 false，避免继续使用旧登录态。
     void setClearSiteDataBeforeNavigation(bool enabled);
 
+    // 清除当前 Profile 的站点数据并重新打开初始 URL。
+    // 可在 Open() 成功后由任意线程调用，用于已登录网页角色与期望账号不符时回到原登录页。
+    void ClearSiteDataAndNavigate();
+
     // 启用 Chromium 触屏仿真（通过 CDP 的 Emulation.setTouchEmulationEnabled）。
     // 启用后 navigator/document 会上报具备触屏，document.createEvent("TouchEvent") 不再抛异常。
     // 主要用途：让那些通过 TouchEvent 探测来判定 isPC/isMobile 的网站把窗口认作移动端，
@@ -179,6 +183,7 @@ public:
     void SetURL(std::string url);
     void SetUserDataFolder(std::filesystem::path path);
     void setClearSiteDataBeforeNavigation(bool enabled);
+    void ClearSiteDataAndNavigate();
     void SetTouchEmulation(bool enabled);
     void SetContextMenuEnabled(bool enabled);
     void SetUserAgent(std::string user_agent);

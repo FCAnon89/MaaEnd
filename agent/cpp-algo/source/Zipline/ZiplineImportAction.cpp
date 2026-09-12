@@ -480,6 +480,7 @@ MaaBool MAA_CALL ZiplineImportActionRun(
     std::unordered_map<std::string, bool> list_first_parse_empty;
     bool login_transition_seen = false;
     bool signed_in_notice_decided = false;
+    bool mismatched_account_reset = false;
     while (true) {
         std::vector<CapturedResponse> fresh;
         bool inflight = false;
@@ -505,6 +506,24 @@ MaaBool MAA_CALL ZiplineImportActionRun(
 
             const bool non_empty = !by_map.empty();
             const bool account_ready = non_empty && IsValidRawUid(QueryValue(response.url, "roleId"));
+            bool account_matches = true;
+            if (account_ready && !game_account_id.empty()) {
+                const auto response_account_id = HashUidForAccount(QueryValue(response.url, "roleId"));
+                account_matches = response_account_id && *response_account_id == game_account_id;
+                if (!account_matches && !mismatched_account_reset) {
+                    mismatched_account_reset = true;
+                    captured.clear();
+                    covered.clear();
+                    list_first_parse_empty.clear();
+                    login_transition_seen = false;
+                    signed_in_notice_decided = false;
+                    LogWarn << "ZiplineImport: web role does not match the current game account; clear login and wait for sign-in";
+                    webview->ClearSiteDataAndNavigate();
+                }
+            }
+            if (!account_matches) {
+                continue;
+            }
             // 没有有效 roleId 的非空响应仍处在账号上下文初始化阶段，不能据此关窗或落盘。
             const std::string list_key = QueryValue(response.url, "mapId") + "|" + QueryValue(response.url, "levelId");
             const auto [it, inserted] = list_first_parse_empty.try_emplace(list_key, !account_ready);
