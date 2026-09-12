@@ -72,20 +72,17 @@ std::wstring utf8ToWide(const std::string& src)
 // 一旦未来 Microsoft 把优先级调成参数 > env var（issue #1338 里 Microsoft
 // 也提过想这样调），第 2 步也能让我们继续命中专属 UDF，向前兼容。
 //
-// 返回的路径默认是 cpp-algo.exe 同目录下的 "<exe>.WebView2"（与 SDK 没有任何
-// override 时的默认命名规则保持一致）。GetModuleFileNameW 失败时返回空路径，
-// 表示此次无法接管，调用方应当回退到 nullptr 让 SDK 自己处理。
+// UDF 放在用户的 LocalAppData 中，不随 MaaEnd 更新时替换 agent 目录而丢失。
 std::filesystem::path redirect_user_data_folder()
 {
-    wchar_t exe_buf[MAX_PATH] = {};
-    DWORD len = GetModuleFileNameW(nullptr, exe_buf, MAX_PATH);
+    wchar_t local_app_data[MAX_PATH] = {};
+    DWORD len = GetEnvironmentVariableW(L"LOCALAPPDATA", local_app_data, MAX_PATH);
     if (len == 0 || len >= MAX_PATH) {
-        LogWarn << "WebView2: GetModuleFileNameW failed, fall back to inherited UDF env" << VAR(GetLastError());
+        LogWarn << "WebView2: LOCALAPPDATA is unavailable, fall back to inherited UDF env";
         return {};
     }
 
-    std::filesystem::path udf(exe_buf);
-    udf += L".WebView2";
+    std::filesystem::path udf = std::filesystem::path(local_app_data) / L"MaaEnd" / L"cpp-algo.exe.WebView2";
 
     std::error_code ec;
     std::filesystem::create_directories(udf, ec);
