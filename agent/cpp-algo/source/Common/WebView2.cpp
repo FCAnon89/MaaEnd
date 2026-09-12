@@ -13,6 +13,8 @@
 #include <MaaUtils/Logger.h>
 #include <MaaUtils/Platform.h>
 
+#include "../utils.h"
+
 namespace
 {
 
@@ -48,7 +50,7 @@ std::wstring utf8ToWide(const std::string& src)
     return out;
 }
 
-// 计算 cpp-algo 专属的 WebView2 user data folder，并把它同步写到环境变量。
+// 把调用方选择的 WebView2 user data folder 同步写到环境变量。
 //
 // 背景：MXU 等基于 Tauri 的宿主在启动时会设置进程级 WEBVIEW2_USER_DATA_FOLDER
 // （为了规避中文用户名导致默认 UDF 创建失败），并会被它派生的子进程整体继承。
@@ -72,17 +74,13 @@ std::wstring utf8ToWide(const std::string& src)
 // 一旦未来 Microsoft 把优先级调成参数 > env var（issue #1338 里 Microsoft
 // 也提过想这样调），第 2 步也能让我们继续命中专属 UDF，向前兼容。
 //
-// UDF 放在用户的 LocalAppData 中，不随 MaaEnd 更新时替换 agent 目录而丢失。
-std::filesystem::path redirect_user_data_folder()
+// UDF 放在 MaaEnd 的 debug/record 中，不随更新替换 agent 目录；MXU 的日志导出和
+// 清理会排除 debug/record/WebView2，避免 Cookie 与站点存储进入调试包。
+std::filesystem::path redirect_user_data_folder(std::filesystem::path udf)
 {
-    wchar_t local_app_data[MAX_PATH] = {};
-    DWORD len = GetEnvironmentVariableW(L"LOCALAPPDATA", local_app_data, MAX_PATH);
-    if (len == 0 || len >= MAX_PATH) {
-        LogWarn << "WebView2: LOCALAPPDATA is unavailable, fall back to inherited UDF env";
-        return {};
+    if (udf.empty()) {
+        udf = get_exe_dir() / ".." / "debug" / "record" / "WebView2" / "default";
     }
-
-    std::filesystem::path udf = std::filesystem::path(local_app_data) / L"MaaEnd" / L"cpp-algo.exe.WebView2";
 
     std::error_code ec;
     std::filesystem::create_directories(udf, ec);
@@ -129,6 +127,15 @@ void WebView2::SetURL(std::string url)
         return;
     }
     initial_url_ = std::move(url);
+}
+
+void WebView2::SetUserDataFolder(std::filesystem::path path)
+{
+    if (isOpened()) {
+        LogWarn << "WebView2::SetUserDataFolder: ignored, must be called before Open()";
+        return;
+    }
+    user_data_folder_ = std::move(path);
 }
 
 void WebView2::setClearSiteDataBeforeNavigation(bool enabled)
@@ -234,7 +241,7 @@ void WebView2::initializeWebView()
 
     // 必须在 CreateCoreWebView2EnvironmentWithOptions 之前完成；已经创建过的
     // environment 不会回头读环境变量。详见 redirect_user_data_folder 注释。
-    const std::filesystem::path udf = redirect_user_data_folder();
+    const std::filesystem::path udf = redirect_user_data_folder(user_data_folder_);
     const wchar_t* udf_param = udf.empty() ? nullptr : udf.c_str();
 
     using Microsoft::WRL::Callback;
@@ -665,6 +672,13 @@ void WebView2::SetURL(std::string url)
     if (isOpened()) {
         LogWarn << "WebView2::SetURL: ignored, must be called before Open()" << VAR(url);
         return;
+    }
+}
+
+void WebView2::SetUserDataFolder([[maybe_unused]] std::filesystem::path path)
+{
+    if (isOpened()) {
+        LogWarn << "WebView2::SetUserDataFolder: ignored, must be called before Open()";
     }
 }
 

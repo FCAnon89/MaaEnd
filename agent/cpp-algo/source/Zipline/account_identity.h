@@ -4,6 +4,8 @@
 #include <string>
 #include <string_view>
 
+#include <MaaFramework/MaaDef.h>
+
 namespace zipline
 {
 
@@ -13,5 +15,8 @@ bool IsValidRawUid(std::string_view uid);
 // 与 go-service CaptureUid 共用 random_salt.txt，并计算 SHA-256(uid + salt) 的前 16 位小写十六进制。
 // ZiplineImport 仅在 Windows 注册；非 Windows 构建保留接口但返回空。
 std::optional<std::string> HashUidForAccount(std::string_view uid);
+
+// 读取 CaptureUid 发布到 Resource 节点的当前游戏账号标识；不可用或格式错误时返回空。
+std::string ReadCurrentAccountIdentity(MaaContext* context);
 
 } // namespace zipline

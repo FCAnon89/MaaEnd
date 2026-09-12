@@ -23,6 +23,8 @@
 
 #include <MaaUtils/Logger.h>
 
+#include <meojson/json.hpp>
+
 #include "../utils.h"
 
 namespace zipline
@@ -36,6 +38,7 @@ constexpr size_t kMaxUidDigits = 12;
 constexpr size_t kSha256Bytes = 32;
 constexpr size_t kAccountIdHexLength = 16;
 constexpr char kHexDigits[] = "0123456789abcdef";
+constexpr const char* kAccountIdentityNode = "CurrentAccountIdentity";
 
 std::filesystem::path salt_path()
 {
@@ -166,6 +169,42 @@ std::optional<std::string> HashUidForAccount(std::string_view uid)
         return std::nullopt;
     }
     return hex(*digest).substr(0, kAccountIdHexLength);
+}
+
+std::string ReadCurrentAccountIdentity(MaaContext* context)
+{
+    if (context == nullptr) {
+        return {};
+    }
+
+    ScopedStringBuffer buffer;
+    if (buffer.Get() == nullptr || !MaaContextGetNodeData(context, kAccountIdentityNode, buffer.Get())) {
+        LogWarn << "ZiplineAccount: identity node unavailable" << VAR(kAccountIdentityNode);
+        return {};
+    }
+    const char* raw = MaaStringBufferGet(buffer.Get());
+    if (raw == nullptr || *raw == '\0') {
+        return {};
+    }
+
+    const auto parsed = json::parse(raw);
+    if (!parsed || !parsed->is_object()) {
+        LogWarn << "ZiplineAccount: identity node data is not a json object" << VAR(kAccountIdentityNode);
+        return {};
+    }
+    const auto& obj = parsed->as_object();
+    if (!obj.contains("attach") || !obj.at("attach").is_object()) {
+        return {};
+    }
+
+    const std::string account_id = obj.at("attach").as_object().get("account_id", std::string {});
+    const bool valid = account_id.size() == kAccountIdHexLength
+                       && std::all_of(account_id.begin(), account_id.end(), [](unsigned char ch) { return std::isxdigit(ch) != 0; });
+    if (!account_id.empty() && !valid) {
+        LogWarn << "ZiplineAccount: identity has invalid format" << VAR(account_id.size());
+        return {};
+    }
+    return account_id;
 }
 
 } // namespace zipline

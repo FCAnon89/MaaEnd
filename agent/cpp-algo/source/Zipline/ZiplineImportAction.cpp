@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
+#include <filesystem>
 #include <iterator>
 #include <memory>
 #include <mutex>
@@ -19,6 +20,7 @@
 
 #include "../Common/WebView2.h"
 #include "../Common/notice.h"
+#include "../utils.h"
 #include "ZiplineFrames.h"
 #include "ZiplineStore.h"
 #include "account_identity.h"
@@ -42,6 +44,7 @@ constexpr int kSettleMs = 1200;
 constexpr int kIdleCloseMs = 20000;
 constexpr int kDefaultWindowWidth = 960;
 constexpr int kDefaultWindowHeight = 640;
+constexpr const char* kUnknownAccountProfile = "unknown";
 
 struct ImportParam
 {
@@ -216,7 +219,11 @@ bool ParseMarks(
 }
 
 // 把抓到的响应并进磁盘记录。返回本次新写入的滑索条数。
-size_t PersistCaptured(const std::vector<CapturedResponse>& captured, const std::vector<std::string>& template_ids)
+size_t PersistCaptured(
+    const std::vector<CapturedResponse>& captured,
+    const std::vector<std::string>& template_ids,
+    const std::string& expected_account_id,
+    bool& account_mismatch)
 {
     const std::filesystem::path path = ZiplineStore::DefaultPath();
 
@@ -265,6 +272,11 @@ size_t PersistCaptured(const std::vector<CapturedResponse>& captured, const std:
     const auto account_id = HashUidForAccount(*role_ids.begin());
     if (!account_id) {
         LogError << "ZiplineImport: failed to derive account identity; refuse to persist";
+        return 0;
+    }
+    if (!expected_account_id.empty() && *account_id != expected_account_id) {
+        account_mismatch = true;
+        LogError << "ZiplineImport: web role does not match the current game account; refuse to persist";
         return 0;
     }
 
@@ -417,12 +429,18 @@ MaaBool MAA_CALL ZiplineImportActionRun(
         return false;
     }
 
+    const std::string game_account_id = ReadCurrentAccountIdentity(context);
+    const std::filesystem::path profile_dir =
+        get_exe_dir() / ".." / "debug" / "record" / "WebView2" / (game_account_id.empty() ? kUnknownAccountProfile : game_account_id);
+
     auto webview = std::make_shared<WebView2>();
     webview->SetContextMenuEnabled(false);
     webview->SetTouchEmulation(true);
     webview->SetSize(param.width, param.height);
     webview->SetURL(param.url);
-    webview->setClearSiteDataBeforeNavigation(param.clear_login);
+    webview->SetUserDataFolder(profile_dir);
+    // 当前游戏 UID 未识别时不借用任何已知账号的登录态，直接显示网页登录界面。
+    webview->setClearSiteDataBeforeNavigation(param.clear_login || game_account_id.empty());
     if (!webview->Open()) {
         LogError << "ZiplineImport: webview open failed" << VAR(param.url);
         return false;
@@ -565,8 +583,12 @@ MaaBool MAA_CALL ZiplineImportActionRun(
         return false;
     }
 
-    const size_t total = PersistCaptured(captured, param.template_ids);
+    bool account_mismatch = false;
+    const size_t total = PersistCaptured(captured, param.template_ids, game_account_id, account_mismatch);
     LogInfo << "ZiplineImport: done" << VAR(captured.size()) << VAR(total);
+    if (account_mismatch) {
+        common::notice::Publish(context, common::notice::Text("zipline.account_mismatch"));
+    }
     if (total > 0) {
         // 导完就散场的话没人知道还差一步: 设置里的三态默认是跟随任务, 不会自己去找滑索。
         common::notice::Publish(context, common::notice::Text("zipline.import_done", { static_cast<int64_t>(total) }));

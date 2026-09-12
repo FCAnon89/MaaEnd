@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 #ifdef _WIN32
 
 #include "FramelessWindow.h"
@@ -53,6 +55,10 @@ public:
 
     // 设置初始要打开的 URL。仅在 Open() 之前调用有效；之后调用会被忽略。
     void SetURL(std::string url);
+
+    // 设置 WebView2 用户数据目录。仅在 Open() 之前调用有效；留空时使用
+    // debug/record/WebView2/default。
+    void SetUserDataFolder(std::filesystem::path path);
 
     // 在首次导航前清除 cpp-algo 专属 WebView2 Profile 的全部 Cookie 与站点存储。
     // 仅在 Open() 之前调用有效；清理失败时 Open() 返回 false，避免继续使用旧登录态。
@@ -134,6 +140,7 @@ private:
     // 配置字段：仅在 Open() 之前由业务线程写入，UI 线程在 onControllerCreated 中读取一次。
     std::string initial_url_;
     std::string user_agent_;
+    std::filesystem::path user_data_folder_;
     bool clear_site_data_before_navigation_ = false;
     bool touch_emulation_ = false;
     bool context_menu_enabled_ = true;
@@ -170,6 +177,7 @@ public:
     bool Open() override;
 
     void SetURL(std::string url);
+    void SetUserDataFolder(std::filesystem::path path);
     void setClearSiteDataBeforeNavigation(bool enabled);
     void SetTouchEmulation(bool enabled);
     void SetContextMenuEnabled(bool enabled);

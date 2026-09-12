@@ -31,7 +31,7 @@
                     "name": "CN",
                     "label": "$option.ZiplineImportRegion.cases.CN.label",
                     "pipeline_override": {
-                        "ZiplineImportMain": {
+                        "ZiplineImportOpenWeb": {
                             "action": {
                                 "param": {
                                     "custom_action_param": {
@@ -46,7 +46,7 @@
                     "name": "Global",
                     "label": "$option.ZiplineImportRegion.cases.Global.label",
                     "pipeline_override": {
-                        "ZiplineImportMain": {
+                        "ZiplineImportOpenWeb": {
                             "action": {
                                 "param": {
                                     "custom_action_param": {
@@ -71,7 +71,7 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "ZiplineImportMain": {
+                        "ZiplineImportOpenWeb": {
                             "action": {
                                 "param": {
                                     "custom_action_param": {
