@@ -222,8 +222,7 @@ bool ParseMarks(
 size_t PersistCaptured(
     const std::vector<CapturedResponse>& captured,
     const std::vector<std::string>& template_ids,
-    const std::string& expected_account_id,
-    bool& account_mismatch)
+    const std::string& expected_account_id)
 {
     const std::filesystem::path path = ZiplineStore::DefaultPath();
 
@@ -275,7 +274,6 @@ size_t PersistCaptured(
         return 0;
     }
     if (!expected_account_id.empty() && *account_id != expected_account_id) {
-        account_mismatch = true;
         LogError << "ZiplineImport: web role does not match the current game account; refuse to persist";
         return 0;
     }
@@ -583,12 +581,8 @@ MaaBool MAA_CALL ZiplineImportActionRun(
         return false;
     }
 
-    bool account_mismatch = false;
-    const size_t total = PersistCaptured(captured, param.template_ids, game_account_id, account_mismatch);
+    const size_t total = PersistCaptured(captured, param.template_ids, game_account_id);
     LogInfo << "ZiplineImport: done" << VAR(captured.size()) << VAR(total);
-    if (account_mismatch) {
-        common::notice::Publish(context, common::notice::Text("zipline.account_mismatch"));
-    }
     if (total > 0) {
         // 导完就散场的话没人知道还差一步: 设置里的三态默认是跟随任务, 不会自己去找滑索。
         common::notice::Publish(context, common::notice::Text("zipline.import_done", { static_cast<int64_t>(total) }));
