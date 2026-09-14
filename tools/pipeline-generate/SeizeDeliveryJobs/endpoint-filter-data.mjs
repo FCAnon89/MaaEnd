@@ -8,12 +8,12 @@ const ENDPOINT_ICON = "DeliveryPoint";
 
 const AREA_OCR_PATTERNS = {
     WulingCity: {
-        zh_cn: "武?陵城",
-        zh_tw: "武?陵城",
+        zh_cn: "武陵城|武城|陵城",
+        zh_tw: "武陵城|武城|陵城",
     },
     TestArea: {
-        zh_cn: "试?验园区",
-        zh_tw: "實?驗園區",
+        zh_cn: "试验园区|试验园|验园区|试验|验园|园区",
+        zh_tw: "實驗園區|實驗園|驗園區|實驗|驗園|園區",
     },
 };
 
