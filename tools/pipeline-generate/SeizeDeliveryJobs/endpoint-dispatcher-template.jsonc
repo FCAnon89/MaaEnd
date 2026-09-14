@@ -13,7 +13,7 @@
         "inverse": true, // 如果*不在*仓储管理页面时，视为地图已经打开
         "pre_delay": 0,
         "post_wait_freezes": 500,
-        "post_delay": 0,
+        "post_delay": 500,
         "next": "${NextList}"
     }
 }

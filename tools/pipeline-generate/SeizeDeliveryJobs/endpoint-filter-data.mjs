@@ -6,6 +6,53 @@ import {destinations} from "../AutoDelivery/model.mjs";
 // 模板图为 assets/resource/image/SeizeDeliveryJobs/DeliveryPoint.png（阈值待游戏内微调）。
 const ENDPOINT_ICON = "DeliveryPoint";
 
+const AREA_OCR_PATTERNS = {
+    WulingCity: {
+        zh_cn: "武?陵城",
+        zh_tw: "武?陵城",
+    },
+    TestArea: {
+        zh_cn: "试?验园区",
+        zh_tw: "實?驗園區",
+    },
+};
+
+function buildAreaExpected(areaId, areaTexts) {
+    const patterns = AREA_OCR_PATTERNS[areaId] ?? {};
+    const fullTexts = [...new Set(Object.values(areaTexts))];
+    const patternByOriginalText = new Map(
+        Object.entries(patterns).map(
+            ([
+                language,
+                pattern,
+            ]) => [
+                areaTexts[language],
+                pattern,
+            ],
+        ),
+    );
+    const value = [
+        ...new Set(
+            Object.entries(areaTexts).map(
+                ([
+                    language,
+                    text,
+                ]) => patterns[language] ?? patternByOriginalText.get(text) ?? text,
+            ),
+        ),
+    ];
+    const originalTexts = [...new Set(Object.keys(patterns).map((language) => areaTexts[language]))];
+    const comments = originalTexts.map((text) => `    // ${JSON.stringify(text)}`).join("\n");
+    const entries = value
+        .map((text, index) => `    ${JSON.stringify(text)}${index + 1 === value.length ? "" : ","}`)
+        .join("\n");
+
+    return {
+        value,
+        raw: `[\n${comments}\n    // @i18n-skip\n${entries}\n]`,
+    };
+}
+
 // 终点节点后缀 → delivery_destinations.json 里的送货终点 ID。
 // 对应关系取自 tools/pipeline-generate/AutoDelivery/routes.json 中各 destination 的 description 字段：
 //   deliver_target_map02_lv002_01（苏白易）             → "技术生产办公室（左上）"
@@ -111,7 +158,9 @@ export const candidatesRows = areaOrder.map((areaId) => {
         ...new Set(entries.map((entry) => entry.MapZone)),
     ];
     if (zones.length !== 1) {
-        throw new Error(`[SeizeDeliveryJobs] 区域 ${areaId} 的 candidates 需同 zone，当前有 ${zones.join(", ")}；请为不同 zone 各起一个 candidates 节点`);
+        throw new Error(
+            `[SeizeDeliveryJobs] 区域 ${areaId} 的 candidates 需同 zone，当前有 ${zones.join(", ")}；请为不同 zone 各起一个 candidates 节点`,
+        );
     }
     return {
         AreaId: areaId,
@@ -122,9 +171,7 @@ export const candidatesRows = areaOrder.map((areaId) => {
             at: entry.DestinationMapAt,
             next: `SeizeDeliveryJobsEndpointFilter${entry.EndpointId}`,
         })),
-        Expected: [
-            ...new Set(entries.flatMap((entry) => Object.values(entry.AreaTexts))),
-        ],
+        Expected: buildAreaExpected(areaId, entries[0].AreaTexts),
     };
 });
 
