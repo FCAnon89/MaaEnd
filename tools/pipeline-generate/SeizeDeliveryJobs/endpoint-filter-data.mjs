@@ -6,53 +6,6 @@ import {destinations} from "../AutoDelivery/model.mjs";
 // 模板图为 assets/resource/image/SeizeDeliveryJobs/DeliveryPoint.png（阈值待游戏内微调）。
 const ENDPOINT_ICON = "DeliveryPoint";
 
-const AREA_OCR_PATTERNS = {
-    WulingCity: {
-        zh_cn: "武陵城|武城|陵城",
-        zh_tw: "武陵城|武城|陵城",
-    },
-    TestArea: {
-        zh_cn: "试验园区|试验园|验园区|试验|验园|园区",
-        zh_tw: "實驗園區|實驗園|驗園區|實驗|驗園|園區",
-    },
-};
-
-function buildAreaExpected(areaId, areaTexts) {
-    const patterns = AREA_OCR_PATTERNS[areaId] ?? {};
-    const fullTexts = [...new Set(Object.values(areaTexts))];
-    const patternByOriginalText = new Map(
-        Object.entries(patterns).map(
-            ([
-                language,
-                pattern,
-            ]) => [
-                areaTexts[language],
-                pattern,
-            ],
-        ),
-    );
-    const value = [
-        ...new Set(
-            Object.entries(areaTexts).map(
-                ([
-                    language,
-                    text,
-                ]) => patterns[language] ?? patternByOriginalText.get(text) ?? text,
-            ),
-        ),
-    ];
-    const originalTexts = [...new Set(Object.keys(patterns).map((language) => areaTexts[language]))];
-    const comments = originalTexts.map((text) => `    // ${JSON.stringify(text)}`).join("\n");
-    const entries = value
-        .map((text, index) => `    ${JSON.stringify(text)}${index + 1 === value.length ? "" : ","}`)
-        .join("\n");
-
-    return {
-        value,
-        raw: `[\n${comments}\n    // @i18n-skip\n${entries}\n]`,
-    };
-}
-
 // 终点节点后缀 → delivery_destinations.json 里的送货终点 ID。
 // 对应关系取自 tools/pipeline-generate/AutoDelivery/routes.json 中各 destination 的 description 字段：
 //   deliver_target_map02_lv002_01（苏白易）             → "技术生产办公室（左上）"
@@ -171,18 +124,17 @@ export const candidatesRows = areaOrder.map((areaId) => {
             at: entry.DestinationMapAt,
             next: `SeizeDeliveryJobsEndpointFilter${entry.EndpointId}`,
         })),
-        Expected: buildAreaExpected(areaId, entries[0].AreaTexts),
+        Expected: [
+            ...new Set(entries.flatMap((entry) => Object.values(entry.AreaTexts))),
+        ],
     };
 });
 
-// 守卫节点数据（单行）：next 列出全部区域门控节点 + NotMatched 兜底。
-// 框架对 next 逐个识别、首个命中胜出：当前子区域不匹配的门控 OCR miss，匹配的门控 hit 进对应 candidates。
+// 守卫节点数据（单行）：next 只列出全部区域门控节点。
+// 框架对 next 逐轮识别、首个命中胜出：标题未加载完整时继续识别，匹配的门控 hit 进对应 candidates。
 export const dispatcherRows = [
     {
-        NextList: [
-            ...areaOrder.map((areaId) => `SeizeDeliveryJobsEndpointRegion${areaId}`),
-            "SeizeDeliveryJobsEndpointNotMatched",
-        ],
+        NextList: areaOrder.map((areaId) => `SeizeDeliveryJobsEndpointRegion${areaId}`),
     },
 ];
 
