@@ -111,9 +111,7 @@ export const candidatesRows = areaOrder.map((areaId) => {
         ...new Set(entries.map((entry) => entry.MapZone)),
     ];
     if (zones.length !== 1) {
-        throw new Error(
-            `[SeizeDeliveryJobs] 区域 ${areaId} 的 candidates 需同 zone，当前有 ${zones.join(", ")}；请为不同 zone 各起一个 candidates 节点`,
-        );
+        throw new Error(`[SeizeDeliveryJobs] 区域 ${areaId} 的 candidates 需同 zone，当前有 ${zones.join(", ")}；请为不同 zone 各起一个 candidates 节点`);
     }
     return {
         AreaId: areaId,
@@ -134,7 +132,9 @@ export const candidatesRows = areaOrder.map((areaId) => {
 // 框架对 next 逐轮识别、首个命中胜出：标题未加载完整时继续识别，匹配的门控 hit 进对应 candidates。
 export const dispatcherRows = [
     {
-        NextList: areaOrder.map((areaId) => `SeizeDeliveryJobsEndpointRegion${areaId}`),
+        NextList: [
+            ...areaOrder.map((areaId) => `SeizeDeliveryJobsEndpointRegion${areaId}`),
+        ],
     },
 ];
 
