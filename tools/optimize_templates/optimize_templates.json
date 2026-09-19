@@ -1693,5 +1693,7 @@
     "resource/image/SceneManager/Setting/TabAudio": "78baf62653f69b3bb96616e6e511488fc92937d8da1f7aaf26520f55df86a1ea",
     "resource/image/SceneManager/Setting/TabLanguage": "e7ffca4e3e714849ff0d4820f9ff9603e56dfb0d5b448cc59d0935c00ef0a049",
     "resource/image/SceneManager/Setting/TabOthers": "6390dc3626f8fc2511861c01f0a9dc532613238443585b76f8b74c11db18cdda",
-    "resource/image/SceneManager/Setting/MenuGear": "055349a813c4c6595bf2ecf7799af0f389be9d23e200e2c871f29695f73d8bce"
+    "resource/image/SceneManager/Setting/MenuGear": "055349a813c4c6595bf2ecf7799af0f389be9d23e200e2c871f29695f73d8bce",
+    "resource/image/LevelUpOperator/OperatorSelected2": "61d025d9672dff153668141c351b6d0f87c8467ac52c03d41ac0766aa81bc1a9",
+    "resource/image/BatchAddFriends/addFriend2": "727c34b2df2af10339544bf800f2b0b909ad27b072f90d061bce94ee612b8e90"
 }

@@ -36,6 +36,7 @@
     "DeliveryPoint": {
         "templates": [
             "../SeizeDeliveryJobs/DeliveryPoint.png"
-        ]
+        ],
+        "threshold": 0.8
     }
 }

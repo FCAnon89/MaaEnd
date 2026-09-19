@@ -149,7 +149,8 @@ bool ZiplineStore::save(const std::filesystem::path& path) const
     root["maps"] = std::move(maps);
 
     // 先写临时文件再原子改名：导入中途崩掉不会把已有记录截成半截。
-    const std::filesystem::path tmp = path.parent_path() / (path.filename().string() + ".tmp");
+    std::filesystem::path tmp = path;
+    tmp += ".tmp";
     {
         std::ofstream ofs(tmp, std::ios::binary | std::ios::trunc);
         if (!ofs) {
@@ -197,6 +198,44 @@ std::string ZiplineStore::latestAccountId() const
         }
     }
     return latest == nullptr ? std::string {} : latest->account_id;
+}
+
+size_t ZiplineStore::claimLegacyRecords(const std::string& account_id, const std::filesystem::path& path)
+{
+    if (account_id.empty()) {
+        return 0;
+    }
+
+    // 这个账号名下已经有记录时一条都不认领：认领是给「升级后还没导过任何坐标」的人兜底的，
+    // 名下已经有账号级数据说明新旧两套坐标可能同时存在，此时把旧数据算进当前账号，一旦用户
+    // 换号就会静默用错坐标。
+    const bool has_account_records =
+        std::any_of(maps_.begin(), maps_.end(), [&](const ZiplineMapRecord& record) { return record.account_id == account_id; });
+    if (has_account_records) {
+        LogInfo << "ZiplineStore: account already has records, leave legacy records unclaimed" << VAR(account_id);
+        return 0;
+    }
+
+    size_t claimed = 0;
+    for (auto& record : maps_) {
+        if (!record.account_id.empty()) {
+            continue;
+        }
+        record.account_id = account_id;
+        ++claimed;
+    }
+    if (claimed == 0) {
+        return 0;
+    }
+
+    if (!save(path)) {
+        // 认领没落盘就等于这次运行仍按账号级数据规划，行为没有变坏，只是下次还要再认领一遍。
+        LogError << "ZiplineStore: claim legacy records for the current account, but saving failed" << VAR(path) << VAR(claimed);
+        return 0;
+    }
+
+    LogInfo << "ZiplineStore: claimed legacy records for the current account" << VAR(account_id) << VAR(claimed);
+    return claimed;
 }
 
 } // namespace zipline

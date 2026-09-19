@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <condition_variable>
+#include <cstring>
 #include <iterator>
 #include <memory>
 #include <mutex>
@@ -15,10 +16,13 @@
 
 #include <meojson/json.hpp>
 
+#include <MaaFramework/MaaAPI.h>
 #include <MaaUtils/Logger.h>
 
+#include "../Common/GameRegion.h"
 #include "../Common/WebView2.h"
 #include "../Common/notice.h"
+#include "../utils.h"
 #include "ZiplineFrames.h"
 #include "ZiplineStore.h"
 #include "account_identity.h"
@@ -29,23 +33,24 @@ namespace zipline
 namespace
 {
 
-constexpr const char* kDefaultMapUrl = "https://game.skland.com/map/endfield";
 // 标记列表接口的路径片段。只匹配路径，避免被 query 里的参数顺序影响。
-// 可被 param 覆盖：各区服是同一套前端，路径本该一致，万一哪边不一样不必重新编译。
 constexpr const char* kMarkListPathFragment = "/map/mark/list";
+constexpr const char* kMapUrlCN = "https://game.skland.com/map/endfield";
+constexpr const char* kMapUrlGlobal = "https://game.skport.com/map/endfield";
 // 窗口的存活上限，留给用户登录：登录后抓齐只要几秒，正常路径根本用不到这个数。
-constexpr int64_t kDefaultTimeoutMs = 300000;
+constexpr int64_t kDefaultTimeoutMs = 180000;
 constexpr int kPollIntervalMs = 200;
 // 标定过的地图全抓到之后再静默这么久就收工，留一点余量给同批次的最后几条。
 constexpr int kSettleMs = 1200;
 // 抓到了一些但凑不齐标定过的地图时的兜底：静默这么久也收工，不干等满超时。
 constexpr int kIdleCloseMs = 20000;
-constexpr int kDefaultWindowWidth = 960;
-constexpr int kDefaultWindowHeight = 640;
+constexpr int kDefaultWindowWidth = 1280;
+constexpr int kDefaultWindowHeight = 720;
 
 struct ImportParam
 {
-    std::string url = kDefaultMapUrl;
+    // 由 gamesetting::DetectGameRegion 填入，不接受 attach 覆盖。
+    std::string url;
     std::string mark_list_path = kMarkListPathFragment;
     int64_t timeout = kDefaultTimeoutMs;
     int width = kDefaultWindowWidth;
@@ -75,39 +80,38 @@ struct SniffState
     std::vector<CapturedResponse> captured;
 };
 
-bool ParseParam(const char* raw, ImportParam& out)
+// 只从 attach 读 option 会写的字段（目前仅 clear_login）；其余用 ImportParam 默认值。
+ImportParam LoadParam(MaaContext* context, const char* node_name)
 {
-    if (!raw || *raw == '\0') {
-        return true;
+    ImportParam out;
+    if (!context || !node_name || *node_name == '\0') {
+        return out;
+    }
+
+    ScopedStringBuffer buffer;
+    if (buffer.Get() == nullptr || !MaaContextGetNodeData(context, node_name, buffer.Get())) {
+        return out;
+    }
+
+    const char* raw = MaaStringBufferGet(buffer.Get());
+    if (raw == nullptr || std::strlen(raw) == 0) {
+        return out;
     }
 
     const auto parsed = json::parse(raw);
     if (!parsed || !parsed->is_object()) {
-        LogError << "ZiplineImport: param is not a json object" << VAR(raw);
-        return false;
+        LogWarn << "ZiplineImport: node data is not a json object" << VAR(node_name);
+        return out;
     }
 
     const auto& obj = parsed->as_object();
-    out.url = obj.get("url", out.url);
-    out.mark_list_path = obj.get("mark_list_path", out.mark_list_path);
-    // 空片段会匹配上页面的每一条响应，把整个会话都当成标记列表抓回来。
-    if (out.mark_list_path.empty()) {
-        LogError << "ZiplineImport: mark_list_path must not be empty";
-        return false;
+    if (!obj.contains("attach") || !obj.at("attach").is_object()) {
+        return out;
     }
-    out.timeout = obj.get("timeout", out.timeout);
-    out.width = obj.get("width", out.width);
-    out.height = obj.get("height", out.height);
-    out.clear_login = obj.get("clear_login", out.clear_login);
 
-    if (obj.contains("template_ids") && obj.at("template_ids").is_array()) {
-        for (const auto& item : obj.at("template_ids").as_array()) {
-            if (item.is_string()) {
-                out.template_ids.push_back(item.as_string());
-            }
-        }
-    }
-    return true;
+    const auto& attach = obj.at("attach").as_object();
+    out.clear_login = attach.get("clear_login", out.clear_login);
+    return out;
 }
 
 // 取 URL query 里某个参数的值，取不到返回空串。
@@ -215,15 +219,23 @@ bool ParseMarks(
     return true;
 }
 
-// 把抓到的响应并进磁盘记录。返回本次新写入的滑索条数。
-size_t PersistCaptured(const std::vector<CapturedResponse>& captured, const std::vector<std::string>& template_ids)
+// 把抓到的响应并进磁盘记录。成功时带回条数、本次原始 roleId（仅供提示，不落盘）与磁盘账号数。
+struct PersistResult
 {
+    size_t total = 0;
+    size_t disk_account_count = 0;
+    std::string role_id;
+};
+
+PersistResult PersistCaptured(const std::vector<CapturedResponse>& captured, const std::vector<std::string>& template_ids)
+{
+    PersistResult result;
     const std::filesystem::path path = ZiplineStore::DefaultPath();
 
     ZiplineStore store;
     if (!store.load(path)) {
         LogError << "ZiplineImport: load existing record failed, refuse to overwrite" << VAR(path);
-        return 0;
+        return result;
     }
 
     // 先把所有响应并到一起再落盘：同一张图可能被不止一条响应带回来，一条一次 replaceMap
@@ -260,12 +272,13 @@ size_t PersistCaptured(const std::vector<CapturedResponse>& captured, const std:
 
     if (role_ids.size() != 1) {
         LogError << "ZiplineImport: one import must contain exactly one roleId; refuse to persist" << VAR(role_ids.size());
-        return 0;
+        return result;
     }
-    const auto account_id = HashUidForAccount(*role_ids.begin());
+    const std::string role_id = *role_ids.begin();
+    const auto account_id = HashUidForAccount(role_id);
     if (!account_id) {
         LogError << "ZiplineImport: failed to derive account identity; refuse to persist";
-        return 0;
+        return result;
     }
 
     size_t total = 0;
@@ -301,12 +314,23 @@ size_t PersistCaptured(const std::vector<CapturedResponse>& captured, const std:
     }
 
     if (total == 0) {
-        return 0;
+        return result;
     }
     if (!store.save(path)) {
-        return 0;
+        return result;
     }
-    return total;
+    result.total = total;
+    result.role_id = role_id;
+    {
+        std::unordered_set<std::string> accounts;
+        for (const auto& record : store.maps()) {
+            if (!record.account_id.empty()) {
+                accounts.insert(record.account_id);
+            }
+        }
+        result.disk_account_count = accounts.size();
+    }
+    return result;
 }
 
 void SubscribeSniffers(const std::shared_ptr<WebView2>& webview, const std::shared_ptr<SniffState>& state, std::string mark_list_path)
@@ -400,9 +424,9 @@ void SubscribeSniffers(const std::shared_ptr<WebView2>& webview, const std::shar
 MaaBool MAA_CALL ZiplineImportActionRun(
     MaaContext* context,
     [[maybe_unused]] MaaTaskId task_id,
-    [[maybe_unused]] const char* node_name,
+    const char* node_name,
     [[maybe_unused]] const char* custom_action_name,
-    const char* custom_action_param,
+    [[maybe_unused]] const char* custom_action_param,
     [[maybe_unused]] MaaRecoId reco_id,
     [[maybe_unused]] const MaaRect* box,
     [[maybe_unused]] void* trans_arg)
@@ -412,8 +436,16 @@ MaaBool MAA_CALL ZiplineImportActionRun(
         return false;
     }
 
-    ImportParam param;
-    if (!ParseParam(custom_action_param, param)) {
+    ImportParam param = LoadParam(context, node_name);
+    switch (gamesetting::DetectGameRegion()) {
+    case gamesetting::Region::CN:
+        param.url = kMapUrlCN;
+        break;
+    case gamesetting::Region::Global:
+        param.url = kMapUrlGlobal;
+        break;
+    case gamesetting::Region::Unknown:
+        LogError << "ZiplineImport: failed to resolve map URL from game region";
         return false;
     }
 
@@ -422,11 +454,12 @@ MaaBool MAA_CALL ZiplineImportActionRun(
     webview->SetTouchEmulation(true);
     webview->SetSize(param.width, param.height);
     webview->SetURL(param.url);
-    webview->setClearSiteDataBeforeNavigation(param.clear_login);
+    webview->SetClearWebData(param.clear_login);
     if (!webview->Open()) {
         LogError << "ZiplineImport: webview open failed" << VAR(param.url);
         return false;
     }
+    common::notice::Publish(context, common::notice::Text("zipline.import_sign_in_hint"));
 
     auto state = std::make_shared<SniffState>();
     SubscribeSniffers(webview, state, param.mark_list_path);
@@ -464,6 +497,7 @@ MaaBool MAA_CALL ZiplineImportActionRun(
     std::unordered_map<std::string, bool> list_first_parse_empty;
     bool login_transition_seen = false;
     bool signed_in_notice_decided = false;
+    bool timed_out = false;
     while (true) {
         std::vector<CapturedResponse> fresh;
         bool inflight = false;
@@ -508,12 +542,10 @@ MaaBool MAA_CALL ZiplineImportActionRun(
 
         if (!covered.empty() && !signed_in_notice_decided) {
             signed_in_notice_decided = true;
-            if (!login_transition_seen) {
-                common::notice::Publish(context, common::notice::Text("zipline.already_signed_in"));
-            }
-            else {
+            if (login_transition_seen) {
                 LogInfo << "ZiplineImport: mark list went from empty to non-empty, the user just signed in";
             }
+            common::notice::Publish(context, common::notice::Text("zipline.import_login_ok"));
         }
 
         const auto now = std::chrono::steady_clock::now();
@@ -544,6 +576,7 @@ MaaBool MAA_CALL ZiplineImportActionRun(
         }
         if (now >= deadline) {
             LogWarn << "ZiplineImport: timed out waiting for the mark list";
+            timed_out = true;
             break;
         }
         if (tasker && MaaTaskerStopping(tasker)) {
@@ -559,19 +592,28 @@ MaaBool MAA_CALL ZiplineImportActionRun(
     // Close() 会等 UI 线程退出，只能在业务线程上调，CDP 回调里调就是自己等自己。
     webview->Close();
 
+    if (timed_out) {
+        common::notice::Publish(context, common::notice::Text("zipline.import_timeout"));
+    }
+
     if (covered.empty()) {
         // 没抓到同时具有标记和账号身份的响应，不能安全归属后落盘。
         LogWarn << "ZiplineImport: no account-scoped marks captured, was the page signed in with a role selected?" << VAR(captured.size());
         return false;
     }
 
-    const size_t total = PersistCaptured(captured, param.template_ids);
-    LogInfo << "ZiplineImport: done" << VAR(captured.size()) << VAR(total);
-    if (total > 0) {
-        // 导完就散场的话没人知道还差一步: 设置里的三态默认是跟随任务, 不会自己去找滑索。
-        common::notice::Publish(context, common::notice::Text("zipline.import_done", { static_cast<int64_t>(total) }));
+    const PersistResult persisted = PersistCaptured(captured, param.template_ids);
+    LogInfo << "ZiplineImport: done" << VAR(captured.size()) << VAR(persisted.total);
+    if (persisted.total > 0) {
+        common::notice::Publish(
+            context,
+            common::notice::Text(
+                "zipline.import_done",
+                { std::stoll(persisted.role_id),
+                  static_cast<int64_t>(persisted.total),
+                  static_cast<int64_t>(persisted.disk_account_count) }));
     }
-    return total > 0;
+    return persisted.total > 0;
 }
 
 } // namespace zipline

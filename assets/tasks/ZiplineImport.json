@@ -6,7 +6,6 @@
             "entry": "ZiplineImportMain",
             "description": "$task.ZiplineImport.description",
             "option": [
-                "ZiplineImportRegion",
                 "ZiplineImportClearLogin"
             ],
             "controller": [
@@ -21,63 +20,20 @@
         }
     ],
     "option": {
-        "ZiplineImportRegion": {
-            "type": "select",
-            "label": "$option.ZiplineImportRegion.label",
-            "description": "$option.ZiplineImportRegion.description",
-            "default_case": "CN",
-            "cases": [
-                {
-                    "name": "CN",
-                    "label": "$option.ZiplineImportRegion.cases.CN.label",
-                    "pipeline_override": {
-                        "ZiplineImportMain": {
-                            "action": {
-                                "param": {
-                                    "custom_action_param": {
-                                        "url": "https://game.skland.com/map/endfield"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "name": "Global",
-                    "label": "$option.ZiplineImportRegion.cases.Global.label",
-                    "pipeline_override": {
-                        "ZiplineImportMain": {
-                            "action": {
-                                "param": {
-                                    "custom_action_param": {
-                                        "url": "https://game.skport.com/map/endfield"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            ]
-        },
         "ZiplineImportClearLogin": {
             "type": "switch",
             "controller": [
                 "Win32-Front"
             ],
             "label": "$option.ZiplineImportClearLogin.label",
-            "description": "$option.ZiplineImportClearLogin.description",
             "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
                     "pipeline_override": {
                         "ZiplineImportMain": {
-                            "action": {
-                                "param": {
-                                    "custom_action_param": {
-                                        "clear_login": true
-                                    }
-                                }
+                            "attach": {
+                                "clear_login": true
                             }
                         }
                     }

@@ -422,15 +422,10 @@
                         },
                         "AutoEssenceDismissWarningSanityLowContinue": {
                             "enabled": false
-                        },
-                        "AutoEssenceChooseOverrideOff": {
-                            "enabled": false
-                        },
-                        "AutoEssenceChooseOverrideOn": {
-                            "enabled": true
                         }
                     },
                     "option": [
+                        "AutoEssenceDoOverride",
                         "EssenceFilterAfterBattle",
                         "AutoUseSpMedication"
                     ]
@@ -450,15 +445,10 @@
                         },
                         "AutoEssenceDismissWarningSanityLowContinue": {
                             "enabled": false
-                        },
-                        "AutoEssenceChooseOverrideOff": {
-                            "enabled": false
-                        },
-                        "AutoEssenceChooseOverrideOn": {
-                            "enabled": true
                         }
                     },
                     "option": [
+                        "AutoEssenceDoOverride",
                         "EssenceFilterAfterBattle",
                         "AutoUseSpMedication"
                     ]
@@ -492,12 +482,15 @@
                         },
                         "AutoEssenceChooseOverrideOn": {
                             "enabled": true
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientContinue": {
+                            "enabled": false
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientCancel": {
+                            "enabled": true
                         }
                     },
                     "option": [
-                        "EssenceFilterAfterBattleSelectWeaponRarity",
-                        "EssenceFilterAfterBattleSelectEssence",
-                        "EssenceFilterAfterBattleSelectExtraRules",
                         "AutoUseSpMedication"
                     ]
                 },
@@ -522,12 +515,15 @@
                         },
                         "AutoEssenceChooseOverrideOn": {
                             "enabled": true
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientContinue": {
+                            "enabled": false
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientCancel": {
+                            "enabled": true
                         }
                     },
                     "option": [
-                        "EssenceFilterAfterBattleSelectWeaponRarity",
-                        "EssenceFilterAfterBattleSelectEssence",
-                        "EssenceFilterAfterBattleSelectExtraRules",
                         "AutoUseSpMedication"
                     ]
                 }
@@ -659,6 +655,12 @@
                         },
                         "AutoEssenceChooseOverrideOn": {
                             "enabled": true
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientContinue": {
+                            "enabled": false
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientCancel": {
+                            "enabled": true
                         }
                     }
                 },
@@ -669,6 +671,12 @@
                             "enabled": true
                         },
                         "AutoEssenceChooseOverrideOn": {
+                            "enabled": false
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientContinue": {
+                            "enabled": true
+                        },
+                        "AutoEssenceDismissWarningEngravePermitInsufficientCancel": {
                             "enabled": false
                         }
                     }

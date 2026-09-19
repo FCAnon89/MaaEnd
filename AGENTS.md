@@ -27,6 +27,7 @@
 > | 整体识别一次然后连点多次 | 每步操作都有独立识别节点，遵循「识别 → 操作 → 再识别」 |
 > | 代码产出完成 | 主动告知可运行的格式化与检查命令：`pnpm format`、`pnpm format:go`、`pnpm check`、`pnpm test` |
 > | 为验证而生成临时测试文件 | 验证完成后删除，除非用户明确要求保留 |
+> | 新增 / 修改 option 或 Pipeline 节点 | **不要**主动生成 option 的 `description`、Pipeline 的 `focus` 提示字段；仅当用户明确要求时再添加 |
 >
 > **核心原则：AI 产出的代码默认合规，用户无需事后纠正。**
 
@@ -118,3 +119,4 @@
 - [MaaFramework Pipeline 协议规范](https://github.com/MaaXYZ/MaaFramework/raw/refs/heads/main/docs/en_us/3.1-PipelineProtocol.md)
 - [MaaFramework 项目接口 V2](https://github.com/MaaXYZ/MaaFramework/raw/refs/heads/main/docs/en_us/3.3-ProjectInterfaceV2.md)
 - [MaaEnd 开发者文档（中文索引）](docs/zh_cn/developers/README.md) · [English index](docs/en_us/developers/README.md)
+- [Go Service `pkg/` 公共包](docs/zh_cn/developers/go-service-pkg.md)（And 解包、条件计算等）
