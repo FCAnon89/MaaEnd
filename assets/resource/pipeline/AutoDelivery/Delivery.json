@@ -401,7 +401,7 @@
                     "wait_nodes": [
                         "AutoDeliveryInChatDialog"
                     ],
-                    "repeat_count": 2,
+                    "repeat_count": 1,
                     "interval_ms": 6000
                 }
             }
