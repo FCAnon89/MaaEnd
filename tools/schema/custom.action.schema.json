@@ -340,6 +340,33 @@
 				},
 				"required": [ "custom_action_param" ]
 			}
+		},
+		{
+			"if": {
+				"properties": {
+					"custom_action": { "const": "AttachToExpectedRegexAction" }
+				},
+				"required": [ "custom_action" ]
+			},
+			"then": {
+				"properties": {
+					"custom_action_param": {
+						"type": "object",
+						"properties": {
+							"enable_target_if_attach_count": {
+								"type": "object",
+								"required": [ "attach_target", "target", "count" ],
+								"properties": {
+									"attach_target": { "type": "string", "minLength": 1 },
+									"target": { "type": "string", "minLength": 1 },
+									"count": { "type": "integer", "minimum": 0 }
+								},
+								"additionalProperties": false
+							}
+						}
+					}
+				}
+			}
 		}
 	],
     "if": {

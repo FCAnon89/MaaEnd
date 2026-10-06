@@ -12,8 +12,13 @@ import (
 )
 
 type attachToExpectedRegexParam struct {
-	Target  string   `json:"target"`
-	Targets []string `json:"targets"`
+	Target                    string   `json:"target"`
+	Targets                   []string `json:"targets"`
+	EnableTargetIfAttachCount *struct {
+		AttachTarget string `json:"attach_target"`
+		Target       string `json:"target"`
+		Count        int    `json:"count"`
+	} `json:"enable_target_if_attach_count,omitempty"`
 	// Keywords 拆分接口输入并直接生成 expected 正则。
 	Keywords *string `json:"keywords,omitempty"`
 	// Substring 控制是否启用子串匹配模式。
@@ -75,7 +80,63 @@ func (a *AttachToExpectedRegexAction) Run(ctx *maa.Context, arg *maa.CustomActio
 			return false
 		}
 	}
+	if condition := param.EnableTargetIfAttachCount; condition != nil {
+		attachTarget := strings.TrimSpace(condition.AttachTarget)
+		target := strings.TrimSpace(condition.Target)
+		if attachTarget == "" || target == "" || condition.Count < 0 {
+			log.Error().
+				Str("component", "AttachToExpectedRegexAction").
+				Interface("condition", condition).
+				Msg("attach_target and target are required, and count must be non-negative")
+			return false
+		}
+
+		attachCount, err := getNodeAttachCount(ctx, attachTarget)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("component", "AttachToExpectedRegexAction").
+				Str("attach_target", attachTarget).
+				Msg("failed to count attach entries")
+			return false
+		}
+
+		enabled := attachCount == condition.Count
+		override := map[string]any{
+			target: map[string]any{
+				"enabled": enabled,
+			},
+		}
+		if err := ctx.OverridePipeline(override); err != nil {
+			log.Error().Err(err).Str("component", "AttachToExpectedRegexAction").Interface("override", override).Msg("OverridePipeline failed")
+			return false
+		}
+		log.Debug().
+			Str("component", "AttachToExpectedRegexAction").
+			Str("target", target).
+			Int("attach_count", attachCount).
+			Bool("enabled", enabled).
+			Msg("configured target based on attach entry count")
+	}
 	return true
+}
+
+func getNodeAttachCount(ctx *maa.Context, nodeName string) (int, error) {
+	raw, err := ctx.GetNodeJSON(nodeName)
+	if err != nil {
+		return 0, err
+	}
+	return countNodeAttachEntries(raw)
+}
+
+func countNodeAttachEntries(raw string) (int, error) {
+	var nodeData struct {
+		Attach map[string]json.RawMessage `json:"attach"`
+	}
+	if err := json.Unmarshal([]byte(raw), &nodeData); err != nil {
+		return 0, err
+	}
+	return len(nodeData.Attach), nil
 }
 
 func applyKeywordsRegexOverride(ctx *maa.Context, targetNodeName, keywordsInput string, substring bool, component string) bool {

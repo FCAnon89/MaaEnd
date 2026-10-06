@@ -203,22 +203,52 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionSelectLowEmotion"
+            "RecoveryEmotionInitSelectTarget"
+        ]
+    },
+    "RecoveryEmotionInitSelectTarget": {
+        "desc": "[恢复心情·初始化] 按已勾选舱室生成 OCR 白名单，全选时启用第二候选",
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AttachToExpectedRegexAction",
+                "custom_action_param": {
+                    "target": "RecoveryEmotionSelectLowEmotion",
+                    "targets": [
+                        "RecoveryEmotionSelectLowEmotion2"
+                    ],
+                    "enable_target_if_attach_count": {
+                        "attach_target": "RecoveryEmotionSelectLowEmotion",
+                        "target": "RecoveryEmotionSelectLowEmotion2",
+                        "count": 5
+                    }
+                }
+            }
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionSelectLowEmotion",
+            "RecoveryEmotionStopAtUnassigned",
+            "RecoveryEmotionScrollToNextOperators"
         ]
     },
     "RecoveryEmotionSelectLowEmotion": {
-        "desc": "[恢复心情·操作] 识别干员（信赖图标）并点击",
+        "desc": "[恢复心情·操作] 按已勾选舱室筛选当前列表，点击首个匹配干员",
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
                 "roi": [
-                    467,
-                    236,
-                    620,
-                    282
+                    540,
+                    240,
+                    540,
+                    280
                 ],
-                "template": [
-                    "GiftOperator/TrustIcon.png"
+                "expected": [
+                    // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
+                    "^PLACEHOLDER$"
                 ],
                 "order_by": "Vertical"
             }
@@ -230,24 +260,24 @@
         "post_delay": 400, // 上方tips出现需要时间，可能显示也可能不显示，避免连续点击不同干员导致覆盖提示判断错误
         "rate_limit": 0,
         "next": [
-            // "RecoveryEmotionFull",
-            //"RecoveryEmotionCouldNotAssist",
             "RecoveryEmotionSelectLowEmotion2"
         ]
     },
     "RecoveryEmotionSelectLowEmotion2": {
-        "desc": "[恢复心情·操作] 识别第二位干员（信赖图标）并点击",
+        "desc": "[恢复心情·操作] 全选时按相同舱室白名单点击第二个匹配干员",
+        "enabled": false,
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
                 "roi": [
-                    467,
-                    236,
-                    620,
-                    282
+                    540,
+                    240,
+                    540,
+                    280
                 ],
-                "template": [
-                    "GiftOperator/TrustIcon.png"
+                "expected": [
+                    // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
+                    "^PLACEHOLDER$"
                 ],
                 "order_by": "Vertical",
                 "index": 1
@@ -258,11 +288,79 @@
             "type": "Click"
         },
         "post_delay": 400, // 上方tips出现需要时间，可能显示也可能不显示，避免连续点击不同干员导致覆盖提示判断错误
+        "rate_limit": 0
+    },
+    "RecoveryEmotionStopAtUnassigned": {
+        "desc": "[恢复心情·停止扫描] 当前可见列表已到无安排干员，不再继续下滑",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    540,
+                    240,
+                    540,
+                    280
+                ],
+                "expected": [
+                    "无安排",
+                    "無安排",
+                    "Unassigned",
+                    "未配置",
+                    "미배치"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "RecoveryEmotionScrollToNextOperators": {
+        "desc": "[恢复心情·滚动] 每次重叠上划约一行；最多100次作为 OCR 漏判时的安全上限",
+        "max_hit": 100,
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "RecoveryEmotionAssistView2Label"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    550,
+                    470,
+                    10,
+                    10
+                ],
+                "end": [
+                    550,
+                    380,
+                    10,
+                    10
+                ],
+                "end_hold": 200,
+                "duration": 200
+            }
+        },
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                540,
+                240,
+                540,
+                280
+            ],
+            "timeout": 1500
+        },
+        "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            // "RecoveryEmotionFull",
-            "RecoveryEmotionCouldNotAssist",
-            "RecoveryEmotionExitView2ToView1"
+            "RecoveryEmotionSelectLowEmotion",
+            "RecoveryEmotionStopAtUnassigned",
+            "RecoveryEmotionScrollToNextOperators"
         ]
     },
     "RecoveryEmotionCouldNotAssist": {
@@ -291,6 +389,8 @@
         ]
     },
     "RecoveryEmotionConfirm": {
+        "desc": "测试版禁用：停留在干员勾选界面，避免消耗每日恢复机会",
+        "enabled": false,
         "recognition": {
             "type": "And",
             "param": {
