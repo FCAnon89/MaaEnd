@@ -409,8 +409,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSkipChatReady",
-            "AutoDeliveryCloseRewardDialog"
+            "AutoDeliveryCheckSkipChatReady"
         ],
         "on_error": [
             "AutoDeliveryRetrySubmitGoods"
@@ -452,8 +451,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSkipChatReady",
-            "AutoDeliveryCloseRewardDialog"
+            "AutoDeliveryCheckSkipChatReady"
         ]
     }
 }
