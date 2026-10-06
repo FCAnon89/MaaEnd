@@ -61,7 +61,16 @@
             349,
             240,
             270
-        ]
+        ],
+        "pre_wait_freezes": {
+            "time": 300,
+            "target": [
+                720,
+                349,
+                240,
+                270
+            ]
+        }
     },
     "AutoDeliveryCheckSubmitGoodsName": {
         "roi": [
@@ -71,8 +80,19 @@
             270
         ]
     },
-    "AutoDeliveryCheckSubmitGoodsTarget": {
-        "pre_wait_freezes": {
+    "AutoDeliveryNavigateDestination": {
+        "post_wait_freezes": {
+            "time": 300,
+            "target": [
+                720,
+                349,
+                240,
+                270
+            ]
+        }
+    },
+    "AutoDeliveryRetryNavigateDestination": {
+        "post_wait_freezes": {
             "time": 300,
             "target": [
                 720,

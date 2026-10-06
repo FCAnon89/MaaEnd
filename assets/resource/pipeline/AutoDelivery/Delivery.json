@@ -78,7 +78,23 @@
             "AutoDelivery/SubmitGoods2.png" // 非 NPC 交货图标
         ],
         "threshold": 0.9,
-        "order_by": "Score"
+        "order_by": "Score",
+        "pre_wait_freezes": {
+            "time": 300,
+            "target": [
+                763,
+                349,
+                195,
+                270
+            ]
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "AutoDeliveryCheckSubmitGoodsTarget",
+            "AutoDeliverySearchSubmitGoodsButton"
+        ]
     },
     "AutoDeliveryCheckSubmitGoodsName": {
         "desc": "识别送货目标交互提示中的文本，由 Go 按当前终点的名称注入 expected 复核",
@@ -98,15 +114,6 @@
         "all_of": [
             "AutoDeliveryCheckSubmitGoodsButton"
         ],
-        "pre_wait_freezes": {
-            "time": 300,
-            "target": [
-                763,
-                349,
-                195,
-                270
-            ]
-        },
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
@@ -191,7 +198,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSubmitGoodsTarget",
+            "AutoDeliveryCheckSubmitGoodsButton",
             "AutoDeliverySearchSubmitGoodsButton"
         ],
         "focus": {
@@ -225,7 +232,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSubmitGoodsTarget"
+            "AutoDeliveryCheckSubmitGoodsButton"
         ]
     },
     "AutoDeliveryReturnWorldAndNavigateDestination": {
@@ -259,7 +266,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSubmitGoodsTarget"
+            "AutoDeliveryCheckSubmitGoodsButton"
         ],
         "on_error": [
             "AutoDeliveryRetryNavigateDestination"
@@ -385,8 +392,21 @@
             "AutoDeliveryCheckSubmitGoodsTarget"
         ],
         "pre_delay": 0,
-        "action": "Custom",
-        "custom_action": "AutoAltClickAction",
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "RepeatUntilFoundAction",
+                "custom_action_param": {
+                    "custom_action": "AutoAltClickAction",
+                    "wait_nodes": [
+                        "AutoDeliveryInChatDialog",
+                        "AutoDeliveryCloseRewardDialog"
+                    ],
+                    "repeat_count": 2,
+                    "interval_ms": 6000
+                }
+            }
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
