@@ -399,8 +399,7 @@
                 "custom_action_param": {
                     "custom_action": "AutoAltClickAction",
                     "wait_nodes": [
-                        "AutoDeliveryInChatDialog",
-                        "AutoDeliveryCloseRewardDialog"
+                        "AutoDeliveryInChatDialog"
                     ],
                     "repeat_count": 2,
                     "interval_ms": 6000
