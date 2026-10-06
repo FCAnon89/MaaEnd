@@ -133,13 +133,11 @@
             18
         ],
         "expected": [
-            "LV",
-            "Lv",
-            "lV",
-            "lv",
-            "8",
-            "9"
-        ], // 在不显示时会误识别出2M
+            "L",
+            "l",
+            "V",
+            "v"
+        ], // 勿加裸数字：战斗 HUD 条带易被 OCR 成 8/9 导致误退
         "only_rec": true
     },
     "__AutoFightRecognitionComboCooldown1": {

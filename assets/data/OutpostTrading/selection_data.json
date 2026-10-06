@@ -541,6 +541,15 @@
                 "ja_jp": "リーノ",
                 "ko_kr": "리노"
             }
+        },
+        "Purrchena": {
+            "names": {
+                "zh_cn": "噗切娜",
+                "zh_tw": "噗切娜",
+                "en_us": "Purrchena",
+                "ja_jp": "プチエナ",
+                "ko_kr": "푸치나"
+            }
         }
     },
     "location_order": [
@@ -937,18 +946,6 @@
             },
             "items": [
                 {
-                    "item_id": "item_activity_xiranite_enr_lung",
-                    "rarity": 5,
-                    "unit_price": 200,
-                    "activity_id": "activity_limited_formula_2"
-                },
-                {
-                    "item_id": "item_activity_xiranite_lung",
-                    "rarity": 4,
-                    "unit_price": 100,
-                    "activity_id": "activity_limited_formula_2"
-                },
-                {
                     "item_id": "item_proc_battery_4",
                     "rarity": 4,
                     "unit_price": 25
@@ -1075,18 +1072,6 @@
             },
             "items": [
                 {
-                    "item_id": "item_activity_xiranite_enr_lung",
-                    "rarity": 5,
-                    "unit_price": 200,
-                    "activity_id": "activity_limited_formula_2"
-                },
-                {
-                    "item_id": "item_activity_xiranite_lung",
-                    "rarity": 4,
-                    "unit_price": 100,
-                    "activity_id": "activity_limited_formula_2"
-                },
-                {
                     "item_id": "item_xiranite_enr_powder",
                     "rarity": 3,
                     "unit_price": 27
@@ -1164,6 +1149,11 @@
                     "outpost_prosperity_max_bonus_tier": 0
                 },
                 {
+                    "name": "Purrchena",
+                    "bonus_tier": 2,
+                    "outpost_prosperity_max_bonus_tier": 0
+                },
+                {
                     "name": "LastRite",
                     "bonus_tier": 2,
                     "outpost_prosperity_max_bonus_tier": 0
@@ -1196,18 +1186,6 @@
                 "ko_kr": "영천대 건설 기지"
             },
             "items": [
-                {
-                    "item_id": "item_activity_xiranite_enr_lung",
-                    "rarity": 5,
-                    "unit_price": 200,
-                    "activity_id": "activity_limited_formula_2"
-                },
-                {
-                    "item_id": "item_activity_xiranite_lung",
-                    "rarity": 4,
-                    "unit_price": 100,
-                    "activity_id": "activity_limited_formula_2"
-                },
                 {
                     "item_id": "item_copper_enr2_cmpt",
                     "rarity": 4,

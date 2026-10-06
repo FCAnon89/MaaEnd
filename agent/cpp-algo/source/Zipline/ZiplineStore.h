@@ -13,7 +13,7 @@ namespace zipline
 struct ZiplineMark
 {
     std::string template_id;
-    // 森空岛的楼层编号。同一张图的不同层之间挂不上索，配对时要靠它把跨层的对排除掉。
+    // 森空岛的区域编号。同一张图各区共用一套世界坐标，配对不看它。
     std::string level_id;
     double x = 0.0;
     double y = 0.0;
@@ -36,7 +36,7 @@ struct ZiplineMapRecord
 class ZiplineStore
 {
 public:
-    // 锚在 exe 上（<exe>/../debug/record/Ziplines.json），不随工作目录漂移。
+    // 锚在启动时的工作目录，不随后续工作目录变化而漂移。
     static std::filesystem::path DefaultPath();
 
     // 文件不存在按空库处理并返回 true，只有内容坏掉才返回 false：首次导入不该被当成故障。

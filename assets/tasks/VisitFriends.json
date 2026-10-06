@@ -5,9 +5,8 @@
             "label": "$task.VisitFriends.label",
             "entry": "VisitFriendsMain",
             "description": "$task.VisitFriends.description",
-            "option": [
-                "VisitFriendsRemark",
-                "ProductionAssistControl"
+            "group": [
+                "dijiang_ship"
             ],
             "controller": [
                 "ADB",
@@ -20,16 +19,52 @@
                 "PlayCover",
                 "Win32-Front"
             ],
-            "group": [
-                "dijiang_ship"
+            "option": [
+                "VisitFriendsLimitVisits",
+                "VisitFriendsRemark",
+                "VisitFriendsPriorityRemarkEnable",
+                "ProductionAssistControl"
             ]
         }
     ],
     "option": {
+        "VisitFriendsLimitVisits": {
+            "type": "switch",
+            "label": "$option.VisitFriendsLimitVisits.label",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "option": [
+                        "VisitFriendsMaxVisits"
+                    ]
+                },
+                {
+                    "name": "No"
+                }
+            ],
+            "default_case": "No"
+        },
+        "VisitFriendsMaxVisits": {
+            "type": "input",
+            "label": "$option.VisitFriendsMaxVisits.label",
+            "inputs": [
+                {
+                    "name": "MaxVisits",
+                    "label": "$option.VisitFriendsMaxVisits.inputs.MaxVisits.label",
+                    "default": "99",
+                    "pipeline_type": "int",
+                    "verify": "^[1-9]\\d{0,2}$"
+                }
+            ],
+            "pipeline_override": {
+                "VisitFriendsEnterShipBudget": {
+                    "max_hit": "{MaxVisits}"
+                }
+            }
+        },
         "VisitFriendsRemark": {
             "type": "switch",
             "label": "$option.VisitFriendsRemark.label",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -42,6 +77,12 @@
                         },
                         "VisitFriendsMenuScanRemarkFallback": {
                             "enabled": true
+                        },
+                        "VisitFriendsMenuScanPriorityRemarkFallbackToRemark": {
+                            "enabled": true
+                        },
+                        "VisitFriendsMenuScanPriorityRemarkFallbackToNormal": {
+                            "enabled": false
                         }
                     }
                 },
@@ -56,19 +97,89 @@
                         },
                         "VisitFriendsMenuScanRemarkFallback": {
                             "enabled": false
+                        },
+                        "VisitFriendsMenuScanPriorityRemarkFallbackToRemark": {
+                            "enabled": false
+                        },
+                        "VisitFriendsMenuScanPriorityRemarkFallbackToNormal": {
+                            "enabled": true
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
+        },
+        "VisitFriendsPriorityRemarkEnable": {
+            "type": "switch",
+            "label": "$option.VisitFriendsPriorityRemarkEnable.label",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "option": [
+                        "VisitFriendsPriorityRemark"
+                    ],
+                    "pipeline_override": {
+                        "VisitFriendsWaitFriendNameLoaded": {
+                            "next": [
+                                "VisitFriendsPriorityRemarkInit",
+                                "VisitFriendsMenuScan"
+                            ]
+                        },
+                        "VisitFriendsPriorityRemarkInit": {
+                            "enabled": true
+                        },
+                        "VisitFriendsMenuScanTargetFriendOpenPriorityRemark": {
+                            "enabled": true
+                        },
+                        "VisitFriendsMenuScanTargetFriendOpenRemark": {
+                            "enabled": false
+                        },
+                        "VisitFriendsMenuScanTargetFriendOpen": {
+                            "enabled": false
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "VisitFriendsMenuScanTargetFriendOpenPriorityRemark": {
+                            "enabled": false
+                        },
+                        "VisitFriendsMenuScanPriorityRemarkFallbackToRemark": {
+                            "enabled": false
+                        },
+                        "VisitFriendsMenuScanPriorityRemarkFallbackToNormal": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ],
+            "default_case": "No"
+        },
+        "VisitFriendsPriorityRemark": {
+            "type": "input",
+            "label": "$option.VisitFriendsPriorityRemark.label",
+            "inputs": [
+                {
+                    "name": "PriorityRemarkName",
+                    "label": "$option.VisitFriendsPriorityRemark.inputs.PriorityRemarkName.label",
+                    "default": "",
+                    "pipeline_type": "string"
+                }
+            ],
+            "pipeline_override": {
+                "VisitFriendsPriorityRemarkInit": {
+                    "custom_action_param": {
+                        "target": "VisitFriendsRecognitionItemNamePriorityRemarkByEnterButton",
+                        "keywords": "{PriorityRemarkName}",
+                        "substring": true
+                    }
+                }
+            }
         },
         "ProductionAssistControl": {
             "type": "checkbox",
             "label": "$option.ProductionAssistControl.label",
-            "default_case": [
-                "ProductionAssistControlNexus",
-                "ProductionAssistMFGCabin",
-                "ProductionAssistGrowthChamber"
-            ],
             "cases": [
                 {
                     "name": "ProductionAssistControlNexus",
@@ -127,6 +238,11 @@
                         }
                     }
                 }
+            ],
+            "default_case": [
+                "ProductionAssistControlNexus",
+                "ProductionAssistMFGCabin",
+                "ProductionAssistGrowthChamber"
             ]
         }
     }

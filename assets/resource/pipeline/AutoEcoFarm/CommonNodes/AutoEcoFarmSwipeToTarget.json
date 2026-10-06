@@ -194,6 +194,7 @@
         "action": {
             "type": "KeyDown",
             "param": {
+                "auto_up": true,
                 "key": 18 //alt键
             }
         },
@@ -330,6 +331,12 @@
         "action": {
             "type": "Click",
             "param": {
+                "target": [
+                    600,
+                    320,
+                    80,
+                    80
+                ],
                 "contact": 2
             }
         },
@@ -369,6 +376,7 @@
         "action": {
             "type": "KeyDown",
             "param": {
+                "auto_up": true,
                 "key": 18 //alt键
             }
         },

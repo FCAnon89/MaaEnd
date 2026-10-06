@@ -11,6 +11,8 @@ const (
 	resolveDepotActionName = "AutoDeliveryResolveDepotAction"
 	navigateDepotNode      = "AutoDeliveryNavigateDepot"
 	retryNavigateDepotNode = "AutoDeliveryRetryNavigateDepot"
+	// depotZiplineRequiredFocusKey 是「只能坐滑索抵达、但用户选择步行」时讲给用户的原因。
+	depotZiplineRequiredFocusKey = "autodelivery.focus.depot_zipline_required"
 )
 
 // AutoDeliveryResolveDepotAction 根据区域 OCR 匹配仓储节点并选择对应的生成路线节点。
@@ -89,6 +91,15 @@ func (a *AutoDeliveryResolveDepotAction) Run(ctx *maa.Context, arg *maa.CustomAc
 			Msg("failed to resolve delivery depot")
 		return false
 	}
+	// 只能坐滑索抵达的仓储没有可用步行路线，用户选择步行时必须直接失败，不能硬走。
+	if !ensureZiplineSelected(ctx, route.ZiplineOnly, options.Zip, depotZiplineRequiredFocusKey, localizedName(route.Names, route.ID)) {
+		log.Error().
+			Str("component", resolveDepotActionName).
+			Str("depot", route.ID).
+			Str("area", area.ID).
+			Msg("delivery depot is zipline-only but navigation is configured to walk")
+		return false
+	}
 	if err := ctx.OverridePipeline(buildDepotNavigationOverride(route, options.Zip)); err != nil {
 		log.Error().
 			Err(err).
@@ -104,9 +115,10 @@ func (a *AutoDeliveryResolveDepotAction) Run(ctx *maa.Context, arg *maa.CustomAc
 		Str("depot", route.ID).
 		Str("areaText", areaText).
 		Str("map", route.Map).
-		Str("routeNode", selectRouteNode(route.RouteNode, route.ZipRouteNode, options.Zip)).
+		Str("routeNode", selectRouteNode(route.RouteNode, route.ZipRouteNode, options.Zip, route.WalkOnly)).
 		Str("retryRouteNode", route.RetryRouteNode).
 		Bool("zip", options.Zip).
+		Bool("walkOnly", route.WalkOnly).
 		Msg("configured delivery depot navigation")
 	return true
 }
@@ -116,7 +128,7 @@ func buildDepotNavigationOverride(route depot, zip bool) map[string]any {
 		navigateDepotNode: map[string]any{
 			"custom_action": "SubTask",
 			"custom_action_param": map[string]any{
-				"sub": []string{selectRouteNode(route.RouteNode, route.ZipRouteNode, zip)},
+				"sub": []string{selectRouteNode(route.RouteNode, route.ZipRouteNode, zip, route.WalkOnly)},
 			},
 		},
 		retryNavigateDepotNode: map[string]any{
@@ -135,8 +147,10 @@ func buildDepotNavigationOverride(route depot, zip bool) map[string]any {
 	return override
 }
 
-func selectRouteNode(routeNode string, zipRouteNode string, zip bool) string {
-	if zip {
+// selectRouteNode 按滑索策略挑主路线节点。walk_only 的路线在映射里就不允许用滑索变体：
+// 全局滑索规划会跳过作者录制的必经路点，用户启用滑索时也只能走普通节点。
+func selectRouteNode(routeNode string, zipRouteNode string, zip bool, walkOnly bool) string {
+	if zip && !walkOnly {
 		return zipRouteNode
 	}
 	return routeNode

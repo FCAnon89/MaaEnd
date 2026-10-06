@@ -48,16 +48,11 @@
         ]
     },
     "TrialOfSwordmancyPrepareTeam": {
-        // 同 ProtocolSpaceEnterSpacePrepareSuccess
         "desc": "准备编队界面",
-        "recognition": "TemplateMatch",
-        "roi": [
-            0,
-            0,
-            100,
-            100
+        "recognition": "And",
+        "all_of": [
+            "InTeam"
         ],
-        "template": "ProtocolSpace/TeamChooseIcon.png",
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
@@ -78,7 +73,7 @@
             "action": "Click",
             "interval_ms": 200,
             "repeat_count": 20,
-            "wait_node": "TrialOfSwordmancyConfirmTeam"
+            "wait_node": "InTeam"
         },
         "post_delay": 0,
         "rate_limit": 0,
@@ -94,7 +89,6 @@
             "InWorld"
         ],
         "pre_delay": 0,
-        "post_wait_freezes": 200,
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
@@ -103,7 +97,11 @@
         ]
     },
     "TrialOfSwordmancyOutOfBounds": {
-        "desc": "加载完但未出现挑战目标界面，说明开始演算时角色在演算区域外",
+        "desc": "开始演算时角色在演算区域外",
+        "recognition": "And",
+        "all_of": [
+            "EndChallengeButton"
+        ],
         "pre_delay": 0,
         "action": "Custom",
         "custom_action": "MapNavigateAction",
@@ -122,7 +120,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "on_error": [
-            // 本次寻路必定失败
+            // 本次寻路必定失败：进入演算区域会强制传送并出现挑战目标弹窗
             "TrialOfSwordmancyChallengeTarget"
         ],
         "focus": {
@@ -181,9 +179,42 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "TrialOfSwordmancyFightSuccess",
+            "TrialOfSwordmancyFightFinish",
             "[JumpBack]AutoFight"
         ]
+    },
+    "TrialOfSwordmancyFightFinish": {
+        "desc": "战斗结束",
+        "recognition": "And",
+        "all_of": [
+            "TrialOfSwordmancyFightFinishButton"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "TrialOfSwordmancyFightSuccess",
+            "TrialOfSwordmancyFightFail"
+        ]
+    },
+    "TrialOfSwordmancyFightFail": {
+        "desc": "战斗失败",
+        "recognition": "And",
+        "all_of": [
+            "CheckOperationFailedText",
+            "WhiteConfirmButtonType1"
+        ],
+        "box_index": 1,
+        "pre_delay": 0,
+        "action": "Click",
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "TrialOfSwordmancyLeaveSuccess"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "$task.TrialOfSwordmancy.focus.operation_failed"
+        }
     },
     "TrialOfSwordmancyFightSuccess": {
         "desc": "战斗胜利：IMS A3 识别武陵调度券后再继续",
@@ -193,13 +224,13 @@
             "CancelButton"
         ],
         "pre_wait_freezes": {
+            "time": 300,
             "target": [
                 528,
                 299,
                 222,
                 131
             ],
-            "time": 300,
             "threshold": 0.97,
             "timeout": 1500
         },
@@ -274,7 +305,7 @@
         ]
     },
     "TrialOfSwordmancyLeaveSuccess": {
-        "desc": "战斗胜利后，点击离开成功",
+        "desc": "回到大世界",
         "recognition": "And",
         "all_of": [
             "InWorld"

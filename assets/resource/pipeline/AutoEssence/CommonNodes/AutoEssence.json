@@ -203,53 +203,36 @@
         "post_delay": 0,
         "attach": {}
     },
-    "AutoEssenceInteract": {
-        "desc": "淤积点交互分发器：激发 / 开启挑战 / 领取 / 放弃等；未命中则回落到寻路分发",
+    "AutoEssenceDispatcher": {
+        "desc": "基质刷取分发：首次强制传送；之后认开挑战/激发/领取等，未命中则纯寻路",
         "pre_delay": 0,
         "post_delay": 0,
         "next": [
-            // 如果玩家当前已精准处于某个淤积点的交互位置
+            // 整次任务首次：只强制传送+寻路，不识别其它界面
+            "__AutoEssenceForceTeleportOnce",
+            // 淤积点交互：激发 / 领取 / 放弃
             "AutoEssenceClickTriggerButton",
-            // 如果玩家当前已精准处于某个淤积点的交互位置，并且处于奖励待领取的状态
             "AutoEssenceClickObtainButton",
             "AutoEssenceClickDiscardButton",
             "[JumpBack]AutoEssenceInObtain",
-            "[Anchor]AutoEssenceMoveToTriggerPoint"
-        ],
-        "focus": {
-            "Node.Action.Starting": "🧠正在判断交互状态"
-        }
-    },
-    "AutoEssenceDispatcher": {
-        "desc": "自动基质刷取的寻路分发器，导航到对应淤积点的交互位置",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "next": [
-            // 如果玩家已唤起了激发的界面
-            "AutoEssenceClickEssenceStartPrepare",
-            // 下述 Anchor 的指向目标需要由 AutoEssenceSetupLocation 节点来进行赋值
-            "[JumpBack]__AutoEssenceBackToWorldOnce",
-            "[Anchor]AutoEssenceMoveToTriggerPointMaybeTeleport",
+            // 无交互图标则纯寻路
             "[Anchor]AutoEssenceMoveToTriggerPoint"
         ],
         "focus": {
             "Node.Action.Starting": "🧠正在判断当前状态"
         }
     },
-    "__AutoEssenceBackToWorldOnce": {
-        "desc": "仅一次，万能跳转回到大世界（需 jumpback 调用）",
+    "__AutoEssenceForceTeleportOnce": {
+        "desc": "整次任务仅一次：强制传送到目标锚点后再寻路",
         "max_hit": 1,
         "pre_delay": 0,
         "post_delay": 0,
         "next": [
-            "SceneAnyEnterWorld"
-        ],
-        "focus": {
-            "Node.Action.Starting": "↩️返回大世界"
-        }
+            "[Anchor]AutoEssenceMoveToTriggerPointMaybeTeleport"
+        ]
     },
     "AutoEssenceClickTriggerButton": {
-        "desc": "识别并点击激发的大世界按钮（Alt 点击）",
+        "desc": "识别并点击激发的大世界按钮",
         "recognition": {
             "type": "Or",
             "param": {
@@ -262,29 +245,23 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "AutoAltClickAction"
+                "custom_action": "RepeatUntilFoundAction",
+                "custom_action_param": {
+                    "custom_action": "AutoAltClickAction",
+                    "wait_nodes": [
+                        "AutoEssenceClickEssenceStartPrepare",
+                        "AutoEssenceMistakeFactoryDevice"
+                    ]
+                }
             }
         },
-        "timeout": 2000,
         "next": [
             "AutoEssenceMistakeFactoryDevice",
             "AutoEssenceReadyToStart"
         ],
-        "on_error": [
-            "AutoEssenceClickTriggerButtonFailed"
-        ],
         "focus": {
             "Node.Action.Starting": "👆点击激发按钮"
         }
-    },
-    "AutoEssenceClickTriggerButtonFailed": {
-        "desc": "未能识别到激发的大世界按钮的守卫节点",
-        "max_hit": 8,
-        "pre_delay": 0,
-        "post_delay": 0,
-        "next": [
-            "[Anchor]AutoEssenceMoveToTriggerPoint"
-        ]
     },
     "AutoEssenceReadyToStart": {
         "desc": "点击了激发的大世界按钮之后的守卫节点",
@@ -322,7 +299,7 @@
             }
         },
         "next": [
-            "AutoEssenceClickTriggerButtonFailed"
+            "[Anchor]AutoEssenceMoveToTriggerPoint"
         ],
         "focus": {
             "Node.Action.Starting": "😕误入工业设备界面，点击关闭按钮"
@@ -554,6 +531,12 @@
                     // @i18n-skip
                     ""
                 ],
+                "replace": [
+                    [
+                        "进发",
+                        "迸发"
+                    ]
+                ],
                 "only_rec": true
             }
         }
@@ -581,13 +564,17 @@
             "type": "OCR",
             "param": {
                 "roi": [
-                    1047,
-                    469,
-                    233,
-                    138
+                    1083,
+                    514,
+                    197,
+                    93
                 ],
                 "expected": [
-                    "属性选择"
+                    "属性选择",
+                    "屬性選擇",
+                    "Select",
+                    "効果選択",
+                    "속성 선택"
                 ]
             }
         },
@@ -754,6 +741,12 @@
                 "expected": [
                     // @i18n-skip
                     "a^"
+                ],
+                "replace": [
+                    [
+                        "进发",
+                        "迸发"
+                    ]
                 ]
             }
         },
@@ -1042,7 +1035,10 @@
         "pre_delay": 0,
         "post_delay": 0,
         "next": [
-            "[Anchor]AutoEssenceMoveToTriggerPoint" // 此 Anchor 最终会走回 AutoEssenceInteract 进行后续的奖励领取等操作
+            "AutoEssenceClickObtainButton",
+            "AutoEssenceClickDiscardButton",
+            "[JumpBack]AutoEssenceInObtain",
+            "[Anchor]AutoEssenceMoveToTriggerPoint" // 未识别到领取时纯寻路回交互位，再由 Interact 处理
         ],
         "focus": {
             "Node.Recognition.Starting": "🔍检查挑战是否结束",
@@ -1228,16 +1224,13 @@
         "desc": "识别刻写选项是否已打开，识别到之后，点击它来关闭刻写",
         "enabled": false,
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "And",
             "param": {
-                "roi": [
-                    66,
-                    124,
-                    472,
-                    460
+                "all_of": [
+                    "__AutoEssenceRecoEssenceOverrideOnToggle",
+                    "__AutoEssenceRecoChooseOverrideEngraveNow"
                 ],
-                "template": "AutoEssence/EssenceOverrideOn.png",
-                "order_by": "Score"
+                "box_index": 0
             }
         },
         "action": {
@@ -1251,16 +1244,13 @@
         "desc": "识别刻写选项是否已关闭，识别到之后，点击它来开启刻写",
         "enabled": false,
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "And",
             "param": {
-                "roi": [
-                    66,
-                    124,
-                    472,
-                    460
+                "all_of": [
+                    "__AutoEssenceRecoEssenceOverrideOffToggle",
+                    "__AutoEssenceRecoChooseOverrideEngraveNow"
                 ],
-                "template": "AutoEssence/EssenceOverrideOff.png",
-                "order_by": "Score"
+                "box_index": 0
             }
         },
         "action": {
@@ -1364,19 +1354,88 @@
         "inverse": true,
         "next": [
             "AutoEssenceLowSpUseMedication",
-            "AutoEssenceLowSpCancelObtain"
+            "AutoEssenceLowSpNoMedication"
         ]
     },
     "AutoEssenceLowSpUseMedication": {
         "desc": "尝试使用理智消耗许可",
         "pre_delay": 0,
         "anchor": {
-            "AutoUseSpMedicationInPrepareFinishNoUseAnchor": "AutoEssenceLowSpCancelObtain",
+            "AutoUseSpMedicationInPrepareFinishNoUseAnchor": "AutoEssenceLowSpNoMedication",
             "AutoUseSpMedicationInPrepareFinishUseAnchor": "AutoEssenceConfirmObtain"
         },
         "post_delay": 0,
         "next": [
             "AutoUseSpMedicationInPrepareWithAnchor"
+        ]
+    },
+    "AutoEssenceLowSpNoMedication": {
+        "desc": "体力不足且未补充体力：双倍模式回退单倍领取，否则取消领取",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "AutoEssenceLowSpFallbackScaling1",
+            "AutoEssenceLowSpCancelObtain"
+        ]
+    },
+    "AutoEssenceLowSpFallbackScaling1": {
+        "desc": "双倍领取体力不足，切换为单倍领取（默认关闭；仅双倍领取选项启用）",
+        "enabled": false,
+        "recognition": "And",
+        "all_of": [
+            "AutoEssenceChooseScaling1"
+        ],
+        "pre_wait_freezes": 200,
+        "action": "Click",
+        "next": [
+            "AutoEssenceLowSpFallbackConfirmObtain"
+        ]
+    },
+    "AutoEssenceLowSpFallbackConfirmObtain": {
+        "desc": "回退单倍后点击确认领取",
+        "recognition": "And",
+        "all_of": [
+            "AutoEssenceConfirmObtain"
+        ],
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 1000,
+            "target": [
+                210,
+                168,
+                861,
+                422
+            ]
+        },
+        "post_delay": 1000,
+        "next": [
+            "AutoEssenceLowSpFallbackLowSp",
+            "EssenceFilterAfterBattleStart",
+            "AutoEssenceCloseObtainDialog"
+        ]
+    },
+    "AutoEssenceLowSpFallbackLowSp": {
+        "desc": "单倍领取仍体力不足，关闭弹窗后取消领取",
+        "recognition": "And",
+        "all_of": [
+            "__AutoEssenceLowSpDialog",
+            "__AutoEssenceLowSpDialogCloseButton"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "AutoEssenceLowSpFallbackLowDisappear"
+        ]
+    },
+    "AutoEssenceLowSpFallbackLowDisappear": {
+        "desc": "识别体力不足的弹窗消失",
+        "recognition": "And",
+        "all_of": [
+            "__AutoEssenceLowSpDialog"
+        ],
+        "inverse": true,
+        "next": [
+            "AutoEssenceLowSpCancelObtain"
         ]
     },
     "AutoEssenceLowSpCancelObtain": {

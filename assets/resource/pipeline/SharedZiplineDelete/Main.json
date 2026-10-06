@@ -1,0 +1,68 @@
+{
+    "SharedZiplineDeleteMain": {
+        "desc": "删除共享滑索：各大区开启后依次进入各子区删除",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "[JumpBack]SharedZiplineDeleteBootstrapValleyIV",
+            "[JumpBack]SharedZiplineDeleteBootstrapWuling",
+            "EmptyNode"
+        ]
+    },
+    "SharedZiplineDeleteBootstrapValleyIV": {
+        "desc": "四号谷地开启时，依次进入各子区删除",
+        "enabled": false,
+        "max_hit": 1,
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "SharedZiplineDeleteEnterValleyIVRegions"
+        ]
+    },
+    "SharedZiplineDeleteEnterValleyIVRegions": {
+        "desc": "四号谷地各子区删除入口",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "[JumpBack]SharedZiplineDeleteEnterVFTheHub",
+            "[JumpBack]SharedZiplineDeleteEnterVFValleyPass",
+            "[JumpBack]SharedZiplineDeleteEnterVFOriginiumSciencePark",
+            "[JumpBack]SharedZiplineDeleteEnterVFAburreyQuarry",
+            "[JumpBack]SharedZiplineDeleteEnterVFOriginLodespring",
+            "[JumpBack]SharedZiplineDeleteEnterVFPowerPlateau",
+            "EmptyNode"
+        ]
+    },
+    "SharedZiplineDeleteBootstrapWuling": {
+        "desc": "武陵开启时，依次进入各子区删除",
+        "enabled": false,
+        "max_hit": 1,
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "SharedZiplineDeleteEnterWulingRegions"
+        ]
+    },
+    "SharedZiplineDeleteEnterWulingRegions": {
+        "desc": "武陵各子区删除入口",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "[JumpBack]SharedZiplineDeleteEnterWLWulingCity",
+            "[JumpBack]SharedZiplineDeleteEnterWLJingyuValley",
+            "[JumpBack]SharedZiplineDeleteEnterWLQingboStockade",
+            "[JumpBack]SharedZiplineDeleteEnterWLMarkerStone",
+            "[JumpBack]SharedZiplineDeleteEnterWLTestArea",
+            "[JumpBack]SharedZiplineDeleteEnterWLSwordVaultDale",
+            "[JumpBack]SharedZiplineDeleteEnterWLYinglungPass",
+            "[JumpBack]SharedZiplineDeleteEnterWLNorthWulingExclusionZone",
+            "[JumpBack]SharedZiplineDeleteEnterWLSnowyForest",
+            "EmptyNode"
+        ]
+    }
+}

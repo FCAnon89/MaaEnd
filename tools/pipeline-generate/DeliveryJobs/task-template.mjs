@@ -1,4 +1,15 @@
+import {existsSync} from "node:fs";
+
 import {DELIVERY_JOB_FILL_ITEM_PRIORITY_COUNT, deliveryJobDepots, deliveryJobRegions} from "./model.mjs";
+
+const UI_ITEM_DIR = new URL("../../../assets/resource/image/UI/Item/", import.meta.url);
+
+function buildItemIcon(itemId) {
+    if (!itemId || !existsSync(new URL(`${itemId}.png`, UI_ITEM_DIR))) {
+        return undefined;
+    }
+    return `resource/image/UI/Item/${itemId}.png`;
+}
 
 const ALL_CARGO_EXPECTED = [
     "查看报价",
@@ -109,7 +120,12 @@ function buildDepotOption(depot) {
                     cargoEnabled: true,
                     cargoExpected: ALL_CARGO_EXPECTED,
                     bidAction: `DeliveryJobsDecide${depot.Id}Quote`,
-                    ongoingDeliveryAction: "DeliveryJobsSkipOngoingDelivery",
+                    // 报价只用于决定新委托怎么接；已接未转交的委托没有报价可判，跳过它会一直占着
+                    // 调度申请界面，挡住后续仓储节点。这里直接交给全自动送货把它清掉，
+                    // 没有归属终点（无处可送）的仓储节点才退回跳过。
+                    ongoingDeliveryAction: depot.AutoDeliverySupported
+                        ? `DeliveryJobsAutoDelivery${depot.Id}`
+                        : "DeliveryJobsSkipOngoingDelivery",
                 }),
             },
             {
@@ -388,28 +404,32 @@ function buildFillItemPriorityRegionOption(region) {
 }
 
 function buildFillItemCases(region, priority) {
-    const cases = region.FillItems.map((item) => ({
-        name: item.Id,
-        label: item.Label,
-        pipeline_override: {
-            [`DeliveryJobsStartFill${region.Id}Priority${priority}`]: {
-                enabled: true,
-            },
-            [`DeliveryJobsSelectItemToFill${region.Id}Priority${priority}`]: {
-                enabled: true,
-                custom_recognition_param: {
-                    grid_type: "shipment",
-                    item_ids: [
-                        item.ItemId,
-                    ],
-                    item_recheck_filters: [
-                        item.RecheckFilter,
-                    ],
-                    deduplicate: true,
+    const cases = region.FillItems.map((item) => {
+        const icon = buildItemIcon(item.ItemId);
+        return {
+            name: item.Id,
+            label: item.Label,
+            ...(icon ? {icon} : {}),
+            pipeline_override: {
+                [`DeliveryJobsStartFill${region.Id}Priority${priority}`]: {
+                    enabled: true,
+                },
+                [`DeliveryJobsSelectItemToFill${region.Id}Priority${priority}`]: {
+                    enabled: true,
+                    custom_recognition_param: {
+                        grid_type: "shipment",
+                        item_ids: [
+                            item.ItemId,
+                        ],
+                        item_recheck_filters: [
+                            item.RecheckFilter,
+                        ],
+                        deduplicate: true,
+                    },
                 },
             },
-        },
-    }));
+        };
+    });
     if (priority > 1) {
         cases.unshift({
             name: "None",

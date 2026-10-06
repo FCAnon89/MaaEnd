@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <chrono>
 #include <limits>
 #include <optional>
@@ -35,8 +36,13 @@ namespace mapnavigator
 //            （检测只受冷却限速，误报由 OCR 名称白名单挡下，最多白停一次）
 // DIG      - 触发 AutoCollectDigStart pipeline 子任务（无条件 Click target=true 两次），用于挖掘点。
 //            与 COLLECT 不同，DIG 仍是精确抵达后停车触发（挖掘是定点动作，非行进检测）
+// FIND     - 寻找并接近一个只有识别框、没有坐标的目标：拿点名节点给出的框直接对着世界走
+//            （转视角搜索 / 对准了前进 / 走过头退一步），全程不读小地图。命中 find_stop 即算到位，
+//            位置走到 find_arrive 附近同样算到位（两者都给就先到先算）。带 target 先走到锚点再找，
+//            不带就是就地开找的控制节点
 // ZIPLINE  - 滑索上索点：精确抵达后停车，把镜头转向下索点再交互上索，然后等滑行自己结束。
 //            只由滑索规划生成，不手写：能不能滑取决于两端的落差与跨度，那是规划器算出来的
+// TRIGGER  - 只能做路线终点：整条路线行进中定时跑 trigger_node，不论走到哪，命中即算导航成功；到点未命中则原地等它
 #define NAVI_ACTION_TYPES(X) \
     X(RUN)                   \
     X(SPRINT)                \
@@ -50,14 +56,16 @@ namespace mapnavigator
     X(ZONE)                  \
     X(COLLECT)               \
     X(DIG)                   \
-    X(ZIPLINE)
+    X(FIND)                  \
+    X(ZIPLINE)               \
+    X(TRIGGER)
 
 enum class ActionType
 {
 #define NAVI_X_(name) name,
     NAVI_ACTION_TYPES(NAVI_X_)
 #undef NAVI_X_
-    MEOJSON_ENUM_RANGE(RUN, ZIPLINE)
+    MEOJSON_ENUM_RANGE(RUN, TRIGGER)
 };
 
 // 每种动作的静态策略, 一种动作一行; 到点后做什么见 semantic_nodes 的到点分发
@@ -106,8 +114,14 @@ constexpr ActionTraits TraitsOf(ActionType action)
             .settle_walking = true,
             .route_boundary = true,
         };
+    // 不设 strict_arrival：锚点只是「站这儿开始找」，收尾由视觉伺服完成
+    case ActionType::FIND:
+        return { .walk_approach = true, .route_boundary = true };
     case ActionType::ZIPLINE:
         return { .strict_arrival = true, .walk_approach = true };
+    // 设成边界才会被滑索规划原样保留，否则会被换成不带 trigger_node 的规划点
+    case ActionType::TRIGGER:
+        return { .strict_arrival = true, .settles_at_arrival = true, .route_boundary = true };
     }
     return {};
 }
@@ -146,6 +160,10 @@ struct Waypoint
     // NAVMESH only: height of the overlapping deck this waypoint sits on. Pins the goal span for the leg
     // ending here and the start span for the leg leaving it. Unset -> full span set, unchanged.
     std::optional<double> target_deck_y;
+    // navmesh 规划出的点专用: 规划线在这一点所在面的高, 运行中重规划用它定起点层
+    std::optional<double> route_floor_y;
+    // 台沿下落的落点专用: 起跳点。沿起跳→落点方向越过本点才算到
+    std::optional<std::array<double, 2>> drop_from;
     // Authored path only: make this node a hard boundary between globally planned legs. Coordinate-bearing
     // movement nodes are optional route/action hints by default. HEADING is an explicit control command;
     // COLLECT and DIG are task-producing markers. Those three are intrinsic boundaries even without this flag.
@@ -161,6 +179,16 @@ struct Waypoint
     // INTERACT 专用: rec 模式, 只认提示不按键。判定圈、行进中提示停车都照旧, 按不按、按哪个留给业务侧决定。
     // 写在路线顶层是整条路线的默认, 点上只能开不能关
     bool interact_rec;
+    // FIND 专用：目标识别节点名，与 find_text 二选一
+    std::string find_target;
+    // FIND 专用：内联 OCR 文本表，执行时注入内置节点
+    std::vector<std::string> find_text;
+    // FIND 专用：命中它就算到位，与 find_arrive 至少给一个
+    std::string find_stop;
+    // FIND 专用：走到这个坐标附近也算到位。给了它才读定位, 判定只看 x/y 距离, 不参与转向
+    std::optional<std::array<double, 2>> find_arrive;
+    // TRIGGER 专用：命中即算导航成功的识别节点名，只跑识别不执行动作
+    std::string trigger_node;
     // ZIPLINE only: 这一跳的计划(两端架子、落点仰角、备用站位)。只由滑索规划写入; 缺这个字段的
     // ZIPLINE 点是配置写错了, 执行侧拒绝
     std::optional<ZiplineHopPlan> zipline_hop;
@@ -218,6 +246,10 @@ struct Waypoint
     bool HasPosition() const { return has_position; }
 
     bool IsHeadingOnly() const { return action == ActionType::HEADING; }
+
+    bool IsFindPoint() const { return action == ActionType::FIND; }
+
+    bool IsTriggerPoint() const { return action == ActionType::TRIGGER; }
 
     bool IsIntrinsicRouteBoundary() const { return Traits().route_boundary; }
 

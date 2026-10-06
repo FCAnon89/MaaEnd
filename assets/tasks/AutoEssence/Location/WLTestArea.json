@@ -4,7 +4,6 @@
             "type": "select",
             "label": "$option.AutoEssenceLocationSecondary.label",
             "description": "$option.AutoEssenceLocationSecondary.description",
-            "default_case": "s2_9",
             "cases": [
                 {
                     "name": "s2_9",
@@ -193,11 +192,15 @@
                             "recognition": {
                                 "param": {
                                     "expected": [
+                                        "源石技艺提升",
                                         "源石技艺强度",
                                         "Arts Intensity",
+                                        "源石技藝提升",
                                         "源石技藝強度",
+                                        "アーツ強度UP",
                                         "アーツ強度",
-                                        "오리지늄 아츠"
+                                        "오리지늄 아츠 강도 증가",
+                                        "오리지늄 아츠 강도"
                                     ]
                                 }
                             }
@@ -213,11 +216,15 @@
                                         540
                                     ],
                                     "expected": [
+                                        "源石技艺提升",
                                         "源石技艺强度",
                                         "Arts Intensity",
+                                        "源石技藝提升",
                                         "源石技藝強度",
+                                        "アーツ強度UP",
                                         "アーツ強度",
-                                        "오리지늄 아츠"
+                                        "오리지늄 아츠 강도 증가",
+                                        "오리지늄 아츠 강도"
                                     ]
                                 }
                             }
@@ -600,7 +607,8 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "s2_9"
         }
     }
 }

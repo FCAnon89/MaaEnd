@@ -10,6 +10,9 @@ namespace mapnavigator
 constexpr int32_t kWorkWidth = 1280;
 constexpr int32_t kWorkHeight = 720;
 
+// 镜头朝向模式下，常规导航接受读数的经验置信度门槛（含边界）。
+constexpr double kNavigationCameraMinConfidence = 0.3;
+
 // --- ActionWrapper Constants ---
 constexpr double kTurn360UnitsPerWidth = 2.23006;
 constexpr double kTurnDegreesPerCircle = 360.0;
@@ -17,14 +20,16 @@ constexpr double kPitchDegreesPerRange = 180.0;
 
 struct AdbTouchTurnProfile
 {
-    double default_units_per_degree = 5.0;
+    double default_units_per_degree = 3.0;
+    double default_pitch_units_per_degree =
+        default_units_per_degree * kTurnDegreesPerCircle * kWorkHeight / (kWorkWidth * kPitchDegreesPerRange);
     int32_t swipe_duration_ms = 70;
     int32_t post_swipe_settle_ms = 0;
+    // 移动指令之后这段时间里的转向会被游戏吞掉: 摇杆状态刚变, 视角拖动还没被受理
+    int32_t action_quiet_period_ms = 60;
 };
 
 inline constexpr AdbTouchTurnProfile kAdbTouchTurnProfile {};
-constexpr double kAdbTurnScaleMinUnitsPerDegree = 1.0;
-constexpr double kAdbTurnScaleMaxUnitsPerDegree = 4.0;
 constexpr double kWin32TurnScaleMinUnitsPerDegree = 1.0;
 constexpr double kWin32TurnScaleMaxUnitsPerDegree = 50.0;
 
@@ -116,6 +121,30 @@ constexpr int32_t kSteeringRateReferenceMs = 100;
 // plus the time one per-drag-capped command takes to sweep; a tick that spends several batches sweeps further,
 // so the caller adds time for the part beyond the first. Yaw rate measured on device from single-command turns.
 constexpr int64_t kSteeringPendingLifetimeMs = 600;
+// The same lifetime counted in steering ticks, whichever is longer: a turn only shows up in a fix a tick or more
+// after it was sent, and on a ~650ms phone loop the wall-clock lifetime expired before any tick could see it land.
+// The period is the median of the last few steering-tick intervals, each capped so one stretched by a recovery
+// cannot hold a swallowed drag's debt.
+constexpr int64_t kSteeringPendingLifetimeTicks = 2;
+constexpr int64_t kSteerPeriodMaxSampleMs = 1000;
+constexpr size_t kSteerPeriodWindow = 8;
+// A loop this slow (a healthy one is ~110ms; the latency detector calls 280ms slow) turns this far or more in place
+// instead of while running.
+constexpr int64_t kSlowLoopPivotPeriodMs = 300;
+constexpr double kSlowLoopPivotTurnDeg = 45.0;
+// Before the loop period is known, the first turn this big is made standing.
+constexpr double kStartupPivotTurnDeg = 90.0;
+// Running, the character arrow and the camera agree to within about 10 degrees (logged on device). Further apart than
+// this, the arrow is still swinging round to a camera that was just turned, and steering follows the camera.
+constexpr double kSteerArrowLagCameraDeg = 30.0;
+// On a slow loop a narrow corner reached at running speed is overrun by the time the turn lands (three units past a
+// pillar-bridge corner on device), so brake once per bend when it is within this many ticks of travel and the aim
+// cannot lead into it from further out. Bends are found within kCornerBrakeScanM by the aim hold's own turn budget
+// (kNavRunLookaheadTurnBudgetDeg): a corner drawn as two short kinks breaks that budget well before either kink alone.
+constexpr double kCornerBrakeLeadTicks = 2.0;
+constexpr double kCornerBrakeScanM = 8.0;
+// The same bend can come back a little moved after a replan; anything this close to one already braked for is it.
+constexpr double kCornerBrakeLatchRadiusM = 1.5;
 constexpr double kYawRateDegPerSec = 320.0;
 // Turn batches one tick may spend, and so the ceiling on how far one tick turns. Spending them on the angle the
 // command asks for rather than on how long the tick was lets a reversal finish in three ticks instead of seven,
@@ -130,6 +159,7 @@ constexpr int32_t kHeadingTurnStepIntervalMs = 100;     // step pacing floor; ra
 constexpr double kHeadingStableReadToleranceDeg = 15.0; // two fresh reads must agree this closely to count
 constexpr int32_t kHeadingStableReadIntervalMs = 120;
 constexpr int32_t kHeadingStableReadMaxFrames = 4;      // default HEADING read budget; the caller decides its fallback
+constexpr double kCameraAlignMinDegrees = 10.0;         // camera-align deadband, under the arrow's own read noise
 constexpr int32_t kSerialRouteRetryDelayMs = 180;
 constexpr double kBootstrapOwnershipProjectionCorridor = 3.0;
 constexpr double kBootstrapOwnershipProjectionFrontThreshold = 0.35;
@@ -201,6 +231,14 @@ constexpr int32_t kOffRouteWedgeReplanMs = 6000;
 constexpr int32_t kOffRouteWedgeReplanCooldownMs = 4000;
 constexpr int32_t kOffRouteWedgeFailMs = 12000;
 
+// Last-resort dwell watchdog: the agent never left a disc this small for this long. Measured in world pixels
+// against a latched centre, so no clock keyed on a path index, an anchor or a replan can launder it away —
+// the only way to clear it is to actually go somewhere. Sized off logged navigations: the longest healthy
+// dwell is 23.5s and every self-recovery there escaped on its first ladder attempt, while a wedged one
+// passes 160s having burned dozens, so the budget sits four times over the ladder's own.
+constexpr double kDwellWatchdogRadius = 20.0;
+constexpr int32_t kDwellWatchdogFailMs = 120000;
+
 // Cross-tier escape (wrong-tier fall): plan ONE navmesh corridor from a walkable FLOORED-tier fix back to the
 // nearest reachable authored waypoint and follow it as a fixed corridor (riding the legitimate tier<->base
 // oscillation). Exit needs BOTH arrival distance AND a floor-blind (base) zone — a shaft's lower loops pass under
@@ -262,7 +300,6 @@ constexpr int32_t kNavRunPlanFailureCooldownMs = 3000;
 // --- Zone / Portal / Transfer Constants ---
 constexpr int32_t kZoneConfirmRetryIntervalMs = 120;
 constexpr int32_t kZoneConfirmTimeoutMs = 12000;
-constexpr int32_t kZoneConfirmStableFrames = 2;
 constexpr int32_t kRelocationRetryIntervalMs = 120;
 constexpr int32_t kRelocationWaitTimeoutMs = 15000;
 constexpr int32_t kRelocationStableFixes = 2;
@@ -285,14 +322,16 @@ constexpr int32_t kZiplineLaunchSettleMs = 400;
 // 瞄准精度只能在按左键之前保证: 按下去人就滑走了, 半空里没有跟随层能把方向修回来。走路那套
 // 40 度容差是靠跟随层善后才敢留的, 这里不能用
 constexpr double kZiplineAimToleranceDeg = 6.0;
+// 有邻架抢吸附时停点往远离它的一侧偏, 每滑错一次再加一档
+constexpr double kZiplineAimBiasStepDeg = 3.0;
+// 偏过头没吸住时偏置减半重按, 减到这以下改换俯仰档
+constexpr double kZiplineAimBiasMinDeg = 1.5;
+// 先在停点外侧这么远处压俯仰再横扫回来, 让目标先于邻架被瞄到
+constexpr double kZiplineAimSweepLeadDeg = 15.0;
+static_assert(kZiplineAimSweepLeadDeg > 2.0 * kZiplineAimToleranceDeg);
 // 上索后的稳定等待与全部水平修正共用这个截止时间。每次只发一个后端批次并等待真实反馈，
 // 避免大角度转向在上索动画尚未结束时一次性排入多条输入。
 constexpr int32_t kZiplineAimHeadingTimeoutMs = 6000;
-// 第一批转完量一次「发了多少转了多少」当增益, 后面的 yaw 和俯仰都按它缩放。太小的一批量不准,
-// 增益夹在这个范围里, 一帧读歪不至于把俯仰整个放飞
-constexpr double kZiplineAimGainMinTurnDeg = 5.0;
-constexpr double kZiplineAimGainMin = 0.5;
-constexpr double kZiplineAimGainMax = 2.0;
 // 落差够大时镜头得抬到索的仰角上才起得了滑。小地图读不到俯仰, 所以每次从地面登上滑索架后
 // 先通过 Pipeline 把镜头拉到上限, 将该硬限位记作 +90 度, 再从这个固定基准开环调整。连续滑索
 // 没有上下索动作, 直接沿用上一跳记住的俯仰。游戏的俯仰范围不对称: 仰角最多 90 度, 俯角最多 60 度。
@@ -352,7 +391,7 @@ constexpr int32_t kZiplineMountSpotStallMs = 2000;
 static_assert(kZiplineMountSpotStallMs < kObstacleRecoveryMinTriggerMs);
 // 滑错索又滑回来之后, 同一跳最多再试这么多次, 用完就站在架子上等换路
 constexpr int32_t kZiplineHopRetryBudget = 2;
-// 下索键按完等定位稳定的基准时长: 两倍还不稳再按一次, 四倍还不稳当卡住
+// 下索键按完等人下来的基准时长: 两倍还没下来再按一次, 四倍还没下来当卡住
 constexpr int32_t kZiplineDismountTimeoutMs = 2000;
 // 落地定位对不上时给冷启动的时间, 到点还对不上这跳按丢失记
 constexpr int32_t kZiplineUnknownTimeoutMs = 8000;
@@ -385,8 +424,8 @@ constexpr const char* kCollectExitNode = "AutoCollectClickEnd";
 constexpr const char* kInteractEntryNode = "MapNavigatorInteractStart";
 constexpr const char* kInteractRecognitionNode = "MapNavigatorInteract";
 constexpr const char* kInteractExitNode = "MapNavigatorInteractEnd";
-// 上索走的也是这套三节点交互, 只是提示文字由节点自己带, 不由路线注入。
-// 确认上索另配一对: 只认图标, 不必为一次确认付 OCR 的钱。确认要的恰恰是「认不出」,
+// 上索走的也是这套三节点交互, 只是认的图标由节点自己带, 不由路线注入。
+// 确认上索另配一对。确认要的恰恰是「认不出」,
 // 所以照样得走 Start 节点 —— 直接派发识别节点会让认不出的那一趟耗满节点超时。
 constexpr const char* kZiplineMountEntryNode = "MapNavigatorZiplineMountStart";
 constexpr const char* kZiplineMountRecognitionNode = "MapNavigatorZiplineMount";
@@ -408,7 +447,7 @@ constexpr int32_t kPipelineRoiBaseHeight = 720;
 // Every interactable raises the same prompt icon, so both kinds share this pre-filter. The threshold is loose on
 // purpose: it only decides whether the subtask is worth running, and the subtask recognizes again before acting.
 // These are the last resort: the shipped scan node below carries the same values, and a route may name its own.
-constexpr const char* kPromptIconRelativePath = "resource/image/RealTimeTask/AutoPick.png";
+constexpr const char* kPromptIconRelativePath = "RealTimeTask/AutoPick.png";
 constexpr double kPromptIconMatchThreshold = 0.75;
 // TemplateMatch node holding the interact pre-filter's roi/template/threshold, so a business whose prompt looks
 // different or sits elsewhere retargets it in JSON. Missing (old resources, new agent) -> the constants above.
@@ -462,6 +501,11 @@ constexpr const char* kObstacleDeviceEntry = "MapNavigatorObstacleDevice";
 constexpr const char* kObstacleDeviceProbeNode = "__MapNavigatorObstacleDevice_InteractPre";
 constexpr const char* kObstacleDeviceTemplateRelativePath = "resource/image/MapNavigator/ObstacleDevice/InteractButton.png";
 constexpr double kObstacleDeviceMatchThreshold = 0.65;
+// The pick-up subtask ends on the move click; the walk-out entry for that dialog runs with forward held.
+constexpr const char* kObstacleDeviceMoveNode = "__MapNavigatorObstacleDevice_MoveDevice";
+constexpr const char* kObstacleAicCoreMoveNode = "__MapNavigatorObstacleDevice_MoveAICCore";
+constexpr const char* kObstacleDeviceWalkOutEntry = "MapNavigatorObstacleDeviceWalkOut";
+constexpr const char* kObstacleAicCoreWalkOutEntry = "MapNavigatorObstacleDeviceWalkOutAICCore";
 // One attempt per anchor: the subtask's own timeouts can spend ~15s of the kDynamicRecoveryTotalTimeoutMs
 // budget, and whatever is left has to still cover jump -> detour -> unstick.
 constexpr int32_t kRecoveryDeviceAttempts = 1;
@@ -469,5 +513,37 @@ constexpr int32_t kRecoveryDeviceAttempts = 1;
 constexpr const char* kDefaultDigEntry = "AutoCollectDigStart";
 constexpr const char* kDigPipelineOverride = R"({"AutoCollectDigEnd":{"next":[]}})";
 constexpr int32_t kDigPostSleepMs = 80;
+
+// --- FIND: 按识别框接近目标 ---
+// 内联文本 (find_text) 走这个内置 OCR 节点: 每趟注入 expected 后按帧调用, 从不派发
+constexpr const char* kFindInlineOcrNode = "MapNavigatorFind";
+// 原地搜索每步转过的视角, 一圈 12 步
+constexpr double kFindSearchStepDeg = 30.0;
+// 连续漏认这么多拍才转去搜索: 遮挡一两帧就把刚对准的镜头甩走, 下一拍还要转回来
+constexpr int32_t kFindMissGraceTicks = 3;
+// 框中心离画面中线进这个容差就不再转视角, 保持直行 (1280 基准帧像素)
+constexpr int32_t kFindAlignTolerancePx = 80;
+// 偏出对准容差但没出这个窗口时边走边转; 再偏就先站定转正, 免得带着旧方向越走越偏
+constexpr int32_t kFindWalkWhileTurningPx = kFindAlignTolerancePx * 2;
+// 走路时停车判据的密集探测: 提示窗口很窄, 只靠每拍一查容易直接走过头; 窗口内按间隔抓快照重查
+constexpr int32_t kFindStopProbeWindowMs = 700;
+constexpr int32_t kFindStopProbeIntervalMs = 120;
+// 框中心掉到这条线以下算走过了, 退一步; 480/720 即画面下三分之一
+constexpr double kFindPassedCenterYRatio = 0.667;
+// 走过头退一步的时长, 只求把框拉回中线以下
+constexpr int32_t kFindBackwardPulseMs = 200;
+// 转向增益: 偏移换算成角度是线性化的, 打满会转过头
+constexpr double kFindSteerGain = 0.33;
+// 每步末尾的节流, 同时充当下一步转向的静默期 (短于后端 quiet period 会被上一条移动指令吞掉)
+constexpr int32_t kFindStepSleepMs = 120;
+// 预算, 步数与时长任一用尽即判该点失败
+constexpr int32_t kFindMaxSteps = 48;
+constexpr int32_t kFindBudgetMs = 60000;
+static_assert(kFindStepSleepMs > kAdbTouchTurnProfile.action_quiet_period_ms, "find pacing must outlast the steering quiet period");
+
+// 行进中跑 trigger_node 的间隔
+constexpr int32_t kTriggerProbeIntervalMs = 300;
+// 到 TRIGGER 点仍未命中时原地等待的上限, 超时判失败
+constexpr int32_t kTriggerWaitTimeoutMs = 15000;
 
 } // namespace mapnavigator

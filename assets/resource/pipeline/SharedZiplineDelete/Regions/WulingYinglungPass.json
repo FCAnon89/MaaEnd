@@ -1,0 +1,250 @@
+{
+    // 应龙关 Wuling YinglungPass：MapFind 认 TeleportAnchor 并 Click，再 Hit 搜滑索
+    // 锚点来自 LevelMapMark mark_sp_campfire，map02base 投影（原点左上、y 向下）
+    //   10200030160 → [881.8, 871.8]
+    //   10200030169 → [1133.7, 796.0]
+    //   10200030255 → [1210.9, 771.0]
+    //   10200030151 → [1212.6, 907.5]
+    //   10200030168 → [1112.9, 977.5]
+    //   10200030153 → [1168.5, 1034.4]
+    "SharedZiplineDeleteEnterWLYinglungPass": {
+        "desc": "应龙关：直接传送到本区锚点",
+        "enabled": false,
+        "max_hit": 1,
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "SharedZiplineDeleteTeleportWLYinglungPass"
+        ]
+    },
+    "SharedZiplineDeleteTeleportWLYinglungPass": {
+        "desc": "应龙关：传送到本区锚点",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "SubTask",
+        "custom_action_param": {
+            "sub": [
+                "SceneEnterWorldWulingYinglungPass2"
+            ]
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "SharedZiplineDeleteWalkOffWLYinglungPass"
+        ]
+    },
+    "SharedZiplineDeleteWalkOffWLYinglungPass": {
+        "desc": "传送落地后寻路走开，避免挡住锚点",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "MapNavigateAction",
+        "custom_action_param": {
+            "path": [
+                {
+                    "action": "NAVMESH",
+                    "target": [
+                        1121.06,
+                        783.15
+                    ]
+                }
+            ]
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "SharedZiplineDeleteOpenMapWLYinglungPass"
+        ]
+    },
+    "SharedZiplineDeleteOpenMapWLYinglungPass": {
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "SubTask",
+        "custom_action_param": {
+            "sub": [
+                "SceneEnterMapWulingYinglungPass"
+            ]
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "SharedZiplineDeletePrepareWulingYinglungPass"
+        ]
+    },
+    "SharedZiplineDeletePrepareWulingYinglungPass": {
+        "next": [
+            "[JumpBack]SceneMapLayerSwitchToMain",
+            "[JumpBack]SharedZiplineDeleteFilterOpen",
+            "[JumpBack]SceneMapZoomOut",
+            "SharedZiplineDeleteVisitWulingYinglungPass0"
+        ]
+    },
+    "SharedZiplineDeleteVisitWulingYinglungPass0": {
+        "desc": "应龙关锚点 markInstId=10200030160",
+        "recognition": "Custom",
+        "custom_recognition": "MapFind",
+        "custom_recognition_param": {
+            "zone": "Wuling",
+            "icon": "TeleportAnchor",
+            "at": [
+                881.8,
+                871.8
+            ]
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                -200,
+                -200,
+                200,
+                200
+            ]
+        },
+        "next": [
+            "[JumpBack]SharedZiplineDeleteTeleportClick",
+            "[JumpBack]SharedZiplineDeleteHit",
+            "SharedZiplineDeleteVisitWulingYinglungPass1"
+        ]
+    },
+    "SharedZiplineDeleteVisitWulingYinglungPass1": {
+        "desc": "应龙关锚点 markInstId=10200030169",
+        "recognition": "Custom",
+        "custom_recognition": "MapFind",
+        "custom_recognition_param": {
+            "zone": "Wuling",
+            "icon": "TeleportAnchor",
+            "at": [
+                1133.7,
+                796.0
+            ]
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                -200,
+                -200,
+                200,
+                200
+            ]
+        },
+        "next": [
+            "[JumpBack]SharedZiplineDeleteTeleportClick",
+            "[JumpBack]SharedZiplineDeleteHit",
+            "SharedZiplineDeleteVisitWulingYinglungPass2"
+        ]
+    },
+    "SharedZiplineDeleteVisitWulingYinglungPass2": {
+        "desc": "应龙关锚点 markInstId=10200030255",
+        "recognition": "Custom",
+        "custom_recognition": "MapFind",
+        "custom_recognition_param": {
+            "zone": "Wuling",
+            "icon": "TeleportAnchor",
+            "at": [
+                1210.9,
+                771.0
+            ]
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                -200,
+                -200,
+                200,
+                200
+            ]
+        },
+        "next": [
+            "[JumpBack]SharedZiplineDeleteTeleportClick",
+            "[JumpBack]SharedZiplineDeleteHit",
+            "SharedZiplineDeleteVisitWulingYinglungPass3"
+        ]
+    },
+    "SharedZiplineDeleteVisitWulingYinglungPass3": {
+        "desc": "应龙关锚点 markInstId=10200030151",
+        "recognition": "Custom",
+        "custom_recognition": "MapFind",
+        "custom_recognition_param": {
+            "zone": "Wuling",
+            "icon": "TeleportAnchor",
+            "at": [
+                1212.6,
+                907.5
+            ]
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                -200,
+                -200,
+                200,
+                200
+            ]
+        },
+        "next": [
+            "[JumpBack]SharedZiplineDeleteTeleportClick",
+            "[JumpBack]SharedZiplineDeleteHit",
+            "SharedZiplineDeleteVisitWulingYinglungPass4"
+        ]
+    },
+    "SharedZiplineDeleteVisitWulingYinglungPass4": {
+        "desc": "应龙关锚点 markInstId=10200030168",
+        "recognition": "Custom",
+        "custom_recognition": "MapFind",
+        "custom_recognition_param": {
+            "zone": "Wuling",
+            "icon": "TeleportAnchor",
+            "at": [
+                1112.9,
+                977.5
+            ]
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                -200,
+                -200,
+                200,
+                200
+            ]
+        },
+        "next": [
+            "[JumpBack]SharedZiplineDeleteTeleportClick",
+            "[JumpBack]SharedZiplineDeleteHit",
+            "SharedZiplineDeleteVisitWulingYinglungPass5"
+        ]
+    },
+    "SharedZiplineDeleteVisitWulingYinglungPass5": {
+        "desc": "应龙关锚点 markInstId=10200030153",
+        "recognition": "Custom",
+        "custom_recognition": "MapFind",
+        "custom_recognition_param": {
+            "zone": "Wuling",
+            "icon": "TeleportAnchor",
+            "at": [
+                1168.5,
+                1034.4
+            ]
+        },
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                -200,
+                -200,
+                200,
+                200
+            ]
+        },
+        "next": [
+            "[JumpBack]SharedZiplineDeleteTeleportClick",
+            "[JumpBack]SharedZiplineDeleteHit",
+            "SharedZiplineDeleteRegionDone"
+        ]
+    }
+}

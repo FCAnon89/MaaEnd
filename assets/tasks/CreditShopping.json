@@ -5,16 +5,8 @@
             "label": "$task.CreditShopping.label",
             "entry": "CreditShoppingMain",
             "description": "$task.CreditShopping.description",
-            "option": [
-                "CreditShoppingReserve",
-                "CreditShoppingClueSend",
-                "CreditShoppingQuickGiveDuplicateClues",
-                "CreditShoppingClueStockLimit",
-                "CreditShoppingPriority1",
-                "CreditShoppingPriority2",
-                "CreditShoppingPriority3",
-                "CreditShoppingForce",
-                "CreditShoppingKeepShelfRecord"
+            "group": [
+                "other_menu"
             ],
             "controller": [
                 "ADB",
@@ -26,9 +18,6 @@
                 "MacOS-Front",
                 "PlayCover",
                 "Win32-Front"
-            ],
-            "group": [
-                "other_menu"
             ],
             "pipeline_override": {
                 "ReceptionRoomCollectClues": {
@@ -43,7 +32,18 @@
                 "ReceptionRoomStartExchange": {
                     "enabled": true
                 }
-            }
+            },
+            "option": [
+                "CreditShoppingReserve",
+                "CreditShoppingClueSend",
+                "CreditShoppingQuickGiveDuplicateClues",
+                "CreditShoppingClueStockLimit",
+                "CreditShoppingPriority1",
+                "CreditShoppingPriority2",
+                "CreditShoppingPriority3",
+                "CreditShoppingForce",
+                "CreditShoppingKeepShelfRecord"
+            ]
         }
     ],
     "option": {
@@ -56,9 +56,9 @@
                     "name": "MaxClueSendWhenInsufficient",
                     "label": "$option.CreditShoppingClueSend.MaxClueSend.label",
                     "description": "$option.CreditShoppingClueSend.MaxClueSend.description",
+                    "default": "1",
                     "pipeline_type": "int",
-                    "verify": "^\\d+$",
-                    "default": "1"
+                    "verify": "^\\d+$"
                 }
             ],
             "pipeline_override": {
@@ -74,7 +74,6 @@
             "type": "switch",
             "label": "$option.CreditShoppingQuickGiveDuplicateClues.label",
             "description": "$option.CreditShoppingQuickGiveDuplicateClues.description",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -92,13 +91,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
         },
         "CreditShoppingClueStockLimit": {
             "type": "select",
             "label": "$option.CreditShoppingClueStockLimit.label",
             "description": "$option.CreditShoppingClueStockLimit.description",
-            "default_case": "2",
             "cases": [
                 {
                     "name": "1",
@@ -118,12 +117,12 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "2"
         },
         "CreditShoppingPriority1": {
             "type": "switch",
             "label": "$option.CreditShoppingPriority1.label",
-            "default_case": "Yes",
             "cases": [
                 {
                     "name": "Yes",
@@ -176,13 +175,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Yes"
         },
         "CreditShoppingPriority1AutoGetCredits": {
             "type": "switch",
             "label": "$option.AutoGetCredits.label",
             "description": "$option.AutoGetCredits.description",
-            "default_case": "Yes",
             "cases": [
                 {
                     "name": "Yes",
@@ -209,13 +208,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Yes"
         },
         "CreditShoppingPriority1UnconditionalPurchase": {
             "type": "switch",
             "label": "$option.CreditShoppingUnconditionalPurchase.label",
             "description": "$option.CreditShoppingUnconditionalPurchase.description",
-            "default_case": "Yes",
             "cases": [
                 {
                     "name": "Yes",
@@ -242,19 +241,17 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Yes"
         },
         "CreditShoppingPriority1Items": {
             "type": "checkbox",
             "label": "$option.CreditShoppingPriority1Items.label",
-            "default_case": [
-                "ArsenalTicket",
-                "Oroberyl"
-            ],
             "cases": [
                 {
                     "name": "ArsenalTicket",
                     "label": "$option.CreditShoppingItems.cases.ArsenalTicket.label",
+                    "icon": "resource/image/UI/Item/item_gachabyproducts_weapongold.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -281,6 +278,7 @@
                 {
                     "name": "Oroberyl",
                     "label": "$option.CreditShoppingItems.cases.Oroberyl.label",
+                    "icon": "resource/image/UI/Item/item_diamond.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -307,6 +305,7 @@
                 {
                     "name": "TCreds",
                     "label": "$option.CreditShoppingItems.cases.TCreds.label",
+                    "icon": "resource/image/UI/Item/item_gold.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -333,6 +332,7 @@
                 {
                     "name": "ElementaryCognitiveCarrier",
                     "label": "$option.CreditShoppingItems.cases.ElementaryCognitiveCarrier.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage2_low.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -359,6 +359,7 @@
                 {
                     "name": "ElementaryCombatRecord",
                     "label": "$option.CreditShoppingItems.cases.ElementaryCombatRecord.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage1_low.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -385,6 +386,7 @@
                 {
                     "name": "IntermediateCombatRecord",
                     "label": "$option.CreditShoppingItems.cases.IntermediateCombatRecord.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage1_mid.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -411,6 +413,7 @@
                 {
                     "name": "ArmsInspector",
                     "label": "$option.CreditShoppingItems.cases.ArmsInspector.label",
+                    "icon": "resource/image/UI/Item/item_weapon_expcard_low.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -437,6 +440,7 @@
                 {
                     "name": "ArmsINSPKit",
                     "label": "$option.CreditShoppingItems.cases.ArmsINSPKit.label",
+                    "icon": "resource/image/UI/Item/item_weapon_expcard_mid.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -463,6 +467,7 @@
                 {
                     "name": "CastDie",
                     "label": "$option.CreditShoppingItems.cases.CastDie.label",
+                    "icon": "resource/image/UI/Item/item_weapon_break_low.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -489,6 +494,7 @@
                 {
                     "name": "HeavyCastDie",
                     "label": "$option.CreditShoppingItems.cases.HeavyCastDie.label",
+                    "icon": "resource/image/UI/Item/item_weapon_break_high.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -515,6 +521,7 @@
                 {
                     "name": "Protodisk",
                     "label": "$option.CreditShoppingItems.cases.Protodisk.label",
+                    "icon": "resource/image/UI/Item/item_char_break_stage_1_2.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -541,6 +548,7 @@
                 {
                     "name": "Protoset",
                     "label": "$option.CreditShoppingItems.cases.Protoset.label",
+                    "icon": "resource/image/UI/Item/item_char_break_stage_3_4.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -567,6 +575,7 @@
                 {
                     "name": "Protoprism",
                     "label": "$option.CreditShoppingItems.cases.Protoprism.label",
+                    "icon": "resource/image/UI/Item/item_char_skill_level_1_6.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -593,6 +602,7 @@
                 {
                     "name": "Protohedron",
                     "label": "$option.CreditShoppingItems.cases.Protohedron.label",
+                    "icon": "resource/image/UI/Item/item_char_skill_level_7_12.png",
                     "pipeline_override": {
                         "BuyFirstOCR": {
                             "attach": {
@@ -616,12 +626,15 @@
                         }
                     }
                 }
+            ],
+            "default_case": [
+                "ArsenalTicket",
+                "Oroberyl"
             ]
         },
         "CreditShoppingPriority1DiscountValue": {
             "type": "select",
             "label": "$option.DiscountValue.label",
-            "default_case": "Any",
             "cases": [
                 {
                     "name": "Any",
@@ -773,12 +786,12 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Any"
         },
         "CreditShoppingPriority2": {
             "type": "switch",
             "label": "$option.CreditShoppingPriority2.label",
-            "default_case": "Yes",
             "cases": [
                 {
                     "name": "Yes",
@@ -831,13 +844,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Yes"
         },
         "CreditShoppingPriority2AutoGetCredits": {
             "type": "switch",
             "label": "$option.AutoGetCredits.label",
             "description": "$option.AutoGetCredits.description",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -864,13 +877,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
         },
         "CreditShoppingPriority2UnconditionalPurchase": {
             "type": "switch",
             "label": "$option.CreditShoppingUnconditionalPurchase.label",
             "description": "$option.CreditShoppingUnconditionalPurchase.description",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -897,31 +910,17 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
         },
         "CreditShoppingPriority2Items": {
             "type": "checkbox",
             "label": "$option.CreditShoppingPriority2Items.label",
-            "default_case": [
-                "ArmsInspector",
-                "ArmsINSPKit",
-                "ArsenalTicket",
-                "CastDie",
-                "ElementaryCognitiveCarrier",
-                "ElementaryCombatRecord",
-                "HeavyCastDie",
-                "IntermediateCombatRecord",
-                "Oroberyl",
-                "Protodisk",
-                "Protoprism",
-                "Protohedron",
-                "Protoset",
-                "TCreds"
-            ],
             "cases": [
                 {
                     "name": "ArsenalTicket",
                     "label": "$option.CreditShoppingItems.cases.ArsenalTicket.label",
+                    "icon": "resource/image/UI/Item/item_gachabyproducts_weapongold.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -948,6 +947,7 @@
                 {
                     "name": "Oroberyl",
                     "label": "$option.CreditShoppingItems.cases.Oroberyl.label",
+                    "icon": "resource/image/UI/Item/item_diamond.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -974,6 +974,7 @@
                 {
                     "name": "TCreds",
                     "label": "$option.CreditShoppingItems.cases.TCreds.label",
+                    "icon": "resource/image/UI/Item/item_gold.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1000,6 +1001,7 @@
                 {
                     "name": "ElementaryCognitiveCarrier",
                     "label": "$option.CreditShoppingItems.cases.ElementaryCognitiveCarrier.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage2_low.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1026,6 +1028,7 @@
                 {
                     "name": "ElementaryCombatRecord",
                     "label": "$option.CreditShoppingItems.cases.ElementaryCombatRecord.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage1_low.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1052,6 +1055,7 @@
                 {
                     "name": "IntermediateCombatRecord",
                     "label": "$option.CreditShoppingItems.cases.IntermediateCombatRecord.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage1_mid.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1078,6 +1082,7 @@
                 {
                     "name": "ArmsInspector",
                     "label": "$option.CreditShoppingItems.cases.ArmsInspector.label",
+                    "icon": "resource/image/UI/Item/item_weapon_expcard_low.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1104,6 +1109,7 @@
                 {
                     "name": "ArmsINSPKit",
                     "label": "$option.CreditShoppingItems.cases.ArmsINSPKit.label",
+                    "icon": "resource/image/UI/Item/item_weapon_expcard_mid.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1130,6 +1136,7 @@
                 {
                     "name": "CastDie",
                     "label": "$option.CreditShoppingItems.cases.CastDie.label",
+                    "icon": "resource/image/UI/Item/item_weapon_break_low.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1156,6 +1163,7 @@
                 {
                     "name": "HeavyCastDie",
                     "label": "$option.CreditShoppingItems.cases.HeavyCastDie.label",
+                    "icon": "resource/image/UI/Item/item_weapon_break_high.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1182,6 +1190,7 @@
                 {
                     "name": "Protodisk",
                     "label": "$option.CreditShoppingItems.cases.Protodisk.label",
+                    "icon": "resource/image/UI/Item/item_char_break_stage_1_2.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1208,6 +1217,7 @@
                 {
                     "name": "Protoset",
                     "label": "$option.CreditShoppingItems.cases.Protoset.label",
+                    "icon": "resource/image/UI/Item/item_char_break_stage_3_4.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1234,6 +1244,7 @@
                 {
                     "name": "Protoprism",
                     "label": "$option.CreditShoppingItems.cases.Protoprism.label",
+                    "icon": "resource/image/UI/Item/item_char_skill_level_1_6.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1260,6 +1271,7 @@
                 {
                     "name": "Protohedron",
                     "label": "$option.CreditShoppingItems.cases.Protohedron.label",
+                    "icon": "resource/image/UI/Item/item_char_skill_level_7_12.png",
                     "pipeline_override": {
                         "Priority2OCR": {
                             "attach": {
@@ -1283,12 +1295,27 @@
                         }
                     }
                 }
+            ],
+            "default_case": [
+                "ArmsInspector",
+                "ArmsINSPKit",
+                "ArsenalTicket",
+                "CastDie",
+                "ElementaryCognitiveCarrier",
+                "ElementaryCombatRecord",
+                "HeavyCastDie",
+                "IntermediateCombatRecord",
+                "Oroberyl",
+                "Protodisk",
+                "Protoprism",
+                "Protohedron",
+                "Protoset",
+                "TCreds"
             ]
         },
         "CreditShoppingPriority2DiscountValue": {
             "type": "select",
             "label": "$option.DiscountValue.label",
-            "default_case": "-75%",
             "cases": [
                 {
                     "name": "Any",
@@ -1440,12 +1467,12 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "-75%"
         },
         "CreditShoppingPriority3": {
             "type": "switch",
             "label": "$option.CreditShoppingPriority3.label",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -1498,13 +1525,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
         },
         "CreditShoppingPriority3AutoGetCredits": {
             "type": "switch",
             "label": "$option.AutoGetCredits.label",
             "description": "$option.AutoGetCredits.description",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -1531,13 +1558,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
         },
         "CreditShoppingPriority3UnconditionalPurchase": {
             "type": "switch",
             "label": "$option.CreditShoppingUnconditionalPurchase.label",
             "description": "$option.CreditShoppingUnconditionalPurchase.description",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -1564,19 +1591,17 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
         },
         "CreditShoppingPriority3Items": {
             "type": "checkbox",
             "label": "$option.CreditShoppingPriority3Items.label",
-            "default_case": [
-                "ArsenalTicket",
-                "Oroberyl"
-            ],
             "cases": [
                 {
                     "name": "ArsenalTicket",
                     "label": "$option.CreditShoppingItems.cases.ArsenalTicket.label",
+                    "icon": "resource/image/UI/Item/item_gachabyproducts_weapongold.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1603,6 +1628,7 @@
                 {
                     "name": "Oroberyl",
                     "label": "$option.CreditShoppingItems.cases.Oroberyl.label",
+                    "icon": "resource/image/UI/Item/item_diamond.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1629,6 +1655,7 @@
                 {
                     "name": "TCreds",
                     "label": "$option.CreditShoppingItems.cases.TCreds.label",
+                    "icon": "resource/image/UI/Item/item_gold.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1655,6 +1682,7 @@
                 {
                     "name": "ElementaryCognitiveCarrier",
                     "label": "$option.CreditShoppingItems.cases.ElementaryCognitiveCarrier.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage2_low.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1681,6 +1709,7 @@
                 {
                     "name": "ElementaryCombatRecord",
                     "label": "$option.CreditShoppingItems.cases.ElementaryCombatRecord.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage1_low.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1707,6 +1736,7 @@
                 {
                     "name": "IntermediateCombatRecord",
                     "label": "$option.CreditShoppingItems.cases.IntermediateCombatRecord.label",
+                    "icon": "resource/image/UI/Item/item_expcard_stage1_mid.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1733,6 +1763,7 @@
                 {
                     "name": "ArmsInspector",
                     "label": "$option.CreditShoppingItems.cases.ArmsInspector.label",
+                    "icon": "resource/image/UI/Item/item_weapon_expcard_low.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1759,6 +1790,7 @@
                 {
                     "name": "ArmsINSPKit",
                     "label": "$option.CreditShoppingItems.cases.ArmsINSPKit.label",
+                    "icon": "resource/image/UI/Item/item_weapon_expcard_mid.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1785,6 +1817,7 @@
                 {
                     "name": "CastDie",
                     "label": "$option.CreditShoppingItems.cases.CastDie.label",
+                    "icon": "resource/image/UI/Item/item_weapon_break_low.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1811,6 +1844,7 @@
                 {
                     "name": "HeavyCastDie",
                     "label": "$option.CreditShoppingItems.cases.HeavyCastDie.label",
+                    "icon": "resource/image/UI/Item/item_weapon_break_high.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1837,6 +1871,7 @@
                 {
                     "name": "Protodisk",
                     "label": "$option.CreditShoppingItems.cases.Protodisk.label",
+                    "icon": "resource/image/UI/Item/item_char_break_stage_1_2.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1863,6 +1898,7 @@
                 {
                     "name": "Protoset",
                     "label": "$option.CreditShoppingItems.cases.Protoset.label",
+                    "icon": "resource/image/UI/Item/item_char_break_stage_3_4.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1889,6 +1925,7 @@
                 {
                     "name": "Protoprism",
                     "label": "$option.CreditShoppingItems.cases.Protoprism.label",
+                    "icon": "resource/image/UI/Item/item_char_skill_level_1_6.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1915,6 +1952,7 @@
                 {
                     "name": "Protohedron",
                     "label": "$option.CreditShoppingItems.cases.Protohedron.label",
+                    "icon": "resource/image/UI/Item/item_char_skill_level_7_12.png",
                     "pipeline_override": {
                         "Priority3OCR": {
                             "attach": {
@@ -1938,12 +1976,15 @@
                         }
                     }
                 }
+            ],
+            "default_case": [
+                "ArsenalTicket",
+                "Oroberyl"
             ]
         },
         "CreditShoppingPriority3DiscountValue": {
             "type": "select",
             "label": "$option.DiscountValue.label",
-            "default_case": "Any",
             "cases": [
                 {
                     "name": "Any",
@@ -2095,12 +2136,12 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Any"
         },
         "CreditShoppingForce": {
             "type": "select",
             "label": "$option.CreditShoppingForce.label",
-            "default_case": "Refresh",
             "cases": [
                 {
                     "name": "Exit",
@@ -2147,6 +2188,10 @@
                 {
                     "name": "Refresh",
                     "label": "$option.CreditShoppingForce.cases.Refresh.label",
+                    "option": [
+                        "PrudentRefresh",
+                        "CreditShoppingRefreshCheckPrice"
+                    ],
                     "pipeline_override": {
                         "CreditShoppingBuyBlacklist": {
                             "enabled": false //不购买任意物品
@@ -2163,19 +2208,15 @@
                         "CreditShoppingRefreshCountReached": {
                             "enabled": true //进入刷新次数达到上限流程
                         }
-                    },
-                    "option": [
-                        "PrudentRefresh",
-                        "CreditShoppingRefreshCheckPrice"
-                    ]
+                    }
                 }
-            ]
+            ],
+            "default_case": "Refresh"
         },
         "CreditShoppingRefreshCheckPrice": {
             "type": "switch",
             "label": "$option.CreditShoppingRefreshCheckPrice.label",
             "description": "$option.CreditShoppingRefreshCheckPrice.description",
-            "default_case": "Yes",
             "cases": [
                 {
                     "name": "Yes",
@@ -2213,13 +2254,13 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Yes"
         },
         "PrudentRefresh": {
             "type": "switch",
             "label": "$option.PrudentRefresh.label",
             "description": "$option.PrudentRefresh.description",
-            "default_case": "No",
             "cases": [
                 {
                     "name": "Yes",
@@ -2240,7 +2281,8 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "No"
         },
         "PrudentRefreshThreshold": {
             "type": "input",
@@ -2251,9 +2293,9 @@
                     "name": "PrudentRefreshThreshold",
                     "label": "$option.PrudentRefresh.inputs.PrudentRefreshThreshold.label",
                     "description": "$option.PrudentRefresh.inputs.PrudentRefreshThreshold.description",
+                    "default": "400",
                     "pipeline_type": "int",
-                    "verify": "^\\d+$",
-                    "default": "400"
+                    "verify": "^\\d+$"
                 }
             ],
             "pipeline_override": {
@@ -2297,7 +2339,6 @@
             "type": "switch",
             "label": "$option.CreditShoppingKeepShelfRecord.label",
             "description": "$option.CreditShoppingKeepShelfRecord.description",
-            "default_case": "Yes",
             "cases": [
                 {
                     "name": "Yes"
@@ -2310,7 +2351,8 @@
                         }
                     }
                 }
-            ]
+            ],
+            "default_case": "Yes"
         },
         "CreditShoppingReserve": {
             "type": "input",
@@ -2321,9 +2363,9 @@
                     "name": "ReserveCreditThreshold",
                     "label": "$option.CreditShoppingReserve.inputs.ReserveCreditThreshold.label",
                     "description": "$option.CreditShoppingReserve.inputs.ReserveCreditThreshold.description",
+                    "default": "300",
                     "pipeline_type": "int",
-                    "verify": "^\\d+$",
-                    "default": "300"
+                    "verify": "^\\d+$"
                 }
             ],
             "pipeline_override": {

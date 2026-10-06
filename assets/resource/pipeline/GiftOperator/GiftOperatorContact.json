@@ -151,6 +151,7 @@
             "GiftOperatorSelect_MiFu",
             "GiftOperatorSelect_Perlica",
             "GiftOperatorSelect_Pogranichnik",
+            "GiftOperatorSelect_Purrchena",
             "GiftOperatorSelect_Rossi",
             "GiftOperatorSelect_Snowshine",
             "GiftOperatorSelect_Tangtang",
@@ -454,30 +455,40 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "RepeatUntilFoundAction",
-                "custom_action_param": {
-                    "custom_action": "AutoAltClickAction",
-                    "custom_action_param": {
-                        "target_offset": [
-                            0,
-                            0,
-                            0,
-                            -15
-                        ]
-                    },
-                    "wait_nodes": [
-                        "GiftOperatorCheckContact"
-                    ]
-                }
+                "custom_action": "AutoAltClickAction"
             }
         },
-        // "timeout": 5000, // 移动惯性有可能正好点击时走出范围，正常五秒够后退确认了，没进联络界面就快点进 on_error 重试
         "next": [
-            "GiftOperatorCheckContact"
+            "GiftOperatorCheckContact",
+            "[JumpBack]GiftOperatorClickContact_reply"
         ]
-        // "on_error": [
-        //     "GiftOperatorMoveBackward"
-        // ]
+    },
+    "GiftOperatorClickContact_reply": {
+        "desc": "点击干员联络台",
+        "max_hit": 15,
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    722,
+                    312,
+                    550,
+                    362
+                ],
+                "expected": [
+                    "干员联络台",
+                    "幹員聯絡台",
+                    "(?i)Operator\\s*Contact\\s*Panel",
+                    "連絡カウンター"
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction"
+            }
+        }
     },
     "GiftOperatorConfirmSelect": {
         "desc": "点击确认按钮呼唤干员",

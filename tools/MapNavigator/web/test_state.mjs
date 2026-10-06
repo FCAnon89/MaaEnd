@@ -61,6 +61,43 @@ test("target deck matching follows the runtime two-pixel nearest-surface band", 
   assert.equal(matchTargetDeckHeight(decks, 310), null);
 });
 
+test("FIND fields survive normalization and keep distinct specs apart", () => {
+  const normalized = normalizePathPoints([
+    makePoint(ActionType.FIND, {find_target: "GiftOperatorName", find_stop: "GiftOperatorApproachStop"}),
+    makePoint(ActionType.FIND, {find_text: "佩丽卡", find_stop: "GiftOperatorApproachStop"}),
+  ]);
+
+  assert.equal(normalized.length, 2);
+  assert.equal(normalized[0].find_target, "GiftOperatorName");
+  assert.equal(normalized[0].find_stop, "GiftOperatorApproachStop");
+  assert.deepEqual(normalized[1].find_text, ["佩丽卡"]);
+
+  const sameCoordinate = normalizePathPoints([
+    makePoint(ActionType.FIND, {find_target: "NodeA", find_stop: "StopNode"}),
+    makePoint(ActionType.FIND, {find_target: "NodeB", find_stop: "StopNode"}),
+  ]);
+  assert.equal(sameCoordinate.length, 2);
+
+  const withArrive = normalizePathPoints([
+    makePoint(ActionType.FIND, {find_target: "NodeA", find_arrive: [10, 20]}),
+    makePoint(ActionType.FIND, {find_target: "NodeA", find_arrive: [30, 40]}),
+  ]);
+  assert.equal(withArrive.length, 2);
+  assert.deepEqual(withArrive[0].find_arrive, [10, 20]);
+  assert.equal(normalizePathPoints([makePoint(ActionType.FIND, {find_arrive: [1]})])[0].find_arrive, undefined);
+});
+
+test("TRIGGER node survives normalization and keeps distinct nodes apart", () => {
+  const normalized = normalizePathPoints([
+    makePoint(ActionType.TRIGGER, {trigger_node: " MyTaskTriggerNode "}),
+    makePoint(ActionType.TRIGGER, {trigger_node: "OtherNode"}),
+  ]);
+
+  assert.equal(normalized.length, 2);
+  assert.equal(normalized[0].trigger_node, "MyTaskTriggerNode");
+  assert.equal(normalizePathPoints([makePoint(ActionType.TRIGGER, {trigger_node: 1})])[0].trigger_node, undefined);
+});
+
 test("selected NAVMESH target deck participates in undo, redo, and clear", () => {
   const state = new AppState();
   state.setPoints([makePoint(ActionType.NAVMESH, {target_deck_y: 100.5})]);
