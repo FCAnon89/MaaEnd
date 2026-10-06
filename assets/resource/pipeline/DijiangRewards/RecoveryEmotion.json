@@ -207,7 +207,7 @@
         ]
     },
     "RecoveryEmotionInitSelectTarget": {
-        "desc": "[恢复心情·初始化] 按已勾选舱室生成 OCR 白名单，全选时启用第二候选",
+        "desc": "[恢复心情·初始化] 按已勾选舱室生成 OCR 白名单",
         "recognition": "DirectHit",
         "pre_delay": 0,
         "action": {
@@ -218,12 +218,7 @@
                     "target": "RecoveryEmotionSelectLowEmotion",
                     "targets": [
                         "RecoveryEmotionSelectLowEmotion2"
-                    ],
-                    "enable_target_if_attach_count": {
-                        "attach_target": "RecoveryEmotionSelectLowEmotion",
-                        "target": "RecoveryEmotionSelectLowEmotion2",
-                        "count": 5
-                    }
+                    ]
                 }
             }
         },
@@ -264,8 +259,7 @@
         ]
     },
     "RecoveryEmotionSelectLowEmotion2": {
-        "desc": "[恢复心情·操作] 全选时按相同舱室白名单点击第二个匹配干员",
-        "enabled": false,
+        "desc": "[恢复心情·操作] 按相同舱室白名单点击第二个匹配干员",
         "recognition": {
             "type": "OCR",
             "param": {
