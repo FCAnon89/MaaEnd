@@ -412,8 +412,48 @@
             "AutoDeliveryCheckSkipChatReady",
             "AutoDeliveryCloseRewardDialog"
         ],
+        "on_error": [
+            "AutoDeliveryRetrySubmitGoods"
+        ],
         "focus": {
             "Node.Action.Starting": "$task.AutoDelivery.focus.submit_goods"
         }
+    },
+    "AutoDeliveryRetrySubmitGoods": {
+        "desc": "首次交互未进入对话时，重新确认同一交货目标后再尝试一次",
+        "recognition": "And",
+        "all_of": [
+            "AutoDeliveryCheckSubmitGoodsTarget"
+        ],
+        "pre_wait_freezes": {
+            "time": 300,
+            "target": [
+                763,
+                349,
+                195,
+                270
+            ]
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "RepeatUntilFoundAction",
+                "custom_action_param": {
+                    "custom_action": "AutoAltClickAction",
+                    "wait_nodes": [
+                        "AutoDeliveryInChatDialog"
+                    ],
+                    "repeat_count": 1,
+                    "interval_ms": 6000
+                }
+            }
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "AutoDeliveryCheckSkipChatReady",
+            "AutoDeliveryCloseRewardDialog"
+        ]
     }
 }
