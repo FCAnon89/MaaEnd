@@ -2087,7 +2087,6 @@
     "task.DijiangRewards.focus.growth_chamber_flow_failed": "培养舱奖励或再次培养流程失败",
     "task.DijiangRewards.focus.need_credit_entry_failed": "未能进入信用点联动流程",
     "task.DijiangRewards.focus.reception_room_flow_failed": "进入会客室任务失败，未知界面",
-    "task.DijiangRewards.focus.recovery_emotion_full_prompt_failed": "处理满心情或无法助力提示失败",
     "task.DijiangRewards.focus.recovery_emotion_operator_not_found": "未找到指定舱室中可用于回复心情的干员，已返回总控中枢",
     "task.DijiangRewards.label": "🎁基建任务",
     "task.EnvironmentMonitoring.description": "自动完成环境监测任务",

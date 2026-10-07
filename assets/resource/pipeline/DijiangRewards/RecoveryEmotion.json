@@ -54,7 +54,7 @@
                 "expected": [
                     "生产助力",
                     "生產助力",
-                    "(?i)Production\\s*Assist",
+                    "Production Assist",
                     "生産サポート",
                     "생산 지원"
                 ]
@@ -74,12 +74,8 @@
                 ],
                 "expected": [
                     "今日助力好友",
-                    "(?i)Assists\\s*Today",
+                    "Assists Today",
                     "本日のサポート記録",
-                    "干员心情已满，无法使用助力",
-                    "幹員心情已滿，無法使用助力",
-                    "(?i)Cannot\\s*assist\\s*as\\s*operator\\s*mood\\s*is\\s*maxed",
-                    "オペレーターは体力が十分なため、サポートできません",
                     "오늘 지원한 친구"
                 ]
             }
@@ -99,7 +95,7 @@
                 "expected": [
                     "选择待恢复心情的干员",
                     "選擇待恢復心情的幹員",
-                    "(?i)Select\\s*operator\\s*awaiting\\s*mood\\s*recovery",
+                    "Select operator awaiting mood recovery",
                     "対象オペレーターを選んでください"
                 ]
             }
@@ -147,43 +143,8 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionResetScrollState"
+            "RecoveryEmotionView2In"
         ]
-    },
-    "RecoveryEmotionFull": {
-        "desc": "[恢复心情·意外] 点击了满心情/无法助力干员时的提示",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    416,
-                    65,
-                    428,
-                    119
-                ],
-                "expected": [
-                    "干员心情已满，无法使用助力",
-                    "幹員心情已滿，無法使用助力",
-                    "(?i)Cannot\\s*assist\\s*as\\s*operator\\s*mood\\s*is\\s*maxed",
-                    "オペレーターは体力が十分なため、サポートできません",
-                    "Selected operator is at max mood",
-                    "No recovery required",
-                    "干员心情已满",
-                    "幹員心情已滿",
-                    "无法使用助力",
-                    "無法使用助力"
-                ]
-            }
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionExitView2ToView1"
-        ],
-        "focus": {
-            "Node.PipelineNode.Failed": "$task.DijiangRewards.focus.recovery_emotion_full_prompt_failed"
-        }
     },
     "RecoveryEmotionView2In": {
         "desc": "[恢复心情·状态] 已打开「选择待恢复心情的干员」界面，开始选择待恢复心情的干员",
@@ -204,10 +165,60 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RecoveryEmotionEnableSecondSelection",
             "RecoveryEmotionSelectLowEmotion",
             "RecoveryEmotionStopAtUnassigned",
-            "RecoveryEmotionFirstTargetListComplete",
-            "RecoveryEmotionScrollToNextOperators"
+            "RecoveryEmotionScrollToNextOperators",
+            "RecoveryEmotionScrollLimitReached"
+        ]
+    },
+    "RecoveryEmotionEnableSecondSelection": {
+        "desc": "识别当前可用点数为 2 时启用第二名查找",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    1062,
+                    204,
+                    15,
+                    17
+                ],
+                "expected": [
+                    "2"
+                ],
+                "only_rec": true
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "PipelineOverride",
+                "custom_action_param": {
+                    "patch": {
+                        "RecoveryEmotionSelectLowEmotion2": {
+                            "enabled": true
+                        },
+                        "RecoveryEmotionSelectLowEmotionAfterFirst": {
+                            "enabled": true
+                        },
+                        "RecoveryEmotionStopAtUnassignedAfterFirst": {
+                            "enabled": true
+                        },
+                        "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
+                            "enabled": true
+                        },
+                        "RecoveryEmotionScrollLimitReachedAfterFirst": {
+                            "enabled": true
+                        }
+                    }
+                }
+            }
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionSelectLowEmotion"
         ]
     },
     "RecoveryEmotionSelectLowEmotion": {
@@ -227,13 +238,14 @@
         "action": {
             "type": "Click"
         },
-        "post_delay": 400, // 上方tips出现需要时间，可能显示也可能不显示，避免连续点击不同干员导致覆盖提示判断错误
+        "post_delay": 400, // 等待勾选状态刷新后再扫描下一名
         "rate_limit": 0,
         "next": [
             "RecoveryEmotionSelectLowEmotion2",
             "RecoveryEmotionStopAtUnassignedAfterFirst",
-            "RecoveryEmotionSecondTargetListComplete",
-            "RecoveryEmotionScrollToNextOperatorsAfterFirst"
+            "RecoveryEmotionScrollToNextOperatorsAfterFirst",
+            "RecoveryEmotionScrollLimitReachedAfterFirst",
+            "RecoveryEmotionExitView2ToView1"
         ],
         "attach": {
             "cabin_labels": {
@@ -289,6 +301,7 @@
     },
     "RecoveryEmotionSelectLowEmotion2": {
         "desc": "[恢复心情·操作] 按相同舱室点击当前列表的第二个匹配干员",
+        "enabled": false,
         "recognition": "Custom",
         "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
         "custom_recognition_param": {
@@ -304,7 +317,7 @@
         "action": {
             "type": "Click"
         },
-        "post_delay": 400, // 上方tips出现需要时间，可能显示也可能不显示，避免连续点击不同干员导致覆盖提示判断错误
+        "post_delay": 400, // 等待勾选状态刷新后再扫描下一名
         "rate_limit": 0
     },
     "RecoveryEmotionStopAtUnassigned": {
@@ -329,6 +342,7 @@
     },
     "RecoveryEmotionStopAtUnassignedAfterFirst": {
         "desc": "[恢复心情·停止扫描] 首名已选后扫描可见列表，遇到首个无安排干员时停止",
+        "enabled": false,
         "recognition": "Custom",
         "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
         "custom_recognition_param": {
@@ -347,94 +361,9 @@
             "RecoveryEmotionExitView2ToView1"
         ]
     },
-    "RecoveryEmotionResetScrollState": {
-        "desc": "每次打开选人列表前重置两个阶段的滚动条位置记录",
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "action": {
-            "type": "Custom",
-            "param": {
-                "custom_action": "PipelineOverride",
-                "custom_action_param": {
-                    "patch": {
-                        "RecoveryEmotionFirstTargetListComplete": {
-                            "attach": {
-                                "ready": false
-                            }
-                        },
-                        "RecoveryEmotionSecondTargetListComplete": {
-                            "attach": {
-                                "ready": false
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionView2In"
-        ]
-    },
-    "RecoveryEmotionFirstTargetListComplete": {
-        "desc": "连续两次滚动条位置不变时停止首名查找",
-        "recognition": {
-            "type": "Custom",
-            "param": {
-                "custom_recognition": "ScrollbarCompleteRecognition",
-                "custom_recognition_param": {
-                    "position_tolerance": 2
-                },
-                "roi": [
-                    1079,
-                    244,
-                    5,
-                    270
-                ]
-            }
-        },
-        "pre_delay": 0,
-        "action": "DoNothing",
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionNoTargetExitView2ToView1"
-        ],
-        "attach": {
-            "ready": false
-        }
-    },
-    "RecoveryEmotionSecondTargetListComplete": {
-        "desc": "连续两次滚动条位置不变时停止第二名查找",
-        "recognition": {
-            "type": "Custom",
-            "param": {
-                "custom_recognition": "ScrollbarCompleteRecognition",
-                "custom_recognition_param": {
-                    "position_tolerance": 2
-                },
-                "roi": [
-                    1079,
-                    244,
-                    5,
-                    270
-                ]
-            }
-        },
-        "pre_delay": 0,
-        "action": "DoNothing",
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionExitView2ToView1"
-        ],
-        "attach": {
-            "ready": false
-        }
-    },
     "RecoveryEmotionScrollToNextOperators": {
-        "desc": "[恢复心情·滚动] 首名未找到时固定起止点缓慢上划，并核对滚动条进度",
+        "desc": "[恢复心情·滚动] 首名未找到时上划，最多 20 次",
+        "max_hit": 20,
         "recognition": {
             "type": "And",
             "param": {
@@ -478,12 +407,20 @@
         "next": [
             "RecoveryEmotionSelectLowEmotion",
             "RecoveryEmotionStopAtUnassigned",
-            "RecoveryEmotionFirstTargetListComplete",
-            "RecoveryEmotionScrollToNextOperators"
+            "RecoveryEmotionScrollToNextOperators",
+            "RecoveryEmotionScrollLimitReached"
+        ]
+    },
+    "RecoveryEmotionScrollLimitReached": {
+        "desc": "首名查找达到 20 次滑动上限，按未找到干员收尾",
+        "recognition": "DirectHit",
+        "next": [
+            "RecoveryEmotionNoTargetExitView2ToView1"
         ]
     },
     "RecoveryEmotionSelectLowEmotionAfterFirst": {
         "desc": "[恢复心情·操作] 首名已选后，在后续页面点击首个匹配干员作为第二名",
+        "enabled": false,
         "recognition": "Custom",
         "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
         "custom_recognition_param": {
@@ -499,11 +436,13 @@
         "action": {
             "type": "Click"
         },
-        "post_delay": 400,
+        "post_delay": 400, // 等待勾选状态刷新后再继续后续步骤
         "rate_limit": 0
     },
     "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
-        "desc": "[恢复心情·滚动] 首名已选且当前页无第二名时固定起止点缓慢上划",
+        "desc": "[恢复心情·滚动] 首名已选且当前页无第二名时上划，最多 20 次",
+        "enabled": false,
+        "max_hit": 20,
         "recognition": {
             "type": "And",
             "param": {
@@ -547,8 +486,16 @@
         "next": [
             "RecoveryEmotionSelectLowEmotionAfterFirst",
             "RecoveryEmotionStopAtUnassignedAfterFirst",
-            "RecoveryEmotionSecondTargetListComplete",
-            "RecoveryEmotionScrollToNextOperatorsAfterFirst"
+            "RecoveryEmotionScrollToNextOperatorsAfterFirst",
+            "RecoveryEmotionScrollLimitReachedAfterFirst"
+        ]
+    },
+    "RecoveryEmotionScrollLimitReachedAfterFirst": {
+        "desc": "第二名查找达到 20 次滑动上限，返回助力第一页",
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "RecoveryEmotionExitView2ToView1"
         ]
     },
     "RecoveryEmotionNoTargetExitView2ToView1": {
@@ -602,31 +549,6 @@
         "focus": {
             "Node.PipelineNode.Succeeded": "$task.DijiangRewards.focus.recovery_emotion_operator_not_found"
         }
-    },
-    "RecoveryEmotionCouldNotAssist": {
-        "desc": "[恢复心情·收尾] 没有更多心情激励点数时的提示，点击确认",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    1062,
-                    204,
-                    15,
-                    17
-                ],
-                "expected": [
-                    "1",
-                    "2"
-                ],
-                "only_rec": true
-            }
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionConfirm"
-        ]
     },
     "RecoveryEmotionConfirm": {
         "desc": "测试版禁用：停留在干员勾选界面，避免消耗每日恢复机会",

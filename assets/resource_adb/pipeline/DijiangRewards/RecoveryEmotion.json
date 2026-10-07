@@ -1,18 +1,14 @@
 {
-    "RecoveryEmotionTrustIcon": {
-        "roi": [
-            499,
-            203,
-            700,
-            365
-        ]
-    },
-    "RecoveryEmotionCouldNotAssist": {
-        "roi": [
-            1166,
-            164,
-            22,
-            23
-        ]
+    "RecoveryEmotionEnableSecondSelection": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    1166,
+                    164,
+                    22,
+                    23
+                ]
+            }
+        }
     }
 }

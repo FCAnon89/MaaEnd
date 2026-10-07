@@ -2087,7 +2087,6 @@
     "task.DijiangRewards.focus.growth_chamber_flow_failed": "培養室の報酬受取または再培養フローに失敗しました",
     "task.DijiangRewards.focus.need_credit_entry_failed": "信用ポイント連携フローに入れませんでした",
     "task.DijiangRewards.focus.reception_room_flow_failed": "応接室フローが未知の画面で失敗しました",
-    "task.DijiangRewards.focus.recovery_emotion_full_prompt_failed": "体力満タンまたは支援不可の案内処理に失敗しました",
     "task.DijiangRewards.focus.recovery_emotion_operator_not_found": "気分回復の対象となる指定区画のオペレーターが見つからないため、総合制御中枢に戻りました。",
     "task.DijiangRewards.label": "🎁基地報酬",
     "task.EnvironmentMonitoring.description": "環境監視タスクを自動で完了します",
