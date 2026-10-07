@@ -556,23 +556,8 @@
                             "mode": {
                                 "type": "string",
                                 "enum": [ "target", "unassigned" ]
-                            },
-                            "target_index": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "maximum": 1
                             }
-                        },
-                        "allOf": [
-                            {
-                                "if": {
-                                    "properties": { "mode": { "const": "target" } }
-                                },
-                                "then": {
-                                    "required": [ "target_index" ]
-                                }
-                            }
-                        ]
+                        }
                     }
                 }
             }

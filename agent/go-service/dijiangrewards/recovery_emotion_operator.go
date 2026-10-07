@@ -12,17 +12,21 @@ import (
 )
 
 const (
-	recoveryEmotionOperatorRecognition = "RecoveryEmotionCabinOperatorRecognition"
-	recoveryEmotionCabinAttachNode     = "RecoveryEmotionSelectLowEmotion"
-	recoveryEmotionOCRThreshold        = 0.15
-	recoveryEmotionFirstBandOffset     = 77
-	recoveryEmotionSecondBandOffset    = 217
-	recoveryEmotionBandSearchMargin    = 60
-	recoveryEmotionBandMinimumRun      = 14
-	recoveryEmotionBandHeight          = 18
-	recoveryEmotionLabelTextHeight     = 16
-	recoveryEmotionNeutralChromaRatio  = 0.35
-	recoveryEmotionYellowChannelRatio  = 0.2
+	recoveryEmotionOperatorRecognitionName = "RecoveryEmotionCabinOperatorRecognition"
+	recoveryEmotionCabinAttachNode         = "RecoveryEmotionSelectLowEmotion"
+	recoveryEmotionOCRThreshold            = 0.15
+	recoveryEmotionFirstBandOffset         = 77
+	recoveryEmotionSecondBandOffset        = 217
+	recoveryEmotionBandSearchMargin        = 60
+	recoveryEmotionBandMinimumRun          = 14
+	recoveryEmotionBandHeight              = 18
+	recoveryEmotionLabelTextHeight         = 16
+	recoveryEmotionNeutralChromaRatio      = 0.35
+	recoveryEmotionYellowChannelRatio      = 0.2
+	recoveryEmotionOperatorColumns         = 6
+	recoveryEmotionOperatorColumnStep      = 90
+	recoveryEmotionOperatorCardWidth       = 81
+	recoveryEmotionOperatorCardHeight      = 115
 )
 
 type recoveryEmotionBandColor string
@@ -45,18 +49,21 @@ var recoveryEmotionUnassignedLabels = []string{
 }
 
 type recoveryEmotionOperatorRecognitionParam struct {
-	Mode        string `json:"mode"`
-	TargetIndex int    `json:"target_index,omitempty"`
+	Mode string `json:"mode"`
 }
 
 type recoveryEmotionCabinAttach struct {
-	Attach map[string][]string `json:"attach"`
+	Attach struct {
+		CabinLabels    map[string][]string `json:"cabin_labels"`
+		SelectedCabins map[string]bool     `json:"selected_cabins"`
+	} `json:"attach"`
 }
 
 type recoveryEmotionCabinTarget struct {
 	Labels        []string
 	BandColor     recoveryEmotionBandColor
 	Manufacturing bool
+	Selected      bool
 }
 
 type recoveryEmotionOperatorCard struct {
@@ -68,12 +75,11 @@ type recoveryEmotionOperatorCard struct {
 	click  maa.Rect
 }
 
-// RecoveryEmotionOperatorRecognition scans the visible cards from left to right and top to bottom.
-type RecoveryEmotionOperatorRecognition struct{}
+type recoveryEmotionOperatorRecognitionRunner struct{}
 
-var _ maa.CustomRecognitionRunner = &RecoveryEmotionOperatorRecognition{}
+var _ maa.CustomRecognitionRunner = &recoveryEmotionOperatorRecognitionRunner{}
 
-func (r *RecoveryEmotionOperatorRecognition) Run(
+func (r *recoveryEmotionOperatorRecognitionRunner) Run(
 	ctx *maa.Context,
 	arg *maa.CustomRecognitionArg,
 ) (*maa.CustomRecognitionResult, bool) {
@@ -81,56 +87,55 @@ func (r *RecoveryEmotionOperatorRecognition) Run(
 		return nil, false
 	}
 	if arg.Roi[2] <= 0 || arg.Roi[3] <= 0 {
-		log.Error().Str("component", recoveryEmotionOperatorRecognition).Msg("recognition roi is empty")
+		log.Error().Str("component", recoveryEmotionOperatorRecognitionName).Msg("recognition roi is empty")
 		return nil, false
 	}
 
 	var params recoveryEmotionOperatorRecognitionParam
 	if err := json.Unmarshal([]byte(arg.CustomRecognitionParam), &params); err != nil {
-		log.Error().Err(err).Str("component", recoveryEmotionOperatorRecognition).Msg("failed to parse params")
+		log.Error().Err(err).Str("component", recoveryEmotionOperatorRecognitionName).Msg("failed to parse params")
 		return nil, false
 	}
 	if params.Mode != "target" && params.Mode != "unassigned" {
-		log.Error().Str("component", recoveryEmotionOperatorRecognition).Str("mode", params.Mode).Msg("unsupported scan mode")
+		log.Error().Str("component", recoveryEmotionOperatorRecognitionName).Str("mode", params.Mode).Msg("unsupported scan mode")
 		return nil, false
 	}
-	if params.Mode == "target" && (params.TargetIndex < 0 || params.TargetIndex > 1) {
-		log.Error().Str("component", recoveryEmotionOperatorRecognition).Int("target_index", params.TargetIndex).Msg("target index must be zero or one")
+	cabins, err := loadRecoveryEmotionCabinTargets(ctx)
+	if err != nil {
+		log.Error().Err(err).Str("component", recoveryEmotionOperatorRecognitionName).Msg("failed to load cabin labels")
 		return nil, false
 	}
 
-	var cabins map[string]recoveryEmotionCabinTarget
-	if params.Mode == "target" {
-		var err error
-		cabins, err = loadRecoveryEmotionCabinTargets(ctx)
-		if err != nil {
-			log.Error().Err(err).Str("component", recoveryEmotionOperatorRecognition).Msg("failed to load selected cabins")
-			return nil, false
-		}
-	}
-
-	targetCount := 0
 	for _, card := range recoveryEmotionOperatorCards(arg.Img, arg.Roi) {
 		bandColor := recoveryEmotionOperatorBandColor(arg.Img, card.band)
 		texts, err := recognizeRecoveryEmotionCard(ctx, arg.Img, card.label)
 		if err != nil {
-			log.Debug().Err(err).Str("component", recoveryEmotionOperatorRecognition).Int("row", card.row+1).Int("column", card.column+1).Msg("card label OCR failed")
+			log.Debug().
+				Err(err).
+				Str("component", recoveryEmotionOperatorRecognitionName).
+				Int("row", card.row+1).
+				Int("column", card.column+1).
+				Msg("card label OCR failed")
 			texts = nil
 		}
-		selected := recoveryEmotionOperatorCardSelected(arg.Img, card.card)
 		log.Debug().
-			Str("component", recoveryEmotionOperatorRecognition).
+			Str("component", recoveryEmotionOperatorRecognitionName).
 			Str("mode", params.Mode).
 			Strs("ocr_texts", texts).
 			Str("band_color", string(bandColor)).
-			Bool("selected", selected).
 			Int("band_y", card.band[1]).
 			Int("row", card.row+1).
 			Int("column", card.column+1).
 			Msg("scanned recovery emotion operator card")
 
-		if isRecoveryEmotionUnassigned(texts, bandColor) {
-			log.Debug().Str("component", recoveryEmotionOperatorRecognition).Str("mode", params.Mode).Str("band_color", string(bandColor)).Int("row", card.row+1).Int("column", card.column+1).Msg("found first unassigned card")
+		if isRecoveryEmotionUnassigned(texts, bandColor, cabins) {
+			log.Debug().
+				Str("component", recoveryEmotionOperatorRecognitionName).
+				Str("mode", params.Mode).
+				Str("band_color", string(bandColor)).
+				Int("row", card.row+1).
+				Int("column", card.column+1).
+				Msg("found first unassigned card")
 			if params.Mode == "unassigned" {
 				return recoveryEmotionOperatorResult(card, params), true
 			}
@@ -140,30 +145,30 @@ func (r *RecoveryEmotionOperatorRecognition) Run(
 		if params.Mode != "target" {
 			continue
 		}
-		if matchesRecoveryEmotionCabin(texts, bandColor, cabins) {
-			if selected {
-				targetCount++
-				continue
-			}
-			if targetCount == params.TargetIndex {
-				log.Debug().Str("component", recoveryEmotionOperatorRecognition).Str("band_color", string(bandColor)).Int("target_index", params.TargetIndex).Int("row", card.row+1).Int("column", card.column+1).Msg("found matching cabin operator")
-				return recoveryEmotionOperatorResult(card, params), true
-			}
-			targetCount++
+		if !matchesRecoveryEmotionCabin(texts, bandColor, cabins) {
+			continue
 		}
+		if recoveryEmotionOperatorCardSelected(arg.Img, card.card) {
+			continue
+		}
+		log.Debug().
+			Str("component", recoveryEmotionOperatorRecognitionName).
+			Str("band_color", string(bandColor)).
+			Int("row", card.row+1).
+			Int("column", card.column+1).
+			Msg("found matching cabin operator")
+		return recoveryEmotionOperatorResult(card, params), true
 	}
 
-	log.Debug().Str("component", recoveryEmotionOperatorRecognition).Str("mode", params.Mode).Int("target_index", params.TargetIndex).Int("target_count", targetCount).Msg("no matching card found on current page")
+	log.Debug().
+		Str("component", recoveryEmotionOperatorRecognitionName).
+		Str("mode", params.Mode).
+		Msg("no matching card found on current page")
 	return nil, false
 }
 
+// recoveryEmotionOperatorCards builds visible row-major cards using each row's detected band offset.
 func recoveryEmotionOperatorCards(img image.Image, roi maa.Rect) []recoveryEmotionOperatorCard {
-	const (
-		columns    = 6
-		columnStep = 90
-		labelWidth = 81
-		cardHeight = 115
-	)
 	bandRows := [...]int{
 		roi[1] + recoveryEmotionFirstBandOffset,
 		roi[1] + recoveryEmotionSecondBandOffset,
@@ -179,23 +184,21 @@ func recoveryEmotionOperatorCards(img image.Image, roi maa.Rect) []recoveryEmoti
 		shifts[1] = shifts[0]
 	}
 
-	cards := make([]recoveryEmotionOperatorCard, 0, len(bandRows)*columns)
+	cards := make([]recoveryEmotionOperatorCard, 0, len(bandRows)*recoveryEmotionOperatorColumns)
 	for row, bandY := range bandRows {
 		bandY += shifts[row]
-		for column := 0; column < columns; column++ {
-			x := roi[0] + column*columnStep
-			band := maa.Rect{x, bandY, labelWidth, recoveryEmotionBandHeight}
-			label := maa.Rect{x, bandY, labelWidth, recoveryEmotionLabelTextHeight}
-			card := maa.Rect{x, bandY - 71, labelWidth, cardHeight}
+		for column := 0; column < recoveryEmotionOperatorColumns; column++ {
+			x := roi[0] + column*recoveryEmotionOperatorColumnStep
+			band := maa.Rect{x, bandY, recoveryEmotionOperatorCardWidth, recoveryEmotionBandHeight}
+			label := maa.Rect{x, bandY, recoveryEmotionOperatorCardWidth, recoveryEmotionLabelTextHeight}
+			card := maa.Rect{x, bandY - 71, recoveryEmotionOperatorCardWidth, recoveryEmotionOperatorCardHeight}
 			visible := image.Rect(card[0], card[1], card[0]+card[2], card[1]+card[3]).Intersect(image.Rect(roi[0], roi[1], roi[0]+roi[2], roi[1]+roi[3]))
-			if img != nil {
-				visible = visible.Intersect(img.Bounds())
-			}
+			visible = visible.Intersect(img.Bounds())
 			if visible.Empty() {
 				continue
 			}
-			clickX := x + labelWidth/2
-			clickY := card[1] + cardHeight/2
+			clickX := x + recoveryEmotionOperatorCardWidth/2
+			clickY := card[1] + recoveryEmotionOperatorCardHeight/2
 			if !image.Pt(clickX, clickY).In(visible) {
 				continue
 			}
@@ -213,15 +216,11 @@ func recoveryEmotionOperatorCards(img image.Image, roi maa.Rect) []recoveryEmoti
 	return cards
 }
 
+// recoveryEmotionOperatorBandShift finds the vertical offset shared by colored bands in one row.
 func recoveryEmotionOperatorBandShift(img image.Image, roi maa.Rect, expectedY int) (int, bool) {
-	if img == nil || roi[2] <= 0 || roi[3] < recoveryEmotionBandHeight {
+	if roi[2] <= 0 || roi[3] < recoveryEmotionBandHeight {
 		return 0, false
 	}
-	const (
-		columns    = 6
-		columnStep = 90
-		labelWidth = 81
-	)
 	startY := max(roi[1], expectedY-recoveryEmotionBandSearchMargin)
 	endY := min(roi[1]+roi[3]-1, expectedY+recoveryEmotionBandSearchMargin)
 	if startY > endY {
@@ -229,8 +228,8 @@ func recoveryEmotionOperatorBandShift(img image.Image, roi maa.Rect, expectedY i
 	}
 
 	var shifts []int
-	for column := 0; column < columns; column++ {
-		x := roi[0] + column*columnStep
+	for column := 0; column < recoveryEmotionOperatorColumns; column++ {
+		x := roi[0] + column*recoveryEmotionOperatorColumnStep
 		lastColor := recoveryEmotionBandUnknown
 		runStart := startY
 		runLength := 0
@@ -242,7 +241,7 @@ func recoveryEmotionOperatorBandShift(img image.Image, roi maa.Rect, expectedY i
 			runLength = 0
 		}
 		for y := startY; y <= endY; y++ {
-			color := recoveryEmotionOperatorBandColorAtY(img, x, y, labelWidth)
+			color := recoveryEmotionOperatorBandColorAtY(img, x, y)
 			if color == lastColor && color != recoveryEmotionBandUnknown && color != recoveryEmotionBandNeutral {
 				runLength++
 				continue
@@ -278,41 +277,11 @@ func recoveryEmotionOperatorBandShift(img image.Image, roi maa.Rect, expectedY i
 	return best[len(best)/2], true
 }
 
-func recoveryEmotionOperatorBandColorAtY(img image.Image, x, y, width int) recoveryEmotionBandColor {
-	if img == nil || width < 20 || y < img.Bounds().Min.Y || y >= img.Bounds().Max.Y {
-		return recoveryEmotionBandUnknown
-	}
-	band := image.Rect(x, y, x+width, y+1).Intersect(img.Bounds())
-	if band.Dx() < 20 {
-		return recoveryEmotionBandUnknown
-	}
-	sideWidth := min(9, band.Dx()/4)
-	channels := [3][]int{}
-	for _, xRange := range [][2]int{
-		{band.Min.X + 2, band.Min.X + sideWidth},
-		{band.Max.X - sideWidth, band.Max.X - 2},
-	} {
-		for sampleX := xRange[0]; sampleX < xRange[1]; sampleX++ {
-			r, g, b, a := img.At(sampleX, y).RGBA()
-			if a == 0 {
-				continue
-			}
-			channels[0] = append(channels[0], int(r>>8))
-			channels[1] = append(channels[1], int(g>>8))
-			channels[2] = append(channels[2], int(b>>8))
-		}
-	}
-	if len(channels[0]) == 0 {
-		return recoveryEmotionBandUnknown
-	}
-	medians := [3]int{}
-	for channel := range channels {
-		sort.Ints(channels[channel])
-		medians[channel] = channels[channel][len(channels[channel])/2]
-	}
-	return classifyRecoveryEmotionBandColor(medians[0], medians[1], medians[2])
+func recoveryEmotionOperatorBandColorAtY(img image.Image, x, y int) recoveryEmotionBandColor {
+	return recoveryEmotionOperatorBandColor(img, maa.Rect{x, y, recoveryEmotionOperatorCardWidth, 1})
 }
 
+// loadRecoveryEmotionCabinTargets reads the canonical cabin labels and selected subset from the scan node.
 func loadRecoveryEmotionCabinTargets(ctx *maa.Context) (map[string]recoveryEmotionCabinTarget, error) {
 	raw, err := ctx.GetNodeJSON(recoveryEmotionCabinAttachNode)
 	if err != nil {
@@ -323,28 +292,16 @@ func loadRecoveryEmotionCabinTargets(ctx *maa.Context) (map[string]recoveryEmoti
 		return nil, fmt.Errorf("parse cabin attach from %s: %w", recoveryEmotionCabinAttachNode, err)
 	}
 
-	cabins := make(map[string]recoveryEmotionCabinTarget, len(node.Attach))
-	for key, values := range node.Attach {
-		labels := make([]string, 0, len(values))
-		seen := make(map[string]struct{}, len(values))
-		for _, value := range values {
-			label := strings.TrimSpace(value)
-			if label == "" {
-				continue
-			}
-			if _, ok := seen[label]; ok {
-				continue
-			}
-			seen[label] = struct{}{}
-			labels = append(labels, label)
-		}
+	cabins := make(map[string]recoveryEmotionCabinTarget, len(node.Attach.CabinLabels))
+	for key, labels := range node.Attach.CabinLabels {
 		if len(labels) == 0 {
 			continue
 		}
 		cabins[key] = recoveryEmotionCabinTarget{
 			Labels:        labels,
 			BandColor:     recoveryEmotionCabinBandColorForKey(key),
-			Manufacturing: strings.HasPrefix(key, "manufacturing_"),
+			Manufacturing: key == "manufacturing_i" || key == "manufacturing_ii",
+			Selected:      node.Attach.SelectedCabins[key],
 		}
 	}
 	if len(cabins) == 0 {
@@ -374,6 +331,9 @@ func matchesRecoveryEmotionCabin(
 	cabins map[string]recoveryEmotionCabinTarget,
 ) bool {
 	for _, cabin := range cabins {
+		if !cabin.Selected {
+			continue
+		}
 		nameMatched := matchesRecoveryEmotionLabel(texts, cabin.Labels)
 		if cabin.Manufacturing {
 			if bandColor == recoveryEmotionBandManufacture && nameMatched {
@@ -388,10 +348,27 @@ func matchesRecoveryEmotionCabin(
 	return false
 }
 
-func isRecoveryEmotionUnassigned(texts []string, bandColor recoveryEmotionBandColor) bool {
-	return bandColor == recoveryEmotionBandNeutral || matchesRecoveryEmotionLabel(texts, recoveryEmotionUnassignedLabels)
+// isRecoveryEmotionUnassigned lets an exact cabin name override a neutral color sample.
+func isRecoveryEmotionUnassigned(
+	texts []string,
+	bandColor recoveryEmotionBandColor,
+	cabins map[string]recoveryEmotionCabinTarget,
+) bool {
+	if matchesRecoveryEmotionLabel(texts, recoveryEmotionUnassignedLabels) {
+		return true
+	}
+	if bandColor != recoveryEmotionBandNeutral {
+		return false
+	}
+	for _, cabin := range cabins {
+		if matchesRecoveryEmotionLabel(texts, cabin.Labels) {
+			return false
+		}
+	}
+	return true
 }
 
+// recognizeRecoveryEmotionCard reads only the cabin-name strip above the trust indicator.
 func recognizeRecoveryEmotionCard(ctx *maa.Context, img image.Image, roi maa.Rect) ([]string, error) {
 	detail, err := ctx.RunRecognitionDirect(maa.RecognitionTypeOCR, &maa.OCRParam{
 		ROI:       maa.NewTargetRect(roi),
@@ -413,7 +390,6 @@ func recognizeRecoveryEmotionCard(ctx *maa.Context, img image.Image, roi maa.Rec
 	}
 
 	texts := make([]string, 0, len(results))
-	seen := make(map[string]struct{}, len(results))
 	for _, result := range results {
 		if result == nil {
 			continue
@@ -426,10 +402,6 @@ func recognizeRecoveryEmotionCard(ctx *maa.Context, img image.Image, roi maa.Rec
 		if text == "" {
 			continue
 		}
-		if _, ok := seen[text]; ok {
-			continue
-		}
-		seen[text] = struct{}{}
 		texts = append(texts, text)
 	}
 	return texts, nil
@@ -447,23 +419,33 @@ func matchesRecoveryEmotionLabel(texts, labels []string) bool {
 }
 
 func recoveryEmotionOperatorBandColor(img image.Image, roi maa.Rect) recoveryEmotionBandColor {
-	if img == nil {
-		return recoveryEmotionBandUnknown
-	}
 	band := image.Rect(roi[0], roi[1], roi[0]+roi[2], roi[1]+roi[3]).Intersect(img.Bounds())
-	if band.Dx() < 20 || band.Dy() < 6 {
+	if band.Dx() < 20 || band.Empty() {
 		return recoveryEmotionBandUnknown
 	}
 
 	// Sample both ends of the flat band, away from its centered cabin name.
 	sideWidth := min(9, band.Dx()/4)
+	yStart := band.Min.Y
+	yEnd := band.Max.Y
+	if band.Dy() >= 6 {
+		yStart += 2
+		yEnd -= 2
+	}
+	return recoveryEmotionColorFromRegions(
+		img,
+		image.Rect(band.Min.X+2, yStart, band.Min.X+sideWidth, yEnd),
+		image.Rect(band.Max.X-sideWidth, yStart, band.Max.X-2, yEnd),
+	)
+}
+
+// recoveryEmotionColorFromRegions classifies the median color across clipped image regions.
+func recoveryEmotionColorFromRegions(img image.Image, regions ...image.Rectangle) recoveryEmotionBandColor {
 	channels := [3][]int{}
-	for y := band.Min.Y + 2; y < band.Max.Y-2; y++ {
-		for _, xRange := range [][2]int{
-			{band.Min.X + 2, band.Min.X + sideWidth},
-			{band.Max.X - sideWidth, band.Max.X - 2},
-		} {
-			for x := xRange[0]; x < xRange[1]; x++ {
+	for _, region := range regions {
+		region = region.Intersect(img.Bounds())
+		for y := region.Min.Y; y < region.Max.Y; y++ {
+			for x := region.Min.X; x < region.Max.X; x++ {
 				r, g, b, a := img.At(x, y).RGBA()
 				if a == 0 {
 					continue
@@ -486,10 +468,8 @@ func recoveryEmotionOperatorBandColor(img image.Image, roi maa.Rect) recoveryEmo
 	return classifyRecoveryEmotionBandColor(medians[0], medians[1], medians[2])
 }
 
+// recoveryEmotionOperatorCardSelected reads the yellow check marker in the card's upper-right corner.
 func recoveryEmotionOperatorCardSelected(img image.Image, card maa.Rect) bool {
-	if img == nil || card[2] < 24 || card[3] < 24 {
-		return false
-	}
 	marker := image.Rect(
 		card[0]+card[2]-18,
 		card[1]+1,
@@ -499,27 +479,7 @@ func recoveryEmotionOperatorCardSelected(img image.Image, card maa.Rect) bool {
 	if marker.Dx() < 8 || marker.Dy() < 8 {
 		return false
 	}
-	channels := [3][]int{}
-	for y := marker.Min.Y; y < marker.Max.Y; y++ {
-		for x := marker.Min.X; x < marker.Max.X; x++ {
-			r, g, b, a := img.At(x, y).RGBA()
-			if a == 0 {
-				continue
-			}
-			channels[0] = append(channels[0], int(r>>8))
-			channels[1] = append(channels[1], int(g>>8))
-			channels[2] = append(channels[2], int(b>>8))
-		}
-	}
-	if len(channels[0]) == 0 {
-		return false
-	}
-	medians := [3]int{}
-	for channel := range channels {
-		sort.Ints(channels[channel])
-		medians[channel] = channels[channel][len(channels[channel])/2]
-	}
-	return classifyRecoveryEmotionBandColor(medians[0], medians[1], medians[2]) == recoveryEmotionBandManufacture
+	return recoveryEmotionColorFromRegions(img, marker) == recoveryEmotionBandManufacture
 }
 
 func classifyRecoveryEmotionBandColor(r, g, b int) recoveryEmotionBandColor {
@@ -556,10 +516,9 @@ func recoveryEmotionOperatorResult(
 	params recoveryEmotionOperatorRecognitionParam,
 ) *maa.CustomRecognitionResult {
 	detail, _ := json.Marshal(map[string]any{
-		"mode":         params.Mode,
-		"target_index": params.TargetIndex,
-		"row":          card.row + 1,
-		"column":       card.column + 1,
+		"mode":   params.Mode,
+		"row":    card.row + 1,
+		"column": card.column + 1,
 	})
 	return &maa.CustomRecognitionResult{Box: card.click, Detail: string(detail)}
 }

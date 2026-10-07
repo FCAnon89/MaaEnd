@@ -218,41 +218,9 @@
                         },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
-                                "control_nexus": [
-                                    "总控中枢",
-                                    "總控中樞",
-                                    "総合制御中枢",
-                                    "Master Control Nexus",
-                                    "Control Nexus",
-                                    "制御中枢",
-                                    "마스터 컨트롤 넥서스"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotion2": {
-                            "attach": {
-                                "control_nexus": [
-                                    "总控中枢",
-                                    "總控中樞",
-                                    "総合制御中枢",
-                                    "Master Control Nexus",
-                                    "Control Nexus",
-                                    "制御中枢",
-                                    "마스터 컨트롤 넥서스"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotionAfterFirst": {
-                            "attach": {
-                                "control_nexus": [
-                                    "总控中枢",
-                                    "總控中樞",
-                                    "総合制御中枢",
-                                    "Master Control Nexus",
-                                    "Control Nexus",
-                                    "制御中枢",
-                                    "마스터 컨트롤 넥서스"
-                                ]
+                                "selected_cabins": {
+                                    "control_nexus": true
+                                }
                             }
                         }
                     }
@@ -266,35 +234,9 @@
                         },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
-                                "reception_room": [
-                                    "会客室",
-                                    "會客室",
-                                    "Reception Room",
-                                    "応接室",
-                                    "접견실"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotion2": {
-                            "attach": {
-                                "reception_room": [
-                                    "会客室",
-                                    "會客室",
-                                    "Reception Room",
-                                    "応接室",
-                                    "접견실"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotionAfterFirst": {
-                            "attach": {
-                                "reception_room": [
-                                    "会客室",
-                                    "會客室",
-                                    "Reception Room",
-                                    "応接室",
-                                    "접견실"
-                                ]
+                                "selected_cabins": {
+                                    "reception_room": true
+                                }
                             }
                         }
                     }
@@ -308,47 +250,9 @@
                         },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
-                                "manufacturing_i": [
-                                    "制造舱 I",
-                                    "制造舱I",
-                                    "制造舱Ⅰ",
-                                    "制造舱1",
-                                    "製造艙 I",
-                                    "製造艙I",
-                                    "製造艙Ⅰ",
-                                    "MFG CABIN I",
-                                    "MFG CABINI"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotion2": {
-                            "attach": {
-                                "manufacturing_i": [
-                                    "制造舱 I",
-                                    "制造舱I",
-                                    "制造舱Ⅰ",
-                                    "制造舱1",
-                                    "製造艙 I",
-                                    "製造艙I",
-                                    "製造艙Ⅰ",
-                                    "MFG CABIN I",
-                                    "MFG CABINI"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotionAfterFirst": {
-                            "attach": {
-                                "manufacturing_i": [
-                                    "制造舱 I",
-                                    "制造舱I",
-                                    "制造舱Ⅰ",
-                                    "制造舱1",
-                                    "製造艙 I",
-                                    "製造艙I",
-                                    "製造艙Ⅰ",
-                                    "MFG CABIN I",
-                                    "MFG CABINI"
-                                ]
+                                "selected_cabins": {
+                                    "manufacturing_i": true
+                                }
                             }
                         }
                     }
@@ -362,44 +266,9 @@
                         },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
-                                "manufacturing_ii": [
-                                    "制造舱 II",
-                                    "制造舱II",
-                                    "制造舱Ⅱ",
-                                    "製造艙 II",
-                                    "製造艙II",
-                                    "製造艙Ⅱ",
-                                    "MFG CABIN II",
-                                    "MFG CABINII"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotion2": {
-                            "attach": {
-                                "manufacturing_ii": [
-                                    "制造舱 II",
-                                    "制造舱II",
-                                    "制造舱Ⅱ",
-                                    "製造艙 II",
-                                    "製造艙II",
-                                    "製造艙Ⅱ",
-                                    "MFG CABIN II",
-                                    "MFG CABINII"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotionAfterFirst": {
-                            "attach": {
-                                "manufacturing_ii": [
-                                    "制造舱 II",
-                                    "制造舱II",
-                                    "制造舱Ⅱ",
-                                    "製造艙 II",
-                                    "製造艙II",
-                                    "製造艙Ⅱ",
-                                    "MFG CABIN II",
-                                    "MFG CABINII"
-                                ]
+                                "selected_cabins": {
+                                    "manufacturing_ii": true
+                                }
                             }
                         }
                     }
@@ -413,44 +282,9 @@
                         },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
-                                "growth_chamber_i": [
-                                    "培养舱 I",
-                                    "培养舱I",
-                                    "培养舱Ⅰ",
-                                    "培養艙 I",
-                                    "培養艙I",
-                                    "培養艙Ⅰ",
-                                    "GROWTH CHAMBER I",
-                                    "GROWTH CHAMBERI"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotion2": {
-                            "attach": {
-                                "growth_chamber_i": [
-                                    "培养舱 I",
-                                    "培养舱I",
-                                    "培养舱Ⅰ",
-                                    "培養艙 I",
-                                    "培養艙I",
-                                    "培養艙Ⅰ",
-                                    "GROWTH CHAMBER I",
-                                    "GROWTH CHAMBERI"
-                                ]
-                            }
-                        },
-                        "RecoveryEmotionSelectLowEmotionAfterFirst": {
-                            "attach": {
-                                "growth_chamber_i": [
-                                    "培养舱 I",
-                                    "培养舱I",
-                                    "培养舱Ⅰ",
-                                    "培養艙 I",
-                                    "培養艙I",
-                                    "培養艙Ⅰ",
-                                    "GROWTH CHAMBER I",
-                                    "GROWTH CHAMBERI"
-                                ]
+                                "selected_cabins": {
+                                    "growth_chamber_i": true
+                                }
                             }
                         }
                     }
