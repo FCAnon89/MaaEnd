@@ -413,7 +413,14 @@
     },
     "RecoveryEmotionScrollLimitReached": {
         "desc": "首名查找达到 20 次滑动上限，按未找到干员收尾",
-        "recognition": "DirectHit",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "RecoveryEmotionAssistView2Label"
+                ]
+            }
+        },
         "next": [
             "RecoveryEmotionNoTargetExitView2ToView1"
         ]
@@ -493,7 +500,14 @@
     "RecoveryEmotionScrollLimitReachedAfterFirst": {
         "desc": "第二名查找达到 20 次滑动上限，返回助力第一页",
         "enabled": false,
-        "recognition": "DirectHit",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "RecoveryEmotionAssistView2Label"
+                ]
+            }
+        },
         "next": [
             "RecoveryEmotionExitView2ToView1"
         ]
