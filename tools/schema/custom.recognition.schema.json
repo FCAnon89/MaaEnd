@@ -38,6 +38,7 @@
                 "OutpostTradingPriorityItem",
                 "OutpostTradingSelectBestOperator",
                 "PuzzleRecognition",
+                "RecoveryEmotionCabinOperatorRecognition",
                 "ReceptionRoomExchangeCountdownWithinThresholdRecognition",
                 "ReceptionRoomWaitExchangeKeepAliveDueRecognition",
                 "ScheduleRecognition",
@@ -534,6 +535,45 @@
                 "required": [ "custom_recognition_param" ],
                 "properties": {
                     "custom_recognition_param": { "$ref": "./components/outpost_trading.schema.json#/$defs/PriorityItemRecognitionParam" }
+                }
+            }
+        },
+        {
+            "if": {
+                "type": "object",
+                "required": [ "custom_recognition" ],
+                "properties": { "custom_recognition": { "const": "RecoveryEmotionCabinOperatorRecognition" } }
+            },
+            "then": {
+                "type": "object",
+                "required": [ "custom_recognition_param" ],
+                "properties": {
+                    "custom_recognition_param": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [ "mode" ],
+                        "properties": {
+                            "mode": {
+                                "type": "string",
+                                "enum": [ "target", "unassigned" ]
+                            },
+                            "target_index": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1
+                            }
+                        },
+                        "allOf": [
+                            {
+                                "if": {
+                                    "properties": { "mode": { "const": "target" } }
+                                },
+                                "then": {
+                                    "required": [ "target_index" ]
+                                }
+                            }
+                        ]
+                    }
                 }
             }
         }

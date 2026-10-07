@@ -147,7 +147,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionView2In"
+            "RecoveryEmotionResetScrollState"
         ]
     },
     "RecoveryEmotionFull": {
@@ -204,54 +204,26 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionInitSelectTarget"
-        ]
-    },
-    "RecoveryEmotionInitSelectTarget": {
-        "desc": "[恢复心情·初始化] 按已勾选舱室生成 OCR 白名单",
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "action": {
-            "type": "Custom",
-            "param": {
-                "custom_action": "AttachToExpectedRegexAction",
-                "custom_action_param": {
-                    "target": "RecoveryEmotionSelectLowEmotion",
-                    "targets": [
-                        "RecoveryEmotionSelectLowEmotion2",
-                        "RecoveryEmotionSelectLowEmotionAfterFirst"
-                    ]
-                }
-            }
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
             "RecoveryEmotionSelectLowEmotion",
             "RecoveryEmotionStopAtUnassigned",
-            "RecoveryEmotionStopAtUnassignedBottomRow",
+            "RecoveryEmotionFirstTargetListComplete",
             "RecoveryEmotionScrollToNextOperators"
         ]
     },
     "RecoveryEmotionSelectLowEmotion": {
-        "desc": "[恢复心情·操作] 按已勾选舱室筛选当前列表，点击首个匹配干员",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    540,
-                    300,
-                    540,
-                    180
-                ],
-                "expected": [
-                    // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
-                    "^PLACEHOLDER$"
-                ],
-                "threshold": 0.15,
-                "order_by": "Vertical"
-            }
+        "desc": "[恢复心情·操作] 按已勾选舱室依次扫描可见干员，点击首个匹配项",
+        "recognition": "Custom",
+        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
+        "custom_recognition_param": {
+            "mode": "target",
+            "target_index": 0
         },
+        "roi": [
+            540,
+            240,
+            540,
+            280
+        ],
         "pre_delay": 0,
         "action": {
             "type": "Click"
@@ -261,30 +233,24 @@
         "next": [
             "RecoveryEmotionSelectLowEmotion2",
             "RecoveryEmotionStopAtUnassignedAfterFirst",
-            "RecoveryEmotionStopAtUnassignedAfterFirstBottomRow",
+            "RecoveryEmotionSecondTargetListComplete",
             "RecoveryEmotionScrollToNextOperatorsAfterFirst"
         ]
     },
     "RecoveryEmotionSelectLowEmotion2": {
-        "desc": "[恢复心情·操作] 按相同舱室白名单点击第二个匹配干员",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    540,
-                    300,
-                    540,
-                    180
-                ],
-                "expected": [
-                    // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
-                    "^PLACEHOLDER$"
-                ],
-                "threshold": 0.15,
-                "order_by": "Vertical",
-                "index": 1
-            }
+        "desc": "[恢复心情·操作] 按相同舱室点击当前列表的第二个匹配干员",
+        "recognition": "Custom",
+        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
+        "custom_recognition_param": {
+            "mode": "target",
+            "target_index": 1
         },
+        "roi": [
+            540,
+            240,
+            540,
+            280
+        ],
         "pre_delay": 0,
         "action": {
             "type": "Click"
@@ -293,54 +259,18 @@
         "rate_limit": 0
     },
     "RecoveryEmotionStopAtUnassigned": {
-        "desc": "[恢复心情·未找到首名] 首名未命中时识别第一行的无安排状态并退出",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    540,
-                    310,
-                    540,
-                    28
-                ],
-                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
-                "expected": [
-                    "无安排",
-                    "無安排",
-                    "Unassigned",
-                    "未配置",
-                    "미배치"
-                ]
-            }
+        "desc": "[恢复心情·未找到首名] 扫描可见列表，遇到首个无安排干员时退出查找",
+        "recognition": "Custom",
+        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
+        "custom_recognition_param": {
+            "mode": "unassigned"
         },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionNoTargetExitView2ToView1"
-        ]
-    },
-    "RecoveryEmotionStopAtUnassignedBottomRow": {
-        "desc": "[恢复心情·未找到首名] 首名未命中时识别第二行的无安排状态并退出",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    540,
-                    450,
-                    540,
-                    28
-                ],
-                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
-                "expected": [
-                    "无安排",
-                    "無安排",
-                    "Unassigned",
-                    "未配置",
-                    "미배치"
-                ]
-            }
-        },
+        "roi": [
+            540,
+            240,
+            540,
+            280
+        ],
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
@@ -349,58 +279,113 @@
         ]
     },
     "RecoveryEmotionStopAtUnassignedAfterFirst": {
-        "desc": "[恢复心情·停止扫描] 首名已选后识别第一行的无安排状态，不再查找第二名",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    540,
-                    310,
-                    540,
-                    28
-                ],
-                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
-                "expected": [
-                    "无安排",
-                    "無安排",
-                    "Unassigned",
-                    "未配置",
-                    "미배치"
-                ]
-            }
+        "desc": "[恢复心情·停止扫描] 首名已选后扫描可见列表，遇到首个无安排干员时停止",
+        "recognition": "Custom",
+        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
+        "custom_recognition_param": {
+            "mode": "unassigned"
         },
+        "roi": [
+            540,
+            240,
+            540,
+            280
+        ],
         "pre_delay": 0,
         "post_delay": 0,
-        "rate_limit": 0
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionExitView2ToView1"
+        ]
     },
-    "RecoveryEmotionStopAtUnassignedAfterFirstBottomRow": {
-        "desc": "[恢复心情·停止扫描] 首名已选后识别第二行的无安排状态，不再查找第二名",
-        "recognition": {
-            "type": "OCR",
+    "RecoveryEmotionResetScrollState": {
+        "desc": "每次打开选人列表前重置两个阶段的滚动条位置记录",
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
             "param": {
+                "custom_action": "PipelineOverride",
+                "custom_action_param": {
+                    "patch": {
+                        "RecoveryEmotionFirstTargetListComplete": {
+                            "attach": {
+                                "ready": false
+                            }
+                        },
+                        "RecoveryEmotionSecondTargetListComplete": {
+                            "attach": {
+                                "ready": false
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionView2In"
+        ]
+    },
+    "RecoveryEmotionFirstTargetListComplete": {
+        "desc": "连续两次滚动条位置不变时停止首名查找",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "ScrollbarCompleteRecognition",
+                "custom_recognition_param": {
+                    "position_tolerance": 2
+                },
                 "roi": [
-                    540,
-                    450,
-                    540,
-                    28
-                ],
-                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
-                "expected": [
-                    "无安排",
-                    "無安排",
-                    "Unassigned",
-                    "未配置",
-                    "미배치"
+                    1079,
+                    244,
+                    5,
+                    270
                 ]
             }
         },
         "pre_delay": 0,
+        "action": "DoNothing",
         "post_delay": 0,
-        "rate_limit": 0
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionNoTargetExitView2ToView1"
+        ],
+        "attach": {
+            "ready": false
+        }
+    },
+    "RecoveryEmotionSecondTargetListComplete": {
+        "desc": "连续两次滚动条位置不变时停止第二名查找",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "ScrollbarCompleteRecognition",
+                "custom_recognition_param": {
+                    "position_tolerance": 2
+                },
+                "roi": [
+                    1079,
+                    244,
+                    5,
+                    270
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": "DoNothing",
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionExitView2ToView1"
+        ],
+        "attach": {
+            "ready": false
+        }
     },
     "RecoveryEmotionScrollToNextOperators": {
-        "desc": "[恢复心情·滚动] 首名未找到时上划一页并等待滚动稳定；最多100页作为 OCR 漏判时的安全上限",
-        "max_hit": 100,
+        "desc": "[恢复心情·滚动] 首名未找到时固定起止点缓慢上划，并核对滚动条进度",
         "recognition": {
             "type": "And",
             "param": {
@@ -416,17 +401,17 @@
                 "begin": [
                     806,
                     460,
-                    10,
-                    10
+                    1,
+                    1
                 ],
                 "end": [
                     806,
-                    175,
-                    10,
-                    10
+                    170,
+                    1,
+                    1
                 ],
                 "end_hold": 1000,
-                "duration": 200
+                "duration": 400
             }
         },
         "post_wait_freezes": {
@@ -444,29 +429,24 @@
         "next": [
             "RecoveryEmotionSelectLowEmotion",
             "RecoveryEmotionStopAtUnassigned",
-            "RecoveryEmotionStopAtUnassignedBottomRow",
+            "RecoveryEmotionFirstTargetListComplete",
             "RecoveryEmotionScrollToNextOperators"
         ]
     },
     "RecoveryEmotionSelectLowEmotionAfterFirst": {
         "desc": "[恢复心情·操作] 首名已选后，在后续页面点击首个匹配干员作为第二名",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": [
-                    540,
-                    300,
-                    540,
-                    180
-                ],
-                "expected": [
-                    // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
-                    "^PLACEHOLDER$"
-                ],
-                "threshold": 0.15,
-                "order_by": "Vertical"
-            }
+        "recognition": "Custom",
+        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
+        "custom_recognition_param": {
+            "mode": "target",
+            "target_index": 0
         },
+        "roi": [
+            540,
+            240,
+            540,
+            280
+        ],
         "pre_delay": 0,
         "action": {
             "type": "Click"
@@ -475,8 +455,7 @@
         "rate_limit": 0
     },
     "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
-        "desc": "[恢复心情·滚动] 首名已选且当前页无第二名时上划一页继续查找",
-        "max_hit": 100,
+        "desc": "[恢复心情·滚动] 首名已选且当前页无第二名时固定起止点缓慢上划",
         "recognition": {
             "type": "And",
             "param": {
@@ -492,17 +471,17 @@
                 "begin": [
                     806,
                     460,
-                    10,
-                    10
+                    1,
+                    1
                 ],
                 "end": [
                     806,
-                    175,
-                    10,
-                    10
+                    170,
+                    1,
+                    1
                 ],
                 "end_hold": 1000,
-                "duration": 200
+                "duration": 400
             }
         },
         "post_wait_freezes": {
@@ -520,7 +499,7 @@
         "next": [
             "RecoveryEmotionSelectLowEmotionAfterFirst",
             "RecoveryEmotionStopAtUnassignedAfterFirst",
-            "RecoveryEmotionStopAtUnassignedAfterFirstBottomRow",
+            "RecoveryEmotionSecondTargetListComplete",
             "RecoveryEmotionScrollToNextOperatorsAfterFirst"
         ]
     },
