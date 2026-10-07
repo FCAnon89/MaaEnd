@@ -240,14 +240,15 @@
             "param": {
                 "roi": [
                     540,
-                    240,
+                    300,
                     540,
-                    280
+                    180
                 ],
                 "expected": [
                     // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
                     "^PLACEHOLDER$"
                 ],
+                "threshold": 0.15,
                 "order_by": "Vertical"
             }
         },
@@ -271,14 +272,15 @@
             "param": {
                 "roi": [
                     540,
-                    240,
+                    300,
                     540,
-                    280
+                    180
                 ],
                 "expected": [
                     // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
                     "^PLACEHOLDER$"
                 ],
+                "threshold": 0.15,
                 "order_by": "Vertical",
                 "index": 1
             }
@@ -288,28 +290,6 @@
             "type": "Click"
         },
         "post_delay": 400, // 上方tips出现需要时间，可能显示也可能不显示，避免连续点击不同干员导致覆盖提示判断错误
-        "rate_limit": 0
-    },
-    "RecoveryEmotionUnassignedTextColorFilter": {
-        "desc": "过滤无安排状态的中灰文字，供行标签 OCR 使用",
-        "recognition": {
-            "type": "ColorMatch",
-            "param": {
-                "method": 4,
-                "lower": [
-                    55,
-                    55,
-                    55
-                ],
-                "upper": [
-                    125,
-                    125,
-                    125
-                ]
-            }
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
         "rate_limit": 0
     },
     "RecoveryEmotionStopAtUnassigned": {
@@ -323,14 +303,16 @@
                     540,
                     28
                 ],
+                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
                 "expected": [
                     "无安排",
                     "無安排",
                     "Unassigned",
                     "未配置",
-                    "미배치"
-                ],
-                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
+                    "미배치",
+                    // @i18n-skip
+                    ".*(无安|無安|Unassigned|未配|미배).*"
+                ]
             }
         },
         "pre_delay": 0,
@@ -351,14 +333,16 @@
                     540,
                     28
                 ],
+                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
                 "expected": [
                     "无安排",
                     "無安排",
                     "Unassigned",
                     "未配置",
-                    "미배치"
-                ],
-                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
+                    "미배치",
+                    // @i18n-skip
+                    ".*(无安|無安|Unassigned|未配|미배).*"
+                ]
             }
         },
         "pre_delay": 0,
@@ -379,14 +363,16 @@
                     540,
                     28
                 ],
+                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
                 "expected": [
                     "无安排",
                     "無安排",
                     "Unassigned",
                     "未配置",
-                    "미배치"
-                ],
-                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
+                    "미배치",
+                    // @i18n-skip
+                    ".*(无安|無安|Unassigned|未配|미배).*"
+                ]
             }
         },
         "pre_delay": 0,
@@ -404,14 +390,16 @@
                     540,
                     28
                 ],
+                // 完整原文：无安排、無安排、Unassigned、未配置、미배치
                 "expected": [
                     "无安排",
                     "無安排",
                     "Unassigned",
                     "未配置",
-                    "미배치"
-                ],
-                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
+                    "미배치",
+                    // @i18n-skip
+                    ".*(无安|無安|Unassigned|未配|미배).*"
+                ]
             }
         },
         "pre_delay": 0,
@@ -441,7 +429,7 @@
                 ],
                 "end": [
                     806,
-                    180,
+                    160,
                     10,
                     10
                 ],
@@ -475,14 +463,15 @@
             "param": {
                 "roi": [
                     540,
-                    240,
+                    300,
                     540,
-                    280
+                    180
                 ],
                 "expected": [
                     // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
                     "^PLACEHOLDER$"
                 ],
+                "threshold": 0.15,
                 "order_by": "Vertical"
             }
         },
@@ -516,7 +505,7 @@
                 ],
                 "end": [
                     806,
-                    180,
+                    160,
                     10,
                     10
                 ],
