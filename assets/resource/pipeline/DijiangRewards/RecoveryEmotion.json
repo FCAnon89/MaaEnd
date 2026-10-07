@@ -229,6 +229,7 @@
         "next": [
             "RecoveryEmotionSelectLowEmotion",
             "RecoveryEmotionStopAtUnassigned",
+            "RecoveryEmotionStopAtUnassignedBottomRow",
             "RecoveryEmotionScrollToNextOperators"
         ]
     },
@@ -259,6 +260,7 @@
         "next": [
             "RecoveryEmotionSelectLowEmotion2",
             "RecoveryEmotionStopAtUnassignedAfterFirst",
+            "RecoveryEmotionStopAtUnassignedAfterFirstBottomRow",
             "RecoveryEmotionScrollToNextOperatorsAfterFirst"
         ]
     },
@@ -288,16 +290,38 @@
         "post_delay": 400, // 上方tips出现需要时间，可能显示也可能不显示，避免连续点击不同干员导致覆盖提示判断错误
         "rate_limit": 0
     },
+    "RecoveryEmotionUnassignedTextColorFilter": {
+        "desc": "过滤无安排状态的中灰文字，供行标签 OCR 使用",
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "method": 4,
+                "lower": [
+                    55,
+                    55,
+                    55
+                ],
+                "upper": [
+                    125,
+                    125,
+                    125
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
     "RecoveryEmotionStopAtUnassigned": {
-        "desc": "[恢复心情·未找到首名] 首名候选未找到且当前列表已到无安排干员，退出助力界面",
+        "desc": "[恢复心情·未找到首名] 首名未命中时识别第一行的无安排状态并退出",
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [
                     540,
-                    240,
+                    310,
                     540,
-                    280
+                    28
                 ],
                 "expected": [
                     "无安排",
@@ -305,7 +329,36 @@
                     "Unassigned",
                     "未配置",
                     "미배치"
-                ]
+                ],
+                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionNoTargetExitView2ToView1"
+        ]
+    },
+    "RecoveryEmotionStopAtUnassignedBottomRow": {
+        "desc": "[恢复心情·未找到首名] 首名未命中时识别第二行的无安排状态并退出",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    540,
+                    450,
+                    540,
+                    28
+                ],
+                "expected": [
+                    "无安排",
+                    "無安排",
+                    "Unassigned",
+                    "未配置",
+                    "미배치"
+                ],
+                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
             }
         },
         "pre_delay": 0,
@@ -316,15 +369,15 @@
         ]
     },
     "RecoveryEmotionStopAtUnassignedAfterFirst": {
-        "desc": "[恢复心情·停止扫描] 首名已选后遇到无安排干员，不再查找第二名",
+        "desc": "[恢复心情·停止扫描] 首名已选后识别第一行的无安排状态，不再查找第二名",
         "recognition": {
             "type": "OCR",
             "param": {
                 "roi": [
                     540,
-                    240,
+                    310,
                     540,
-                    280
+                    28
                 ],
                 "expected": [
                     "无安排",
@@ -332,7 +385,33 @@
                     "Unassigned",
                     "未配置",
                     "미배치"
-                ]
+                ],
+                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "RecoveryEmotionStopAtUnassignedAfterFirstBottomRow": {
+        "desc": "[恢复心情·停止扫描] 首名已选后识别第二行的无安排状态，不再查找第二名",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    540,
+                    450,
+                    540,
+                    28
+                ],
+                "expected": [
+                    "无安排",
+                    "無安排",
+                    "Unassigned",
+                    "未配置",
+                    "미배치"
+                ],
+                "color_filter": "RecoveryEmotionUnassignedTextColorFilter"
             }
         },
         "pre_delay": 0,
@@ -385,6 +464,7 @@
         "next": [
             "RecoveryEmotionSelectLowEmotion",
             "RecoveryEmotionStopAtUnassigned",
+            "RecoveryEmotionStopAtUnassignedBottomRow",
             "RecoveryEmotionScrollToNextOperators"
         ]
     },
@@ -459,6 +539,7 @@
         "next": [
             "RecoveryEmotionSelectLowEmotionAfterFirst",
             "RecoveryEmotionStopAtUnassignedAfterFirst",
+            "RecoveryEmotionStopAtUnassignedAfterFirstBottomRow",
             "RecoveryEmotionScrollToNextOperatorsAfterFirst"
         ]
     },
