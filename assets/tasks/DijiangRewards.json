@@ -192,12 +192,7 @@
                     "name": "Yes",
                     "option": [
                         "RecoveryEmotionCabins"
-                    ],
-                    "pipeline_override": {
-                        "RecoveryEmotionMain": {
-                            "enabled": true
-                        }
-                    }
+                    ]
                 },
                 {
                     "name": "No",
@@ -218,6 +213,9 @@
                     "name": "ControlNexus",
                     "label": "$option.RecoveryEmotionCabins.cases.ControlNexus.label",
                     "pipeline_override": {
+                        "RecoveryEmotionMain": {
+                            "enabled": true
+                        },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
                                 "control_nexus": [
@@ -250,6 +248,9 @@
                     "name": "ReceptionRoom",
                     "label": "$option.RecoveryEmotionCabins.cases.ReceptionRoom.label",
                     "pipeline_override": {
+                        "RecoveryEmotionMain": {
+                            "enabled": true
+                        },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
                                 "reception_room": [
@@ -278,6 +279,9 @@
                     "name": "ManufacturingI",
                     "label": "$option.RecoveryEmotionCabins.cases.ManufacturingI.label",
                     "pipeline_override": {
+                        "RecoveryEmotionMain": {
+                            "enabled": true
+                        },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
                                 "manufacturing_i": [
@@ -312,6 +316,9 @@
                     "name": "ManufacturingII",
                     "label": "$option.RecoveryEmotionCabins.cases.ManufacturingII.label",
                     "pipeline_override": {
+                        "RecoveryEmotionMain": {
+                            "enabled": true
+                        },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
                                 "manufacturing_ii": [
@@ -346,6 +353,9 @@
                     "name": "GrowthChamberI",
                     "label": "$option.RecoveryEmotionCabins.cases.GrowthChamberI.label",
                     "pipeline_override": {
+                        "RecoveryEmotionMain": {
+                            "enabled": true
+                        },
                         "RecoveryEmotionSelectLowEmotion": {
                             "attach": {
                                 "growth_chamber_i": [
@@ -383,8 +393,7 @@
                 "ManufacturingI",
                 "ManufacturingII",
                 "GrowthChamberI"
-            ],
-            "min_count": 1
+            ]
         },
         "ReceptionRoomStage": {
             "type": "switch",

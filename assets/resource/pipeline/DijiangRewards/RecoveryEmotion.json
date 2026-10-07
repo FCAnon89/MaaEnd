@@ -1,6 +1,7 @@
 {
     "RecoveryEmotionMain": {
         "desc": "[控制中枢·恢复心情] 在总控中枢点击恢复心情红点，进入选择干员或关闭",
+        "enabled": false,
         "max_hit": 1,
         "recognition": {
             "type": "And",
