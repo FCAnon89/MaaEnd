@@ -48,7 +48,13 @@ Controlled by the `StageTaskSetting` → `FastCollect` switch, disabled by defau
 
 `RecoveryEmotionMain` triggers only once per central hub scan (`max_hit: 1`).
 
-Operator selection logic: Click the first operator on the left → check if mood is full or remaining attempts are 0 → if both are false, click the second operator on the left → finish and return to the central hub.
+`RecoveryEmotionCabins` is a multi-select under `StageTaskSetting` → `Recover Mood`, defaulting to all five cabins. If every cabin is deselected, `RecoveryEmotionMain` stays disabled and the recovery stage is skipped.
+
+The assist operator list is scanned row by row, left to right, across two rows of six cards. The recognizer matches a selected cabin by its full OCR label or relative color-band class; manufacturing cabins additionally require the yellow band and a full label distinguishing I from II. Mood percentages and trust values are not read. Already selected cards are skipped and the click box is centered on the card.
+
+The available-assist count uses the existing count OCR region. Only an exact reading of `2` enables the second-operator branch; a reading of `1` or anything other than `2` selects one operator. Each search stops when an unassigned operator is reached or after 20 swipes. On PC, swipes run from `(806, 460)` to `(806, 170)`; on ADB, from `(806, 500)` to `(806, 310)`. Both last 400 ms, hold at the endpoint for 1 second, then wait for the list region to stabilize.
+
+If no first operator is found, the pipeline returns to the first assist page, closes the window, reports the missing operator, and returns to the central hub so later stages can continue. After the first operator is selected, finding a second operator, reaching an unassigned operator, or reaching the 20-swipe limit leads to the shared confirmation node. Confirmation follows the original flow: identify and close the first assist page, then return to the central hub.
 
 ### Reception Room
 

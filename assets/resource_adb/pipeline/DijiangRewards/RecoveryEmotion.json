@@ -95,18 +95,6 @@
             }
         }
     },
-    "RecoveryEmotionExitView2ToView1": {
-        "recognition": {
-            "param": {
-                "roi": [
-                    1090,
-                    60,
-                    160,
-                    55
-                ]
-            }
-        }
-    },
     "RecoveryEmotionEnableSecondSelection": {
         "recognition": {
             "param": {

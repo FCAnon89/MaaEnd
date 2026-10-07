@@ -218,11 +218,14 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionSelectLowEmotion"
+            "RecoveryEmotionSelectLowEmotion",
+            "RecoveryEmotionStopAtUnassigned",
+            "RecoveryEmotionScrollToNextOperators",
+            "RecoveryEmotionScrollLimitReached"
         ]
     },
     "RecoveryEmotionSelectLowEmotion": {
-        "desc": "[恢复心情·操作] 按已勾选舱室依次扫描可见干员，点击首个匹配项",
+        "desc": "[恢复心情·操作] 按列表顺序点击首个匹配已选舱室的干员",
         "recognition": "Custom",
         "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
         "custom_recognition_param": {
@@ -245,7 +248,7 @@
             "RecoveryEmotionStopAtUnassignedAfterFirst",
             "RecoveryEmotionScrollToNextOperatorsAfterFirst",
             "RecoveryEmotionScrollLimitReachedAfterFirst",
-            "RecoveryEmotionExitView2ToView1"
+            "RecoveryEmotionConfirm"
         ],
         "attach": {
             "cabin_labels": {
@@ -318,7 +321,10 @@
             "type": "Click"
         },
         "post_delay": 400, // 等待勾选状态刷新后再扫描下一名
-        "rate_limit": 0
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionConfirm"
+        ]
     },
     "RecoveryEmotionStopAtUnassigned": {
         "desc": "[恢复心情·未找到首名] 扫描可见列表，遇到首个无安排干员时退出查找",
@@ -358,20 +364,13 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionExitView2ToView1"
+            "RecoveryEmotionConfirm"
         ]
     },
     "RecoveryEmotionScrollToNextOperators": {
         "desc": "[恢复心情·滚动] 首名未找到时上划，最多 20 次",
         "max_hit": 20,
-        "recognition": {
-            "type": "And",
-            "param": {
-                "all_of": [
-                    "RecoveryEmotionAssistView2Label"
-                ]
-            }
-        },
+        "recognition": "DirectHit",
         "pre_delay": 0,
         "action": {
             "type": "Swipe",
@@ -413,14 +412,7 @@
     },
     "RecoveryEmotionScrollLimitReached": {
         "desc": "首名查找达到 20 次滑动上限，按未找到干员收尾",
-        "recognition": {
-            "type": "And",
-            "param": {
-                "all_of": [
-                    "RecoveryEmotionAssistView2Label"
-                ]
-            }
-        },
+        "recognition": "DirectHit",
         "next": [
             "RecoveryEmotionNoTargetExitView2ToView1"
         ]
@@ -444,20 +436,16 @@
             "type": "Click"
         },
         "post_delay": 400, // 等待勾选状态刷新后再继续后续步骤
-        "rate_limit": 0
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionConfirm"
+        ]
     },
     "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
         "desc": "[恢复心情·滚动] 首名已选且当前页无第二名时上划，最多 20 次",
         "enabled": false,
         "max_hit": 20,
-        "recognition": {
-            "type": "And",
-            "param": {
-                "all_of": [
-                    "RecoveryEmotionAssistView2Label"
-                ]
-            }
-        },
+        "recognition": "DirectHit",
         "pre_delay": 0,
         "action": {
             "type": "Swipe",
@@ -498,18 +486,11 @@
         ]
     },
     "RecoveryEmotionScrollLimitReachedAfterFirst": {
-        "desc": "第二名查找达到 20 次滑动上限，返回助力第一页",
+        "desc": "第二名查找达到 20 次滑动上限，确认首名后收尾",
         "enabled": false,
-        "recognition": {
-            "type": "And",
-            "param": {
-                "all_of": [
-                    "RecoveryEmotionAssistView2Label"
-                ]
-            }
-        },
+        "recognition": "DirectHit",
         "next": [
-            "RecoveryEmotionExitView2ToView1"
+            "RecoveryEmotionConfirm"
         ]
     },
     "RecoveryEmotionNoTargetExitView2ToView1": {
@@ -565,8 +546,7 @@
         }
     },
     "RecoveryEmotionConfirm": {
-        "desc": "测试版禁用：停留在干员勾选界面，避免消耗每日恢复机会",
-        "enabled": false,
+        "desc": "确认已选干员并进入原有助力窗口收尾流程",
         "recognition": {
             "type": "And",
             "param": {
@@ -604,32 +584,6 @@
         "rate_limit": 0,
         "next": [
             "InDijiangControlNexus"
-        ]
-    },
-    "RecoveryEmotionExitView2ToView1": {
-        "desc": "[恢复心情·离开] 在恢复心情/助力等子界面点击左上返回按钮回到控制中枢",
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    980,
-                    102,
-                    187,
-                    82
-                ],
-                "template": [
-                    "ClaimDijiangRewards/back.png"
-                ]
-            }
-        },
-        "pre_delay": 0,
-        "action": {
-            "type": "Click"
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionExitView1ToControlNexus"
         ]
     }
 }
