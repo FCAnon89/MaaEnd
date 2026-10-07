@@ -169,14 +169,26 @@ func (r *recoveryEmotionOperatorRecognitionRunner) Run(
 
 // recoveryEmotionOperatorCards builds visible row-major cards using each row's detected band offset.
 func recoveryEmotionOperatorCards(img image.Image, roi maa.Rect) []recoveryEmotionOperatorCard {
+	columnStep := roi[2] / recoveryEmotionOperatorColumns
+	if columnStep <= 0 {
+		return nil
+	}
+	scale := func(value int) int { return value * columnStep / recoveryEmotionOperatorColumnStep }
+	cardWidth := scale(recoveryEmotionOperatorCardWidth)
+	cardHeight := scale(recoveryEmotionOperatorCardHeight)
+	bandHeight := recoveryEmotionBandHeight
+	searchMargin := scale(recoveryEmotionBandSearchMargin)
+	minimumRun := recoveryEmotionBandMinimumRun
+	labelTextHeight := recoveryEmotionLabelTextHeight
+	cardTopOffset := scale(71)
 	bandRows := [...]int{
-		roi[1] + recoveryEmotionFirstBandOffset,
-		roi[1] + recoveryEmotionSecondBandOffset,
+		roi[1] + scale(recoveryEmotionFirstBandOffset),
+		roi[1] + scale(recoveryEmotionSecondBandOffset),
 	}
 	shifts := [2]int{}
 	found := [2]bool{}
 	for row, bandY := range bandRows {
-		shifts[row], found[row] = recoveryEmotionOperatorBandShift(img, roi, bandY)
+		shifts[row], found[row] = recoveryEmotionOperatorBandShift(img, roi, bandY, cardWidth, bandHeight, searchMargin, minimumRun)
 	}
 	if !found[0] && found[1] {
 		shifts[0] = shifts[1]
@@ -188,17 +200,17 @@ func recoveryEmotionOperatorCards(img image.Image, roi maa.Rect) []recoveryEmoti
 	for row, bandY := range bandRows {
 		bandY += shifts[row]
 		for column := 0; column < recoveryEmotionOperatorColumns; column++ {
-			x := roi[0] + column*recoveryEmotionOperatorColumnStep
-			band := maa.Rect{x, bandY, recoveryEmotionOperatorCardWidth, recoveryEmotionBandHeight}
-			label := maa.Rect{x, bandY, recoveryEmotionOperatorCardWidth, recoveryEmotionLabelTextHeight}
-			card := maa.Rect{x, bandY - 71, recoveryEmotionOperatorCardWidth, recoveryEmotionOperatorCardHeight}
+			x := roi[0] + column*columnStep
+			band := maa.Rect{x, bandY, cardWidth, bandHeight}
+			label := maa.Rect{x, bandY, cardWidth, labelTextHeight}
+			card := maa.Rect{x, bandY - cardTopOffset, cardWidth, cardHeight}
 			visible := image.Rect(card[0], card[1], card[0]+card[2], card[1]+card[3]).Intersect(image.Rect(roi[0], roi[1], roi[0]+roi[2], roi[1]+roi[3]))
 			visible = visible.Intersect(img.Bounds())
 			if visible.Empty() {
 				continue
 			}
-			clickX := x + recoveryEmotionOperatorCardWidth/2
-			clickY := card[1] + recoveryEmotionOperatorCardHeight/2
+			clickX := x + cardWidth/2
+			clickY := card[1] + cardHeight/2
 			if !image.Pt(clickX, clickY).In(visible) {
 				continue
 			}
@@ -217,31 +229,32 @@ func recoveryEmotionOperatorCards(img image.Image, roi maa.Rect) []recoveryEmoti
 }
 
 // recoveryEmotionOperatorBandShift finds the vertical offset shared by colored bands in one row.
-func recoveryEmotionOperatorBandShift(img image.Image, roi maa.Rect, expectedY int) (int, bool) {
-	if roi[2] <= 0 || roi[3] < recoveryEmotionBandHeight {
+func recoveryEmotionOperatorBandShift(img image.Image, roi maa.Rect, expectedY, cardWidth, bandHeight, searchMargin, minimumRun int) (int, bool) {
+	if roi[2] <= 0 || roi[3] < bandHeight {
 		return 0, false
 	}
-	startY := max(roi[1], expectedY-recoveryEmotionBandSearchMargin)
-	endY := min(roi[1]+roi[3]-1, expectedY+recoveryEmotionBandSearchMargin)
+	startY := max(roi[1], expectedY-searchMargin)
+	endY := min(roi[1]+roi[3]-1, expectedY+searchMargin)
 	if startY > endY {
 		return 0, false
 	}
 
 	var shifts []int
+	columnStep := roi[2] / recoveryEmotionOperatorColumns
 	for column := 0; column < recoveryEmotionOperatorColumns; column++ {
-		x := roi[0] + column*recoveryEmotionOperatorColumnStep
+		x := roi[0] + column*columnStep
 		lastColor := recoveryEmotionBandUnknown
 		runStart := startY
 		runLength := 0
 		flushRun := func() {
-			if lastColor != recoveryEmotionBandUnknown && lastColor != recoveryEmotionBandNeutral && runLength >= recoveryEmotionBandMinimumRun {
-				bandY := runStart + (runLength-recoveryEmotionBandHeight)/2
+			if lastColor != recoveryEmotionBandUnknown && lastColor != recoveryEmotionBandNeutral && runLength >= minimumRun {
+				bandY := runStart + (runLength-bandHeight)/2
 				shifts = append(shifts, bandY-expectedY)
 			}
 			runLength = 0
 		}
 		for y := startY; y <= endY; y++ {
-			color := recoveryEmotionOperatorBandColorAtY(img, x, y)
+			color := recoveryEmotionOperatorBandColorAtY(img, x, y, cardWidth)
 			if color == lastColor && color != recoveryEmotionBandUnknown && color != recoveryEmotionBandNeutral {
 				runLength++
 				continue
@@ -277,8 +290,8 @@ func recoveryEmotionOperatorBandShift(img image.Image, roi maa.Rect, expectedY i
 	return best[len(best)/2], true
 }
 
-func recoveryEmotionOperatorBandColorAtY(img image.Image, x, y int) recoveryEmotionBandColor {
-	return recoveryEmotionOperatorBandColor(img, maa.Rect{x, y, recoveryEmotionOperatorCardWidth, 1})
+func recoveryEmotionOperatorBandColorAtY(img image.Image, x, y, cardWidth int) recoveryEmotionBandColor {
+	return recoveryEmotionOperatorBandColor(img, maa.Rect{x, y, cardWidth, 1})
 }
 
 // loadRecoveryEmotionCabinTargets reads the canonical cabin labels and selected subset from the scan node.
@@ -425,17 +438,19 @@ func recoveryEmotionOperatorBandColor(img image.Image, roi maa.Rect) recoveryEmo
 	}
 
 	// Sample both ends of the flat band, away from its centered cabin name.
-	sideWidth := min(9, band.Dx()/4)
+	sideWidth := band.Dx() * 9 / recoveryEmotionOperatorCardWidth
+	horizontalInset := band.Dx() * 2 / recoveryEmotionOperatorCardWidth
 	yStart := band.Min.Y
 	yEnd := band.Max.Y
 	if band.Dy() >= 6 {
-		yStart += 2
-		yEnd -= 2
+		verticalInset := band.Dy() * 2 / recoveryEmotionBandHeight
+		yStart += verticalInset
+		yEnd -= verticalInset
 	}
 	return recoveryEmotionColorFromRegions(
 		img,
-		image.Rect(band.Min.X+2, yStart, band.Min.X+sideWidth, yEnd),
-		image.Rect(band.Max.X-sideWidth, yStart, band.Max.X-2, yEnd),
+		image.Rect(band.Min.X+horizontalInset, yStart, band.Min.X+sideWidth, yEnd),
+		image.Rect(band.Max.X-sideWidth, yStart, band.Max.X-horizontalInset, yEnd),
 	)
 }
 
@@ -470,11 +485,13 @@ func recoveryEmotionColorFromRegions(img image.Image, regions ...image.Rectangle
 
 // recoveryEmotionOperatorCardSelected reads the yellow check marker in the card's upper-right corner.
 func recoveryEmotionOperatorCardSelected(img image.Image, card maa.Rect) bool {
+	markerSize := card[2] * 17 / recoveryEmotionOperatorCardWidth
+	markerInset := card[2] / recoveryEmotionOperatorCardWidth
 	marker := image.Rect(
-		card[0]+card[2]-18,
-		card[1]+1,
-		card[0]+card[2]-1,
-		card[1]+18,
+		card[0]+card[2]-markerSize-markerInset,
+		card[1]+markerInset,
+		card[0]+card[2]-markerInset,
+		card[1]+markerInset+markerSize,
 	).Intersect(img.Bounds())
 	if marker.Dx() < 8 || marker.Dy() < 8 {
 		return false

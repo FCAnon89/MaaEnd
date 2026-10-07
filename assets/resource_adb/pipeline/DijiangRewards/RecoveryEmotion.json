@@ -1,4 +1,112 @@
 {
+    "RecoveryEmotionSelectLowEmotion": {
+        "roi": [
+            516,
+            216,
+            678,
+            340
+        ]
+    },
+    "RecoveryEmotionSelectLowEmotion2": {
+        "roi": [
+            516,
+            216,
+            678,
+            340
+        ]
+    },
+    "RecoveryEmotionSelectLowEmotionAfterFirst": {
+        "roi": [
+            516,
+            216,
+            678,
+            340
+        ]
+    },
+    "RecoveryEmotionStopAtUnassigned": {
+        "roi": [
+            516,
+            216,
+            678,
+            340
+        ]
+    },
+    "RecoveryEmotionStopAtUnassignedAfterFirst": {
+        "roi": [
+            516,
+            216,
+            678,
+            340
+        ]
+    },
+    "RecoveryEmotionScrollToNextOperators": {
+        "action": {
+            "param": {
+                "begin": [
+                    806,
+                    500
+                ],
+                "end": [
+                    806,
+                    310
+                ]
+            }
+        },
+        "post_wait_freezes": {
+            "target": [
+                516,
+                216,
+                678,
+                340
+            ]
+        }
+    },
+    "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
+        "action": {
+            "param": {
+                "begin": [
+                    806,
+                    500
+                ],
+                "end": [
+                    806,
+                    310
+                ]
+            }
+        },
+        "post_wait_freezes": {
+            "target": [
+                516,
+                216,
+                678,
+                340
+            ]
+        }
+    },
+    "RecoveryEmotionNoTargetExitView2ToView1": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    1090,
+                    60,
+                    160,
+                    55
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionExitView2ToView1": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    1090,
+                    60,
+                    160,
+                    55
+                ]
+            }
+        }
+    },
     "RecoveryEmotionEnableSecondSelection": {
         "recognition": {
             "param": {
