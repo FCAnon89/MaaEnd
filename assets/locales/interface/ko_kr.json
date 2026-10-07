@@ -2088,6 +2088,7 @@
     "task.DijiangRewards.focus.need_credit_entry_failed": "신용 포인트 연동 흐름에 진입하지 못했습니다",
     "task.DijiangRewards.focus.reception_room_flow_failed": "접견실 흐름이 알 수 없는 화면에서 실패했습니다",
     "task.DijiangRewards.focus.recovery_emotion_full_prompt_failed": "기분 최대 또는 지원 불가 안내 처리에 실패했습니다",
+    "task.DijiangRewards.focus.recovery_emotion_operator_not_found": "기분 회복 대상인 지정 구역의 오퍼레이터를 찾지 못해 마스터 컨트롤 넥서스로 돌아왔습니다.",
     "task.DijiangRewards.label": "🎁기반시설 보상",
     "task.EnvironmentMonitoring.description": "환경 모니터링 작업을 자동으로 완료합니다",
     "task.EnvironmentMonitoring.label": "🌿환경 모니터링",

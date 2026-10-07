@@ -218,7 +218,8 @@
                 "custom_action_param": {
                     "target": "RecoveryEmotionSelectLowEmotion",
                     "targets": [
-                        "RecoveryEmotionSelectLowEmotion2"
+                        "RecoveryEmotionSelectLowEmotion2",
+                        "RecoveryEmotionSelectLowEmotionAfterFirst"
                     ]
                 }
             }
@@ -256,7 +257,9 @@
         "post_delay": 400, // 上方tips出现需要时间，可能显示也可能不显示，避免连续点击不同干员导致覆盖提示判断错误
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionSelectLowEmotion2"
+            "RecoveryEmotionSelectLowEmotion2",
+            "RecoveryEmotionStopAtUnassignedAfterFirst",
+            "RecoveryEmotionScrollToNextOperatorsAfterFirst"
         ]
     },
     "RecoveryEmotionSelectLowEmotion2": {
@@ -286,7 +289,34 @@
         "rate_limit": 0
     },
     "RecoveryEmotionStopAtUnassigned": {
-        "desc": "[恢复心情·停止扫描] 当前可见列表已到无安排干员，不再继续下滑",
+        "desc": "[恢复心情·未找到首名] 首名候选未找到且当前列表已到无安排干员，退出助力界面",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    540,
+                    240,
+                    540,
+                    280
+                ],
+                "expected": [
+                    "无安排",
+                    "無安排",
+                    "Unassigned",
+                    "未配置",
+                    "미배치"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionNoTargetExitView2ToView1"
+        ]
+    },
+    "RecoveryEmotionStopAtUnassignedAfterFirst": {
+        "desc": "[恢复心情·停止扫描] 首名已选后遇到无安排干员，不再查找第二名",
         "recognition": {
             "type": "OCR",
             "param": {
@@ -310,7 +340,7 @@
         "rate_limit": 0
     },
     "RecoveryEmotionScrollToNextOperators": {
-        "desc": "[恢复心情·滚动] 每次重叠上划约一行；最多100次作为 OCR 漏判时的安全上限",
+        "desc": "[恢复心情·滚动] 首名未找到时上划一页并等待滚动稳定；最多100页作为 OCR 漏判时的安全上限",
         "max_hit": 100,
         "recognition": {
             "type": "And",
@@ -325,18 +355,18 @@
             "type": "Swipe",
             "param": {
                 "begin": [
-                    550,
-                    470,
+                    806,
+                    460,
                     10,
                     10
                 ],
                 "end": [
-                    550,
-                    380,
+                    806,
+                    180,
                     10,
                     10
                 ],
-                "end_hold": 200,
+                "end_hold": 1000,
                 "duration": 200
             }
         },
@@ -357,6 +387,132 @@
             "RecoveryEmotionStopAtUnassigned",
             "RecoveryEmotionScrollToNextOperators"
         ]
+    },
+    "RecoveryEmotionSelectLowEmotionAfterFirst": {
+        "desc": "[恢复心情·操作] 首名已选后，在后续页面点击首个匹配干员作为第二名",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    540,
+                    240,
+                    540,
+                    280
+                ],
+                "expected": [
+                    // 运行时由 RecoveryEmotionInitSelectTarget 覆盖为已勾选舱室白名单
+                    "^PLACEHOLDER$"
+                ],
+                "order_by": "Vertical"
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 400,
+        "rate_limit": 0
+    },
+    "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
+        "desc": "[恢复心情·滚动] 首名已选且当前页无第二名时上划一页继续查找",
+        "max_hit": 100,
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "RecoveryEmotionAssistView2Label"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    806,
+                    460,
+                    10,
+                    10
+                ],
+                "end": [
+                    806,
+                    180,
+                    10,
+                    10
+                ],
+                "end_hold": 1000,
+                "duration": 200
+            }
+        },
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                540,
+                240,
+                540,
+                280
+            ],
+            "timeout": 1500
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionSelectLowEmotionAfterFirst",
+            "RecoveryEmotionStopAtUnassignedAfterFirst",
+            "RecoveryEmotionScrollToNextOperatorsAfterFirst"
+        ]
+    },
+    "RecoveryEmotionNoTargetExitView2ToView1": {
+        "desc": "[恢复心情·未找到首名] 返回到助力第一页，为关闭助力窗口做准备",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    980,
+                    102,
+                    187,
+                    82
+                ],
+                "template": [
+                    "ClaimDijiangRewards/back.png"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionNoTargetExitView1ToControlNexus"
+        ]
+    },
+    "RecoveryEmotionNoTargetExitView1ToControlNexus": {
+        "desc": "[恢复心情·未找到首名] 关闭助力窗口并返回总控中枢后提示未找到干员",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "RecoveryEmotionAssistView1Label",
+                    "CloseButtonType1"
+                ],
+                "box_index": 1
+            }
+        },
+        "pre_wait_freezes": 100,
+        "pre_delay": 0,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "InDijiangControlNexus"
+        ],
+        "focus": {
+            "Node.PipelineNode.Succeeded": "$task.DijiangRewards.focus.recovery_emotion_operator_not_found"
+        }
     },
     "RecoveryEmotionCouldNotAssist": {
         "desc": "[恢复心情·收尾] 没有更多心情激励点数时的提示，点击确认",

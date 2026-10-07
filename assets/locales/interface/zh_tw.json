@@ -2088,6 +2088,7 @@
     "task.DijiangRewards.focus.need_credit_entry_failed": "未能進入信用點聯動流程",
     "task.DijiangRewards.focus.reception_room_flow_failed": "進入會客室任務失敗，未知介面",
     "task.DijiangRewards.focus.recovery_emotion_full_prompt_failed": "處理滿心情或無法助力提示失敗",
+    "task.DijiangRewards.focus.recovery_emotion_operator_not_found": "未找到指定艙室中可用於恢復心情的幹員，已返回總控中樞",
     "task.DijiangRewards.label": "🎁基建任務",
     "task.EnvironmentMonitoring.description": "自動完成環境監測任務",
     "task.EnvironmentMonitoring.label": "🌿環境監測",
