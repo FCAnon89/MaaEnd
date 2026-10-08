@@ -216,22 +216,10 @@
                         "RecoveryEmotionMain": {
                             "enabled": true
                         },
-                        "RecoveryEmotionCabinNameOCR": {
-                            "attach": {
-                                "control_nexus": [
-                                    "总控中枢",
-                                    "總控中樞",
-                                    "総合制御中枢",
-                                    "Master Control Nexus",
-                                    "MASTER CONTROL NEXUS",
-                                    "master control nexus",
-                                    "Control Nexus",
-                                    "CONTROL NEXUS",
-                                    "control nexus",
-                                    "制御中枢",
-                                    "마스터 컨트롤 넥서스"
-                                ]
-                            }
+                        "RecoveryEmotionCabinControlNexus": {
+                            "next": [
+                                "RecoveryEmotionSelectCurrentOperator"
+                            ]
                         }
                     }
                 },
@@ -242,18 +230,10 @@
                         "RecoveryEmotionMain": {
                             "enabled": true
                         },
-                        "RecoveryEmotionCabinNameOCR": {
-                            "attach": {
-                                "reception_room": [
-                                    "会客室",
-                                    "會客室",
-                                    "Reception Room",
-                                    "RECEPTION ROOM",
-                                    "reception room",
-                                    "応接室",
-                                    "접견실"
-                                ]
-                            }
+                        "RecoveryEmotionCabinReceptionRoom": {
+                            "next": [
+                                "RecoveryEmotionSelectCurrentOperator"
+                            ]
                         }
                     }
                 },
@@ -264,24 +244,10 @@
                         "RecoveryEmotionMain": {
                             "enabled": true
                         },
-                        "RecoveryEmotionCabinNameOCR": {
-                            "attach": {
-                                "manufacturing_i": [
-                                    "制造舱 I",
-                                    "制造舱I",
-                                    "制造舱Ⅰ",
-                                    "制造舱1",
-                                    "製造艙 I",
-                                    "製造艙I",
-                                    "製造艙Ⅰ",
-                                    "MFG CABIN I",
-                                    "MFG CABINI",
-                                    "Mfg Cabin I",
-                                    "Mfg Cabini",
-                                    "mfg cabin i",
-                                    "mfg cabini"
-                                ]
-                            }
+                        "RecoveryEmotionCabinManufacturingI": {
+                            "next": [
+                                "RecoveryEmotionSelectCurrentOperator"
+                            ]
                         }
                     }
                 },
@@ -292,23 +258,10 @@
                         "RecoveryEmotionMain": {
                             "enabled": true
                         },
-                        "RecoveryEmotionCabinNameOCR": {
-                            "attach": {
-                                "manufacturing_ii": [
-                                    "制造舱 II",
-                                    "制造舱II",
-                                    "制造舱Ⅱ",
-                                    "製造艙 II",
-                                    "製造艙II",
-                                    "製造艙Ⅱ",
-                                    "MFG CABIN II",
-                                    "MFG CABINII",
-                                    "Mfg Cabin II",
-                                    "Mfg CabinII",
-                                    "mfg cabin ii",
-                                    "mfg cabinii"
-                                ]
-                            }
+                        "RecoveryEmotionCabinManufacturingII": {
+                            "next": [
+                                "RecoveryEmotionSelectCurrentOperator"
+                            ]
                         }
                     }
                 },
@@ -319,23 +272,10 @@
                         "RecoveryEmotionMain": {
                             "enabled": true
                         },
-                        "RecoveryEmotionCabinNameOCR": {
-                            "attach": {
-                                "growth_chamber_i": [
-                                    "培养舱 I",
-                                    "培养舱I",
-                                    "培养舱Ⅰ",
-                                    "培養艙 I",
-                                    "培養艙I",
-                                    "培養艙Ⅰ",
-                                    "GROWTH CHAMBER I",
-                                    "GROWTH CHAMBERI",
-                                    "Growth Chamber I",
-                                    "Growth ChamberI",
-                                    "growth chamber i",
-                                    "growth chamberi"
-                                ]
-                            }
+                        "RecoveryEmotionCabinGrowthChamberI": {
+                            "next": [
+                                "RecoveryEmotionSelectCurrentOperator"
+                            ]
                         }
                     }
                 }

@@ -1,46 +1,166 @@
 {
-    "RecoveryEmotionCabinNameOCR": {
-        "roi": [
-            516,
-            300,
-            678,
-            200
-        ]
-    },
-    "RecoveryEmotionUnassignedBandColorTop": {
+    "RecoveryEmotionOperator1": {
         "recognition": {
             "param": {
                 "roi": [
                     516,
                     306,
-                    678,
+                    100,
                     18
                 ]
             }
         }
     },
-    "RecoveryEmotionUnassignedBandColorBottom": {
+    "RecoveryEmotionOperator2": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    629,
+                    306,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator3": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    743,
+                    306,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator4": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    856,
+                    306,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator5": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    969,
+                    306,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator6": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    1083,
+                    306,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator7": {
         "recognition": {
             "param": {
                 "roi": [
                     516,
                     479,
-                    678,
+                    100,
                     18
                 ]
             }
         }
     },
-    "RecoveryEmotionUnassignedLabelText": {
+    "RecoveryEmotionOperator8": {
         "recognition": {
             "param": {
                 "roi": [
-                    516,
-                    300,
-                    678,
-                    200
+                    629,
+                    479,
+                    100,
+                    18
                 ]
             }
+        }
+    },
+    "RecoveryEmotionOperator9": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    743,
+                    479,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator10": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    856,
+                    479,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator11": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    969,
+                    479,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionOperator12": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    1083,
+                    479,
+                    100,
+                    18
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionSelectCurrentOperator": {
+        "action": {
+            "param": {
+                "target_offset": [
+                    49,
+                    -45,
+                    -99,
+                    -17
+                ]
+            }
+        },
+        "post_wait_freezes": {
+            "target": [
+                516,
+                216,
+                678,
+                340
+            ]
         }
     },
     "RecoveryEmotionScrollToNextOperators": {
@@ -52,7 +172,7 @@
                 ],
                 "end": [
                     806,
-                    310
+                    120
                 ]
             }
         },
@@ -74,7 +194,7 @@
                 ],
                 "end": [
                     806,
-                    310
+                    120
                 ]
             }
         },
@@ -95,30 +215,6 @@
                     60,
                     160,
                     55
-                ]
-            }
-        }
-    },
-    "RecoveryEmotionSelectLowEmotion": {
-        "action": {
-            "param": {
-                "target_offset": [
-                    0,
-                    -27,
-                    0,
-                    0
-                ]
-            }
-        }
-    },
-    "RecoveryEmotionSelectLowEmotion2": {
-        "action": {
-            "param": {
-                "target_offset": [
-                    0,
-                    -27,
-                    0,
-                    0
                 ]
             }
         }
