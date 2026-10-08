@@ -450,7 +450,10 @@
     },
     "RecoveryEmotionStopAtUnassigned": {
         "desc": "首名未找到时，按无安排全文或中性色带结束查找",
-        "recognition": "RecoveryEmotionUnassignedLabel",
+        "recognition": "And",
+        "all_of": [
+            "RecoveryEmotionUnassignedLabel"
+        ],
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
@@ -461,7 +464,10 @@
     "RecoveryEmotionStopAtUnassignedAfterFirst": {
         "desc": "首名已选后，按无安排全文或中性色带结束第二名查找",
         "enabled": false,
-        "recognition": "RecoveryEmotionUnassignedLabel",
+        "recognition": "And",
+        "all_of": [
+            "RecoveryEmotionUnassignedLabel"
+        ],
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
