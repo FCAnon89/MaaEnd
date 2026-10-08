@@ -1,43 +1,47 @@
 {
-    "RecoveryEmotionSelectLowEmotion": {
+    "RecoveryEmotionCabinNameOCR": {
         "roi": [
             516,
-            216,
+            300,
             678,
-            340
+            200
         ]
     },
-    "RecoveryEmotionSelectLowEmotion2": {
-        "roi": [
-            516,
-            216,
-            678,
-            340
-        ]
+    "RecoveryEmotionUnassignedBandColorTop": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    516,
+                    306,
+                    678,
+                    18
+                ]
+            }
+        }
     },
-    "RecoveryEmotionSelectLowEmotionAfterFirst": {
-        "roi": [
-            516,
-            216,
-            678,
-            340
-        ]
+    "RecoveryEmotionUnassignedBandColorBottom": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    516,
+                    479,
+                    678,
+                    18
+                ]
+            }
+        }
     },
-    "RecoveryEmotionStopAtUnassigned": {
-        "roi": [
-            516,
-            216,
-            678,
-            340
-        ]
-    },
-    "RecoveryEmotionStopAtUnassignedAfterFirst": {
-        "roi": [
-            516,
-            216,
-            678,
-            340
-        ]
+    "RecoveryEmotionUnassignedLabelText": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    516,
+                    300,
+                    678,
+                    200
+                ]
+            }
+        }
     },
     "RecoveryEmotionScrollToNextOperators": {
         "action": {
@@ -91,6 +95,30 @@
                     60,
                     160,
                     55
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionSelectLowEmotion": {
+        "action": {
+            "param": {
+                "target_offset": [
+                    0,
+                    -27,
+                    0,
+                    0
+                ]
+            }
+        }
+    },
+    "RecoveryEmotionSelectLowEmotion2": {
+        "action": {
+            "param": {
+                "target_offset": [
+                    0,
+                    -27,
+                    0,
+                    0
                 ]
             }
         }

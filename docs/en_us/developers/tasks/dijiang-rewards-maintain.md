@@ -46,7 +46,7 @@ Controlled by the `StageTaskSetting` → `FastCollect` switch, disabled by defau
 
 ### Recover Mood
 
-`RecoveryEmotionCabins` defaults to all five cabins when first expanded. Deselecting all cabins skips this stage. The recognizer combines band color and cabin-name OCR to identify each operator's assignment: Control Nexus, Reception Room, and Growth Chamber I match by color or full name; Manufacturing Cabin I and II require both the yellow band and a full name that distinguishes I from II. An unassigned operator is detected by its full label, or by a neutral band when no cabin name matches.
+`RecoveryEmotionCabins` defaults to all five cabins when first expanded. Deselecting all cabins skips this stage. The Pipeline uses `And` to match a colored label and the full name of a selected cabin; the full name distinguishes Manufacturing Cabin I and II. An unassigned operator is detected by its full label or neutral label band.
 
 Operators are scanned in ascending mood order, and one or two are selected based on the available assist points. After scanning, the selected operators are confirmed and the pipeline returns to the Control Nexus. If a second operator is not found, the first is confirmed; if no first operator is found, the assist window is closed, the pipeline returns to the Control Nexus, and a not-found notice is shown.
 

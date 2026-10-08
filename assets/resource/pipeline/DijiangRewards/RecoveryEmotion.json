@@ -162,8 +162,37 @@
             ]
         },
         "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AttachToExpectedRegexAction",
+                "custom_action_param": {
+                    "target": "RecoveryEmotionCabinNameOCR"
+                }
+            }
+        },
         "post_delay": 0,
         "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionPrepareFirstSelection"
+        ]
+    },
+    "RecoveryEmotionPrepareFirstSelection": {
+        "desc": "重置本次选择的 OCR 结果索引",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "PipelineOverride",
+                "custom_action_param": {
+                    "patch": {
+                        "RecoveryEmotionCabinNameOCR": {
+                            "index": 0
+                        }
+                    }
+                }
+            }
+        },
         "next": [
             "RecoveryEmotionEnableSecondSelection",
             "RecoveryEmotionSelectLowEmotion",
@@ -199,7 +228,7 @@
                         "RecoveryEmotionSelectLowEmotion2": {
                             "enabled": true
                         },
-                        "RecoveryEmotionSelectLowEmotionAfterFirst": {
+                        "RecoveryEmotionSetSecondTargetIndex": {
                             "enabled": true
                         },
                         "RecoveryEmotionStopAtUnassignedAfterFirst": {
@@ -224,121 +253,204 @@
             "RecoveryEmotionScrollLimitReached"
         ]
     },
-    "RecoveryEmotionSelectLowEmotion": {
-        "desc": "[恢复心情·操作] 按列表顺序点击首个匹配已选舱室的干员",
-        "recognition": "Custom",
-        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
-        "custom_recognition_param": {
-            "mode": "target"
-        },
+    "RecoveryEmotionCabinLabelBandColor": {
+        "desc": "检查完整舱室名称所在标签是否有颜色",
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "roi": "RecoveryEmotionCabinNameOCR",
+                "roi_offset": [
+                    -7,
+                    -4,
+                    14,
+                    8
+                ],
+                "method": 40,
+                "lower": [
+                    0,
+                    16,
+                    40
+                ],
+                "upper": [
+                    179,
+                    255,
+                    255
+                ],
+                "connected": true,
+                "count": 100
+            }
+        }
+    },
+    "RecoveryEmotionCabinNameOCR": {
+        "desc": "在固定舱室标签行识别已勾选舱室的完整名称",
+        "recognition": "OCR",
         "roi": [
             540,
-            240,
+            317,
             540,
-            280
+            160
         ],
-        "pre_delay": 0,
-        "action": {
-            "type": "Click"
-        },
-        "post_delay": 400, // 等待勾选状态刷新后再扫描下一名
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionSelectLowEmotion2",
-            "RecoveryEmotionStopAtUnassignedAfterFirst",
-            "RecoveryEmotionScrollToNextOperatorsAfterFirst",
-            "RecoveryEmotionScrollLimitReachedAfterFirst",
-            "RecoveryEmotionConfirm"
-        ],
-        "attach": {
-            "cabin_labels": {
-                "control_nexus": [
-                    "总控中枢",
-                    "總控中樞",
-                    "総合制御中枢",
-                    "Master Control Nexus",
-                    "Control Nexus",
-                    "制御中枢",
-                    "마스터 컨트롤 넥서스"
+        "expected": "a^",
+        "only_rec": true,
+        "threshold": 0.15,
+        "order_by": "Vertical",
+        "index": 0
+    },
+    "RecoveryEmotionUnassignedBandColorTop": {
+        "desc": "在首排标签位置识别无安排的中性色带",
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "roi": [
+                    540,
+                    317,
+                    540,
+                    16
                 ],
-                "reception_room": [
-                    "会客室",
-                    "會客室",
-                    "Reception Room",
-                    "応接室",
-                    "접견실"
+                "method": 40,
+                "lower": [
+                    0,
+                    0,
+                    0
                 ],
-                "manufacturing_i": [
-                    "制造舱 I",
-                    "制造舱I",
-                    "制造舱Ⅰ",
-                    "制造舱1",
-                    "製造艙 I",
-                    "製造艙I",
-                    "製造艙Ⅰ",
-                    "MFG CABIN I",
-                    "MFG CABINI"
+                "upper": [
+                    179,
+                    90,
+                    255
                 ],
-                "manufacturing_ii": [
-                    "制造舱 II",
-                    "制造舱II",
-                    "制造舱Ⅱ",
-                    "製造艙 II",
-                    "製造艙II",
-                    "製造艙Ⅱ",
-                    "MFG CABIN II",
-                    "MFG CABINII"
+                "connected": true,
+                "count": 600
+            }
+        }
+    },
+    "RecoveryEmotionUnassignedBandColorBottom": {
+        "desc": "在第二排标签位置识别无安排的中性色带",
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "roi": [
+                    540,
+                    455,
+                    540,
+                    16
                 ],
-                "growth_chamber_i": [
-                    "培养舱 I",
-                    "培养舱I",
-                    "培养舱Ⅰ",
-                    "培養艙 I",
-                    "培養艙I",
-                    "培養艙Ⅰ",
-                    "GROWTH CHAMBER I",
-                    "GROWTH CHAMBERI"
+                "method": 40,
+                "lower": [
+                    0,
+                    0,
+                    0
+                ],
+                "upper": [
+                    179,
+                    90,
+                    255
+                ],
+                "connected": true,
+                "count": 600
+            }
+        }
+    },
+    "RecoveryEmotionUnassignedLabelText": {
+        "desc": "按完整文字识别无安排标签",
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "roi": [
+                    540,
+                    317,
+                    540,
+                    160
+                ],
+                "expected": [
+                    "无安排",
+                    "無安排",
+                    "Unassigned",
+                    "未配置",
+                    "미배치"
+                ],
+                "threshold": 0.15,
+                "order_by": "Vertical"
+            }
+        }
+    },
+    "RecoveryEmotionUnassignedLabel": {
+        "desc": "按完整文字或中性色带识别无安排标签",
+        "recognition": {
+            "type": "Or",
+            "param": {
+                "any_of": [
+                    "RecoveryEmotionUnassignedLabelText",
+                    "RecoveryEmotionUnassignedBandColorTop",
+                    "RecoveryEmotionUnassignedBandColorBottom"
                 ]
             }
         }
     },
-    "RecoveryEmotionSelectLowEmotion2": {
-        "desc": "[恢复心情·操作] 按相同舱室点击当前列表的第二个匹配干员",
-        "enabled": false,
-        "recognition": "Custom",
-        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
-        "custom_recognition_param": {
-            "mode": "target"
+    "RecoveryEmotionSelectLowEmotion": {
+        "desc": "按列表顺序点击首个满足色带和完整舱室名称的干员",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "RecoveryEmotionCabinNameOCR",
+                    "RecoveryEmotionCabinLabelBandColor"
+                ],
+                "box_index": 0
+            }
         },
-        "roi": [
-            540,
-            240,
-            540,
-            280
-        ],
         "pre_delay": 0,
         "action": {
-            "type": "Click"
+            "type": "Click",
+            "param": {
+                "target_offset": [
+                    0,
+                    -22,
+                    0,
+                    0
+                ]
+            }
         },
-        "post_delay": 400, // 等待勾选状态刷新后再扫描下一名
+        "post_delay": 400,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionSetSecondTargetIndex",
+            "RecoveryEmotionConfirm"
+        ]
+    },
+    "RecoveryEmotionSelectLowEmotion2": {
+        "desc": "按列表顺序点击第二个满足色带和完整舱室名称的干员",
+        "enabled": false,
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "RecoveryEmotionCabinNameOCR",
+                    "RecoveryEmotionCabinLabelBandColor"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target_offset": [
+                    0,
+                    -22,
+                    0,
+                    0
+                ]
+            }
+        },
+        "post_delay": 400,
         "rate_limit": 0,
         "next": [
             "RecoveryEmotionConfirm"
         ]
     },
     "RecoveryEmotionStopAtUnassigned": {
-        "desc": "[恢复心情·未找到首名] 扫描可见列表，遇到首个无安排干员时退出查找",
-        "recognition": "Custom",
-        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
-        "custom_recognition_param": {
-            "mode": "unassigned"
-        },
-        "roi": [
-            540,
-            240,
-            540,
-            280
-        ],
+        "desc": "首名未找到时，按无安排全文或中性色带结束查找",
+        "recognition": "RecoveryEmotionUnassignedLabel",
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
@@ -347,19 +459,9 @@
         ]
     },
     "RecoveryEmotionStopAtUnassignedAfterFirst": {
-        "desc": "[恢复心情·停止扫描] 首名已选后扫描可见列表，遇到首个无安排干员时停止",
+        "desc": "首名已选后，按无安排全文或中性色带结束第二名查找",
         "enabled": false,
-        "recognition": "Custom",
-        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
-        "custom_recognition_param": {
-            "mode": "unassigned"
-        },
-        "roi": [
-            540,
-            240,
-            540,
-            280
-        ],
+        "recognition": "RecoveryEmotionUnassignedLabel",
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
@@ -417,27 +519,28 @@
             "RecoveryEmotionNoTargetExitView2ToView1"
         ]
     },
-    "RecoveryEmotionSelectLowEmotionAfterFirst": {
-        "desc": "[恢复心情·操作] 首名已选后，在后续页面点击首个匹配干员作为第二名",
+    "RecoveryEmotionSetSecondTargetIndex": {
+        "desc": "首名已选且可用点数为 2 时，从第二个匹配结果开始查找",
         "enabled": false,
-        "recognition": "Custom",
-        "custom_recognition": "RecoveryEmotionCabinOperatorRecognition",
-        "custom_recognition_param": {
-            "mode": "target"
-        },
-        "roi": [
-            540,
-            240,
-            540,
-            280
-        ],
-        "pre_delay": 0,
+        "recognition": "DirectHit",
         "action": {
-            "type": "Click"
+            "type": "Custom",
+            "param": {
+                "custom_action": "PipelineOverride",
+                "custom_action_param": {
+                    "patch": {
+                        "RecoveryEmotionCabinNameOCR": {
+                            "index": 1
+                        }
+                    }
+                }
+            }
         },
-        "post_delay": 400, // 等待勾选状态刷新后再继续后续步骤
-        "rate_limit": 0,
         "next": [
+            "RecoveryEmotionSelectLowEmotion2",
+            "RecoveryEmotionStopAtUnassignedAfterFirst",
+            "RecoveryEmotionScrollToNextOperatorsAfterFirst",
+            "RecoveryEmotionScrollLimitReachedAfterFirst",
             "RecoveryEmotionConfirm"
         ]
     },
@@ -479,10 +582,31 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionSelectLowEmotionAfterFirst",
+            "RecoveryEmotionResetSecondSearchIndex"
+        ]
+    },
+    "RecoveryEmotionResetSecondSearchIndex": {
+        "desc": "第二名查找翻页后，从当前页第一个匹配结果继续",
+        "recognition": "DirectHit",
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "PipelineOverride",
+                "custom_action_param": {
+                    "patch": {
+                        "RecoveryEmotionCabinNameOCR": {
+                            "index": 0
+                        }
+                    }
+                }
+            }
+        },
+        "next": [
+            "RecoveryEmotionSelectLowEmotion2",
             "RecoveryEmotionStopAtUnassignedAfterFirst",
             "RecoveryEmotionScrollToNextOperatorsAfterFirst",
-            "RecoveryEmotionScrollLimitReachedAfterFirst"
+            "RecoveryEmotionScrollLimitReachedAfterFirst",
+            "RecoveryEmotionConfirm"
         ]
     },
     "RecoveryEmotionScrollLimitReachedAfterFirst": {

@@ -38,7 +38,6 @@
                 "OutpostTradingPriorityItem",
                 "OutpostTradingSelectBestOperator",
                 "PuzzleRecognition",
-                "RecoveryEmotionCabinOperatorRecognition",
                 "ReceptionRoomExchangeCountdownWithinThresholdRecognition",
                 "ReceptionRoomWaitExchangeKeepAliveDueRecognition",
                 "ScheduleRecognition",
@@ -535,30 +534,6 @@
                 "required": [ "custom_recognition_param" ],
                 "properties": {
                     "custom_recognition_param": { "$ref": "./components/outpost_trading.schema.json#/$defs/PriorityItemRecognitionParam" }
-                }
-            }
-        },
-        {
-            "if": {
-                "type": "object",
-                "required": [ "custom_recognition" ],
-                "properties": { "custom_recognition": { "const": "RecoveryEmotionCabinOperatorRecognition" } }
-            },
-            "then": {
-                "type": "object",
-                "required": [ "custom_recognition_param" ],
-                "properties": {
-                    "custom_recognition_param": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": [ "mode" ],
-                        "properties": {
-                            "mode": {
-                                "type": "string",
-                                "enum": [ "target", "unassigned" ]
-                            }
-                        }
-                    }
                 }
             }
         }
