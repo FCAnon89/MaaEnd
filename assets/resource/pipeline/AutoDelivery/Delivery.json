@@ -392,20 +392,9 @@
             "AutoDeliveryCheckSubmitGoodsTarget"
         ],
         "pre_delay": 0,
-        "action": {
-            "type": "Custom",
-            "param": {
-                "custom_action": "RepeatUntilFoundAction",
-                "custom_action_param": {
-                    "custom_action": "AutoAltClickAction",
-                    "wait_nodes": [
-                        "AutoDeliveryInChatDialog"
-                    ],
-                    "repeat_count": 1,
-                    "interval_ms": 6000
-                }
-            }
-        },
+        "action": "Custom",
+        "custom_action": "AutoAltClickAction",
+        "timeout": 6000
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
