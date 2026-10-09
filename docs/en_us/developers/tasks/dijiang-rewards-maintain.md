@@ -46,9 +46,9 @@ Controlled by the `StageTaskSetting` → `FastCollect` switch, disabled by defau
 
 ### Recover Mood
 
-`RecoveryEmotionCabins` defaults to all five cabins; deselecting all skips this stage. Following the game's ascending mood order, each page checks the fixed cabin labels of 12 operators from left to right, then top to bottom. Control Nexus, Reception Room, and Growth Chamber match by their color or full name. Manufacturing Cabins require yellow and the full cabin name containing I/II, checking II first. Unassigned operators match by a neutral band or the full label.
+`RecoveryEmotionCabins` defaults to all five cabins; deselecting all skips this stage. Following the game's ascending mood order, each page checks the fixed cabin labels of 12 operators from left to right, then top to bottom. Control Nexus, Reception Room, and Growth Chamber match by their color or full name. Manufacturing Cabins require yellow and the full cabin name containing I/II, checking II first. Unassigned cards are skipped while scanning continues.
 
-The available assist points determine whether one or two operators are selected, continuing from the next operator after each selection. The list scrolls only after the current page is exhausted; an unassigned operator or 20 swipes per search stage ends the search. Selected operators are confirmed before returning to the Control Nexus. If no first operator is found, the assist window is closed, the pipeline returns to the Control Nexus, and a not-found notice is shown.
+The available assist points determine whether one or two operators are selected, continuing from the next operator after each selection. The list scrolls only after the current page is exhausted. The scrollbar's top position is compared before and after each scroll, treating a vertical shift of up to 3 px as unchanged. Three consecutive unchanged positions end the search; a larger shift resumes scanning on the new page and resets the count. Selected operators are confirmed before returning to the Control Nexus. If no first operator is found, the assist window is closed, the pipeline returns to the Control Nexus, and a not-found notice is shown.
 
 ### Reception Room
 

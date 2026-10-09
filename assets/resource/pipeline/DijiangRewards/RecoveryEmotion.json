@@ -662,7 +662,6 @@
             "RecoveryEmotionCabinControlNexus",
             "RecoveryEmotionCabinReceptionRoom",
             "RecoveryEmotionCabinGrowthChamberI",
-            "RecoveryEmotionUnassigned",
             "RecoveryEmotionNextOperator"
         ]
     },
@@ -747,27 +746,6 @@
                     255
                 ],
                 "count": 400
-            }
-        }
-    },
-    "RecoveryEmotionUnassignedBand": {
-        "desc": "无安排的中性色带",
-        "recognition": {
-            "type": "ColorMatch",
-            "param": {
-                "roi": "[Anchor]RecoveryEmotionCurrentOperator",
-                "method": 40,
-                "lower": [
-                    0,
-                    0,
-                    0
-                ],
-                "upper": [
-                    179,
-                    60,
-                    255
-                ],
-                "count": 600
             }
         }
     },
@@ -897,24 +875,6 @@
             }
         }
     },
-    "RecoveryEmotionUnassignedName": {
-        "desc": "识别无安排完整文字",
-        "recognition": {
-            "type": "OCR",
-            "param": {
-                "roi": "[Anchor]RecoveryEmotionCurrentOperator",
-                "expected": [
-                    "无安排",
-                    "無安排",
-                    "Unassigned",
-                    "未配置",
-                    "미배치"
-                ],
-                "only_rec": true,
-                "threshold": 0.15
-            }
-        }
-    },
     "RecoveryEmotionCabinControlNexus": {
         "desc": "颜色或完整名称命中后，按舱室选项选择或继续下一位",
         "recognition": {
@@ -1005,24 +965,6 @@
             "RecoveryEmotionNextOperator"
         ]
     },
-    "RecoveryEmotionUnassigned": {
-        "desc": "当前干员无安排时结束查找，已选一名则确认该名",
-        "recognition": {
-            "type": "Or",
-            "param": {
-                "any_of": [
-                    "RecoveryEmotionUnassignedBand",
-                    "RecoveryEmotionUnassignedName"
-                ]
-            }
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionEndSearch"
-        ]
-    },
     "RecoveryEmotionSelectCurrentOperator": {
         "desc": "在当前卡片头像中部的固定单点选中干员",
         "recognition": {
@@ -1076,12 +1018,6 @@
                         "RecoveryEmotionContinueAfterFirst": {
                             "enabled": false
                         },
-                        "RecoveryEmotionNextPage": {
-                            "next": [
-                                "RecoveryEmotionScrollToNextOperatorsAfterFirst",
-                                "RecoveryEmotionScrollLimitReachedAfterFirst"
-                            ]
-                        },
                         "RecoveryEmotionEndSearch": {
                             "next": [
                                 "RecoveryEmotionConfirm"
@@ -1105,19 +1041,31 @@
         "rate_limit": 0
     },
     "RecoveryEmotionNextPage": {
-        "desc": "当前页 12 位检查完毕，进入当前阶段的翻页或上限收尾",
-        "recognition": "DirectHit",
+        "desc": "当前页 12 位检查完毕，记录滑条顶部位置后开始上划",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1077,
+                    240,
+                    12,
+                    280
+                ],
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTop.png",
+                "method": 10001,
+                "threshold": 0.9
+            }
+        },
         "pre_delay": 0,
+        "anchor": "RecoveryEmotionScrollbarPosition",
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionScrollToNextOperators",
-            "RecoveryEmotionScrollLimitReached"
+            "RecoveryEmotionScrollToNextOperators"
         ]
     },
     "RecoveryEmotionScrollToNextOperators": {
-        "desc": "[恢复心情·滚动] 首名未找到时上划，最多 20 次",
-        "max_hit": 20,
+        "desc": "[恢复心情·滚动] 第一次上划后比较滑条位置",
         "recognition": "DirectHit",
         "pre_delay": 0,
         "action": {
@@ -1131,7 +1079,7 @@
                 ],
                 "end": [
                     806,
-                    170,
+                    176,
                     1,
                     1
                 ],
@@ -1152,12 +1100,12 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RecoveryEmotionOperator1"
+            "RecoveryEmotionScrollbarUnchanged1",
+            "RecoveryEmotionScrollbarMoved"
         ]
     },
-    "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
-        "desc": "[恢复心情·滚动] 首名已选且当前页无第二名时上划，最多 20 次",
-        "max_hit": 20,
+    "RecoveryEmotionScrollAttempt2": {
+        "desc": "[恢复心情·滚动] 滑条第一次未移动后再次上划",
         "recognition": "DirectHit",
         "pre_delay": 0,
         "action": {
@@ -1171,7 +1119,7 @@
                 ],
                 "end": [
                     806,
-                    170,
+                    176,
                     1,
                     1
                 ],
@@ -1192,27 +1140,145 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RecoveryEmotionScrollbarUnchanged2",
+            "RecoveryEmotionScrollbarMoved"
+        ]
+    },
+    "RecoveryEmotionScrollAttempt3": {
+        "desc": "[恢复心情·滚动] 滑条连续两次未移动后进行第三次上划",
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    806,
+                    460,
+                    1,
+                    1
+                ],
+                "end": [
+                    806,
+                    176,
+                    1,
+                    1
+                ],
+                "end_hold": 1000,
+                "duration": 400
+            }
+        },
+        "post_wait_freezes": {
+            "time": 100,
+            "target": [
+                540,
+                240,
+                540,
+                280
+            ],
+            "timeout": 1500
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionScrollbarUnchanged3",
+            "RecoveryEmotionScrollbarMoved"
+        ]
+    },
+    "RecoveryEmotionScrollbarUnchanged1": {
+        "desc": "第一次上划后滑条顶部偏移不超过 3 px，记录当前位置后继续第二次上划",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": "[Anchor]RecoveryEmotionScrollbarPosition",
+                "roi_offset": [
+                    0,
+                    -3,
+                    0,
+                    6
+                ],
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTop.png",
+                "method": 10001,
+                "threshold": 0.9
+            }
+        },
+        "pre_delay": 0,
+        "anchor": "RecoveryEmotionScrollbarPosition",
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionScrollAttempt2"
+        ]
+    },
+    "RecoveryEmotionScrollbarUnchanged2": {
+        "desc": "第二次上划后滑条顶部偏移不超过 3 px，记录当前位置后继续第三次上划",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": "[Anchor]RecoveryEmotionScrollbarPosition",
+                "roi_offset": [
+                    0,
+                    -3,
+                    0,
+                    6
+                ],
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTop.png",
+                "method": 10001,
+                "threshold": 0.9
+            }
+        },
+        "pre_delay": 0,
+        "anchor": "RecoveryEmotionScrollbarPosition",
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionScrollAttempt3"
+        ]
+    },
+    "RecoveryEmotionScrollbarUnchanged3": {
+        "desc": "第三次上划后滑条顶部偏移仍不超过 3 px，结束当前查找阶段",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": "[Anchor]RecoveryEmotionScrollbarPosition",
+                "roi_offset": [
+                    0,
+                    -3,
+                    0,
+                    6
+                ],
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTop.png",
+                "method": 10001,
+                "threshold": 0.9
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RecoveryEmotionEndSearch"
+        ]
+    },
+    "RecoveryEmotionScrollbarMoved": {
+        "desc": "滑条顶部超出前一次记录位置上下 3 px，定位当前位置后扫描新页第一位",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1077,
+                    240,
+                    12,
+                    280
+                ],
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTop.png",
+                "method": 10001,
+                "threshold": 0.9
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RecoveryEmotionOperator1"
-        ]
-    },
-    "RecoveryEmotionScrollLimitReached": {
-        "desc": "本阶段达到 20 次滑动上限后结束查找",
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionEndSearch"
-        ]
-    },
-    "RecoveryEmotionScrollLimitReachedAfterFirst": {
-        "desc": "本阶段达到 20 次滑动上限后结束查找",
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RecoveryEmotionEndSearch"
         ]
     },
     "RecoveryEmotionEndSearch": {

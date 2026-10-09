@@ -172,7 +172,7 @@
                 ],
                 "end": [
                     806,
-                    120
+                    106
                 ]
             }
         },
@@ -185,7 +185,7 @@
             ]
         }
     },
-    "RecoveryEmotionScrollToNextOperatorsAfterFirst": {
+    "RecoveryEmotionScrollAttempt2": {
         "action": {
             "param": {
                 "begin": [
@@ -194,7 +194,7 @@
                 ],
                 "end": [
                     806,
-                    120
+                    106
                 ]
             }
         },
@@ -205,6 +205,75 @@
                 678,
                 340
             ]
+        }
+    },
+    "RecoveryEmotionScrollAttempt3": {
+        "action": {
+            "param": {
+                "begin": [
+                    806,
+                    500
+                ],
+                "end": [
+                    806,
+                    106
+                ]
+            }
+        },
+        "post_wait_freezes": {
+            "target": [
+                516,
+                216,
+                678,
+                340
+            ]
+        }
+    },
+    "RecoveryEmotionNextPage": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    1186,
+                    211,
+                    14,
+                    347
+                ],
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTopADB.png"
+            }
+        }
+    },
+    "RecoveryEmotionScrollbarUnchanged1": {
+        "recognition": {
+            "param": {
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTopADB.png"
+            }
+        }
+    },
+    "RecoveryEmotionScrollbarUnchanged2": {
+        "recognition": {
+            "param": {
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTopADB.png"
+            }
+        }
+    },
+    "RecoveryEmotionScrollbarUnchanged3": {
+        "recognition": {
+            "param": {
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTopADB.png"
+            }
+        }
+    },
+    "RecoveryEmotionScrollbarMoved": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    1186,
+                    211,
+                    14,
+                    347
+                ],
+                "template": "ClaimDijiangRewards/RecoveryEmotionScrollbarTopADB.png"
+            }
         }
     },
     "RecoveryEmotionNoTargetExitView2ToView1": {
