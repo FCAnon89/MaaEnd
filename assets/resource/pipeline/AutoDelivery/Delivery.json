@@ -256,15 +256,6 @@
                 "AutoDeliveryCheckSubmitGoodsTarget"
             ]
         },
-        "post_wait_freezes": {
-            "time": 300,
-            "target": [
-                763,
-                349,
-                195,
-                270
-            ]
-        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
@@ -402,8 +393,8 @@
                 "AutoDeliveryInChatDialog",
                 "AutoDeliveryCloseRewardDialog"
             ],
-            "repeat_count": 2,
-            "interval_ms": 10000
+            "repeat_count": 5,
+            "interval_ms": 5000
         },
         "post_delay": 0,
         "timeout": 6000,

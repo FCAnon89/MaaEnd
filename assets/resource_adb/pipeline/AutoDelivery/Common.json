@@ -104,17 +104,6 @@
             ]
         }
     },
-    "AutoDeliverySearchSubmitGoodsButton": {
-        "post_wait_freezes": {
-            "time": 300,
-            "target": [
-                720,
-                349,
-                240,
-                270
-            ]
-        }
-    },
     "AutoDeliveryScrollMissionList": {
         "post_wait_freezes": {
             "time": 300,
