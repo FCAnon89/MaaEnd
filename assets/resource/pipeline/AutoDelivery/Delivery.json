@@ -400,7 +400,8 @@
         "timeout": 6000,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSkipChatReady"
+            "AutoDeliveryCheckSkipChatReady",
+            "AutoDeliveryCloseRewardDialog"
         ],
         "focus": {
             "Node.Action.Starting": "$task.AutoDelivery.focus.submit_goods"
