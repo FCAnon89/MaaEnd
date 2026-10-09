@@ -78,23 +78,7 @@
             "AutoDelivery/SubmitGoods2.png" // 非 NPC 交货图标
         ],
         "threshold": 0.9,
-        "order_by": "Score",
-        "pre_wait_freezes": {
-            "time": 300,
-            "target": [
-                763,
-                349,
-                195,
-                270
-            ]
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "AutoDeliveryCheckSubmitGoodsTarget",
-            "AutoDeliverySearchSubmitGoodsButton"
-        ]
+        "order_by": "Score"
     },
     "AutoDeliveryCheckSubmitGoodsName": {
         "desc": "识别送货目标交互提示中的文本，由 Go 按当前终点的名称注入 expected 复核",
@@ -114,6 +98,15 @@
         "all_of": [
             "AutoDeliveryCheckSubmitGoodsButton"
         ],
+        "pre_wait_freezes": {
+            "time": 300,
+            "target": [
+                763,
+                349,
+                195,
+                270
+            ]
+        },
         "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
@@ -198,7 +191,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSubmitGoodsButton",
+            "AutoDeliveryCheckSubmitGoodsTarget",
             "AutoDeliverySearchSubmitGoodsButton"
         ],
         "focus": {
@@ -232,7 +225,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSubmitGoodsButton"
+            "AutoDeliveryCheckSubmitGoodsTarget"
         ]
     },
     "AutoDeliveryReturnWorldAndNavigateDestination": {
@@ -263,10 +256,19 @@
                 "AutoDeliveryCheckSubmitGoodsTarget"
             ]
         },
+        "post_wait_freezes": {
+            "time": 300,
+            "target": [
+                763,
+                349,
+                195,
+                270
+            ]
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "AutoDeliveryCheckSubmitGoodsButton"
+            "AutoDeliveryCheckSubmitGoodsTarget"
         ],
         "on_error": [
             "AutoDeliveryRetryNavigateDestination"
@@ -394,53 +396,14 @@
         "pre_delay": 0,
         "action": "Custom",
         "custom_action": "AutoAltClickAction",
-        "timeout": 6000
         "post_delay": 0,
+        "timeout": 6000,
         "rate_limit": 0,
         "next": [
             "AutoDeliveryCheckSkipChatReady"
-        ],
-        "on_error": [
-            "AutoDeliveryRetrySubmitGoods"
         ],
         "focus": {
             "Node.Action.Starting": "$task.AutoDelivery.focus.submit_goods"
         }
-    },
-    "AutoDeliveryRetrySubmitGoods": {
-        "desc": "首次交互未进入对话时，重新确认同一交货目标后再尝试一次",
-        "recognition": "And",
-        "all_of": [
-            "AutoDeliveryCheckSubmitGoodsTarget"
-        ],
-        "pre_wait_freezes": {
-            "time": 300,
-            "target": [
-                763,
-                349,
-                195,
-                270
-            ]
-        },
-        "pre_delay": 0,
-        "action": {
-            "type": "Custom",
-            "param": {
-                "custom_action": "RepeatUntilFoundAction",
-                "custom_action_param": {
-                    "custom_action": "AutoAltClickAction",
-                    "wait_nodes": [
-                        "AutoDeliveryInChatDialog"
-                    ],
-                    "repeat_count": 1,
-                    "interval_ms": 6000
-                }
-            }
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "AutoDeliveryCheckSkipChatReady"
-        ]
     }
 }

@@ -61,7 +61,17 @@
             349,
             240,
             270
-        ],
+        ]
+    },
+    "AutoDeliveryCheckSubmitGoodsName": {
+        "roi": [
+            720,
+            349,
+            240,
+            270
+        ]
+    },
+    "AutoDeliveryCheckSubmitGoodsTarget": {
         "pre_wait_freezes": {
             "time": 300,
             "target": [
@@ -71,14 +81,6 @@
                 270
             ]
         }
-    },
-    "AutoDeliveryCheckSubmitGoodsName": {
-        "roi": [
-            720,
-            349,
-            240,
-            270
-        ]
     },
     "AutoDeliveryNavigateDestination": {
         "post_wait_freezes": {
@@ -102,8 +104,8 @@
             ]
         }
     },
-    "AutoDeliveryRetrySubmitGoods": {
-        "pre_wait_freezes": {
+    "AutoDeliverySearchSubmitGoodsButton": {
+        "post_wait_freezes": {
             "time": 300,
             "target": [
                 720,
