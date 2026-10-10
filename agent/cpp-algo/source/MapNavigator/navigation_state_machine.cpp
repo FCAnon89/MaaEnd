@@ -523,6 +523,12 @@ bool NavigationStateMachine::Bootstrap()
 
 bool NavigationStateMachine::TickPhase(NaviPhase phase)
 {
+    // 相位切换等于把镜头交给了别的流程（滑索、找目标、传送），此前那一拍记下的观测不再算「没被指令动过」。
+    // 挂在这里而不是各条转向路径上：绕过 ActionWrapper 的开环转向（滑索俯仰的 pipeline 旁路等）也一并作废。
+    if (!last_tick_phase_ || *last_tick_phase_ != phase) {
+        last_tick_phase_ = phase;
+        action_wrapper_->NoteHeadingDisturbed();
+    }
     // Ahead of every early return, so no branch or phase can strand the game in walking mode.
     UpdateWalkMode(phase);
 
@@ -566,7 +572,24 @@ bool NavigationStateMachine::TickPhase(NaviPhase phase)
 
 bool NavigationStateMachine::CaptureCurrentPosition(bool force_global_search)
 {
-    const bool captured = position_provider_->Capture(position_, force_global_search, session_->current_zone_id());
+    // 先验是一次观测，不是一条指令：只有「上一拍成功取位记下的纪元 == 当前纪元」才说明自那次识别以来
+    // 镜头没被任何 yaw 指令动过。转过的角度大不大、落没落地都不必再判——任何 yaw 指令都会推高纪元。
+    const uint64_t heading_epoch = action_wrapper_->heading_epoch();
+    const bool prior_usable = !force_global_search && param_.heading_source == HeadingSource::Camera && position_->valid
+                              && prior_observation_epoch_ && *prior_observation_epoch_ == heading_epoch
+                              && session_->phase() == NaviPhase::Navigate;
+    const std::optional<double> camera_heading_prior = prior_usable ? std::optional<double>(position_->angle) : std::nullopt;
+    const bool captured =
+        position_provider_->Capture(position_, force_global_search, session_->current_zone_id(), {}, camera_heading_prior);
+    if (captured) {
+        // 纪录取的是取位前读到的值：这一拍后面再发的转向不该让这次观测提前作废，下一拍自会挡住它。
+        prior_observation_epoch_ = heading_epoch;
+        consecutive_prior_uses_ = camera_heading_prior ? consecutive_prior_uses_ + 1 : 0;
+        LogDebug << "MapNavigator camera heading prior" << VAR(camera_heading_prior.value_or(-1.0)) << VAR(consecutive_prior_uses_);
+    }
+    else {
+        consecutive_prior_uses_ = 0;
+    }
     UpdateDwellWatchdog(captured);
     return captured;
 }
@@ -2542,7 +2565,9 @@ bool NavigationStateMachine::TryRunPromptSubtaskWhileWalking(const RouteTracking
 
     const std::array<AsyncPromptAction*, 2> prompts = PromptActions();
     for (size_t index = 0; index < prompts.size(); ++index) {
-        if (!prompts[index]->TryTriggerWhileWalking(motion_controller_, route.waypoint_distance, session_->current_node_idx())) {
+        const PromptTriggerOutcome outcome =
+            prompts[index]->TryTriggerWhileWalking(motion_controller_, route.waypoint_distance, session_->current_node_idx());
+        if (outcome == PromptTriggerOutcome::NotTriggered) {
             continue;
         }
         // 屏幕上一次只弹一个提示, 一次观测只值一次停车: 清掉另一类的闩, 免得同一个提示被停两次
@@ -2551,7 +2576,7 @@ bool NavigationStateMachine::TryRunPromptSubtaskWhileWalking(const RouteTracking
                 prompts[other]->ForgetDetection();
             }
         }
-        if (prompts[index]->spec().CompletesWaypointOnTrigger()) {
+        if (outcome == PromptTriggerOutcome::Recognized && prompts[index]->spec().CompletesWaypointOnTrigger()) {
             CompleteWaypointAfterPromptTrigger();
         }
         return true;
@@ -2580,7 +2605,7 @@ void NavigationStateMachine::CompleteWaypointAfterPromptTrigger()
 }
 
 // 最后一个点被吃掉的同一拍路线就结束、扫描器随即销毁, 行进中的检测没机会报第二次, 所以收尾单独给一个窗口。
-// 放在成功判定之后, 这里失败不该翻掉跑成功的线路。只服务共用表那类: 点名目标的那类每个点必定恰好跑一次。
+// 放在成功判定之后, 这里失败不该翻掉跑成功的线路。只服务共用表那类: 点名目标的那类每个点不是行进中认中, 就是到点时自己认过。
 void NavigationStateMachine::TryRunPromptSubtaskAtRouteTail()
 {
     if (maa_context_ == nullptr || should_stop_() || session_->phase() != NaviPhase::Finished) {
