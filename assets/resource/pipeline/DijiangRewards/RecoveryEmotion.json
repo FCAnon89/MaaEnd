@@ -999,6 +999,40 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RecoveryEmotionCurrentOperatorSelected",
+            "RecoveryEmotionNextOperator"
+        ]
+    },
+    "RecoveryEmotionCurrentOperatorSelected": {
+        "desc": "识别当前卡片右上角的黄色选中标记，成功后进入名次切换或确认",
+        "recognition": {
+            "type": "ColorMatch",
+            "param": {
+                "roi": "[Anchor]RecoveryEmotionCurrentOperator",
+                "roi_offset": [
+                    57,
+                    -72,
+                    -56,
+                    8
+                ],
+                "method": 40,
+                "lower": [
+                    15,
+                    40,
+                    40
+                ],
+                "upper": [
+                    34,
+                    255,
+                    255
+                ],
+                "count": 288
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RecoveryEmotionContinueAfterFirst",
             "RecoveryEmotionConfirm"
         ]
@@ -1078,13 +1112,29 @@
                     1
                 ],
                 "end": [
-                    806,
-                    176,
-                    1,
-                    1
+                    [
+                        806,
+                        460
+                    ],
+                    [
+                        806,
+                        452
+                    ],
+                    [
+                        806,
+                        176
+                    ]
                 ],
-                "end_hold": 1000,
-                "duration": 400
+                "end_hold": [
+                    100,
+                    100,
+                    1000
+                ],
+                "duration": [
+                    10,
+                    10,
+                    400
+                ]
             }
         },
         "post_wait_freezes": {
@@ -1118,13 +1168,29 @@
                     1
                 ],
                 "end": [
-                    806,
-                    176,
-                    1,
-                    1
+                    [
+                        806,
+                        460
+                    ],
+                    [
+                        806,
+                        452
+                    ],
+                    [
+                        806,
+                        176
+                    ]
                 ],
-                "end_hold": 1000,
-                "duration": 400
+                "end_hold": [
+                    100,
+                    100,
+                    1000
+                ],
+                "duration": [
+                    10,
+                    10,
+                    400
+                ]
             }
         },
         "post_wait_freezes": {
@@ -1158,13 +1224,29 @@
                     1
                 ],
                 "end": [
-                    806,
-                    176,
-                    1,
-                    1
+                    [
+                        806,
+                        460
+                    ],
+                    [
+                        806,
+                        452
+                    ],
+                    [
+                        806,
+                        176
+                    ]
                 ],
-                "end_hold": 1000,
-                "duration": 400
+                "end_hold": [
+                    100,
+                    100,
+                    1000
+                ],
+                "duration": [
+                    10,
+                    10,
+                    400
+                ]
             }
         },
         "post_wait_freezes": {
