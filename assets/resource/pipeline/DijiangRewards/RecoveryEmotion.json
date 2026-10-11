@@ -758,15 +758,11 @@
                 "expected": [
                     "总控中枢",
                     "總控中樞",
-                    "総合制御中枢",
-                    "Master Control Nexus",
-                    "MASTER CONTROL NEXUS",
-                    "master control nexus",
                     "Control Nexus",
                     "CONTROL NEXUS",
                     "control nexus",
-                    "制御中枢",
-                    "마스터 컨트롤 넥서스"
+                    "指揮中枢",
+                    "핵심 제어 중추"
                 ],
                 "only_rec": true,
                 "threshold": 0.15
@@ -786,7 +782,7 @@
                     "RECEPTION ROOM",
                     "reception room",
                     "応接室",
-                    "접견실"
+                    "응접실"
                 ],
                 "only_rec": true,
                 "threshold": 0.15
@@ -815,7 +811,15 @@
                     "Growth Chamber I",
                     "Growth ChamberI",
                     "growth chamber i",
-                    "growth chamberi"
+                    "growth chamberi",
+                    "培養室 I",
+                    "培養室I",
+                    "培養室Ⅰ",
+                    "培養室1",
+                    "재배실 I",
+                    "재배실I",
+                    "재배실Ⅰ",
+                    "재배실1"
                 ],
                 "only_rec": true,
                 "threshold": 0.15
@@ -838,6 +842,14 @@
                     "製造艙 I",
                     "製造艙I",
                     "製造艙Ⅰ",
+                    "製造室 I",
+                    "製造室I",
+                    "製造室Ⅰ",
+                    "製造室1",
+                    "제조실 I",
+                    "제조실I",
+                    "제조실Ⅰ",
+                    "제조실1",
                     "MFG CABIN I",
                     "MFG CABINI",
                     "Mfg Cabin I",
@@ -863,6 +875,12 @@
                     "製造艙 II",
                     "製造艙II",
                     "製造艙Ⅱ",
+                    "製造室 II",
+                    "製造室II",
+                    "製造室Ⅱ",
+                    "제조실 II",
+                    "제조실II",
+                    "제조실Ⅱ",
                     "MFG CABIN II",
                     "MFG CABINII",
                     "Mfg Cabin II",
