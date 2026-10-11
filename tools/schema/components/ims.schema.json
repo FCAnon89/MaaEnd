@@ -87,9 +87,17 @@
             "properties": {
                 "expression": {
                     "title": "Expression",
-                    "description": "Boolean expression over cached item quantities. Use {ITEM_ID} placeholders with IconRecognition IDs (missing item = 0). Supports + - * / % < <= > >= == != && || ! and parentheses. Result must be boolean. When report_only is true, expression must contain exactly one {ITEM_ID}.",
+                    "description": "Boolean expression over cached item quantities and named targets. Use {ITEM_ID} placeholders with IconRecognition IDs (missing item = 0), or {NAME} for a targets entry. Supports + - * / % < <= > >= == != && || ! and parentheses. Result must be boolean. When report_only is true, expression must contain exactly one {ITEM_ID}.",
                     "type": "string",
                     "minLength": 1
+                },
+                "targets": {
+                    "title": "Targets",
+                    "description": "Named raw quantity inputs, always strings. Canonical decimal integers from 0 through 3000000000 retain their value; empty, whitespace, signed, leading-zero, fractional, nonnumeric and out-of-range inputs resolve to 0. Reference keys as {NAME} in expression; use names distinct from client input names so the client substitutes only the map values.",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "notify_ui": {
                     "title": "Notify UI",

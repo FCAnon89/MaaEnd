@@ -3,6 +3,7 @@ package ims
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -26,9 +27,12 @@ var _ maa.CustomRecognitionRunner = &ItemQuantitySatisfied{}
 // itemQuantitySatisfiedParam is custom_recognition_param for ItemQuantitySatisfied.
 type itemQuantitySatisfiedParam struct {
 	// Expression is a boolean expression over cached item quantities.
-	// Placeholders use {ITEM_ID}, same arithmetic/compare/logic as ExpressionRecognition.
+	// Placeholders reference cached {ITEM_ID} quantities or named Targets.
 	// When ReportOnly is true, expression must contain exactly one {ITEM_ID}.
 	Expression string `json:"expression"`
+	// Targets maps expression names to raw quantity inputs. Canonical integers in
+	// [0, 3000000000] retain their value; all other inputs resolve to zero.
+	Targets map[string]string `json:"targets"`
 	// NotifyUI when true prints the resolved expression to UI Focus.
 	// Default false (omit or false) to avoid flooding dispatch-style next scans.
 	// Ignored when ReportOnly is true (report mode always announces).
@@ -76,9 +80,7 @@ func (r *ItemQuantitySatisfied) Run(ctx *maa.Context, arg *maa.CustomRecognition
 
 	resolvedExpression, values, err := boolexpr.ResolvePlaceholders(
 		params.Expression,
-		func(itemID string) (int, error) {
-			return globalCache.quantity(itemID), nil
-		},
+		params.resolveValue,
 	)
 	if err != nil {
 		log.Error().
@@ -152,6 +154,17 @@ func (r *ItemQuantitySatisfied) Run(ctx *maa.Context, arg *maa.CustomRecognition
 		Box:    arg.Roi,
 		Detail: string(detailJSON),
 	}, true
+}
+
+func (params itemQuantitySatisfiedParam) resolveValue(name string) (int, error) {
+	if raw, ok := params.Targets[name]; ok {
+		value, err := strconv.ParseInt(raw, 10, 64)
+		if err != nil || value < 0 || value > 3000000000 || strconv.FormatInt(value, 10) != raw {
+			return 0, nil
+		}
+		return int(value), nil
+	}
+	return globalCache.quantity(name), nil
 }
 
 func (r *ItemQuantitySatisfied) runReportOnly(

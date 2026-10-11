@@ -169,6 +169,7 @@ Placeholders read **IMS cache IconRecognition IDs**, not on-screen OCR nodes.
 | Field | Notes |
 | --- | --- |
 | `expression` | Boolean expression with `{ITEM_ID}` placeholders (missing = `0`). With `report_only`, must contain exactly one `{ITEM_ID}` |
+| `targets` | Optional target name → input string map. Accepts `0` or positive integers without leading zeros, up to `3000000000`; invalid inputs resolve to `0` |
 | `notify_ui` | Announce resolved expression to UI Focus; default `false`. Ignored when `report_only` is true |
 | `report_only` | Announce-only mode: reject multi-item expressions, print current quantity, always hit; default `false` |
 
@@ -178,13 +179,16 @@ Default mode:
 {
     "custom_recognition": "ItemQuantitySatisfied",
     "custom_recognition_param": {
-        "expression": "({item_char_break_stage_1_2}+{item_weapon_break_low})>=100",
+        "expression": "{item_gold}>={T_CREDS}",
+        "targets": { "T_CREDS": "{SupplyPlanLimit_T_CREDS}" },
         "notify_ui": false
     }
 }
 ```
 
 Examples: `{item_char_break_stage_1_2}>=40`, `{item_gold}<50`. Result must be boolean. R1 does **not** check readiness—combine with R2 via `And` when needed.
+
+Use `pipeline_type: string` and target names distinct from the client's `input.name`.
 
 Report-only mode:
 

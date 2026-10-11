@@ -199,6 +199,7 @@ A3 与其它动作 / 识别器不同：**不要求 IMS 缓存已经存在**。
 | 参数 | 说明 |
 | --- | --- |
 | `expression` | 布尔表达式；用 `{物品ID}` 引用缓存数量（缺失按 `0`）。`report_only` 时必须恰好包含一个 `{物品ID}` |
+| `targets` | 可选的「目标名 → 输入字符串」映射；接受 `0` 或无前导零的正整数，上限 `3000000000`；非法输入按 `0` |
 | `notify_ui` | 是否向 UI 播报展开后的表达式；默认 `false`（关闭）。`report_only` 时忽略（始终播报） |
 | `report_only` | 只播报模式：拒绝多物品表达式，输出「当前 XXX：数量」，并**始终命中**；默认 `false` |
 
@@ -217,7 +218,8 @@ A3 与其它动作 / 识别器不同：**不要求 IMS 缓存已经存在**。
 {
     "custom_recognition": "ItemQuantitySatisfied",
     "custom_recognition_param": {
-        "expression": "({item_char_break_stage_1_2}+{item_weapon_break_low})>=100",
+        "expression": "{item_gold}>={T_CREDS}",
+        "targets": { "T_CREDS": "{SupplyPlanLimit_T_CREDS}" },
         "notify_ui": false
     }
 }
@@ -230,6 +232,8 @@ A3 与其它动作 / 识别器不同：**不要求 IMS 缓存已经存在**。
 - `!({item_weapon_break_high}<10)`
 
 表达式结果必须是布尔值。
+
+输入类型使用 `pipeline_type: string`，目标名须与客户端的 `input.name` 区分。
 
 仅当 `notify_ui` 为 `true` 时，才会向 UI Focus 输出展开后的表达式（约 10 秒内相同文案会节流）。调度类 `next` 扫描建议保持默认关闭，避免刷屏。
 
