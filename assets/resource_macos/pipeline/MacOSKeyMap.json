@@ -282,6 +282,14 @@
             }
         }
     },
+    "VisitFriendsPressStockRedistribution": {
+        "action": {
+            "type": "ClickKey",
+            "param": {
+                "key": 3
+            }
+        }
+    },
     "_AutoEcoFarmAltDown": {
         "action": {
             "type": "KeyDown",

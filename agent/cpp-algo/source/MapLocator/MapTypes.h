@@ -25,8 +25,7 @@ struct MapLocatorConfig
 {
     std::string mapResourceDir;
     std::string yoloModelPath;
-    // 摄像机朝向两图工件：前处理图 + 参考配对分类器；路径为空表示未部署该图。
-    std::string cameraOrientationPreprocessModelPath;
+    // 摄像机朝向参考配对分类器；路径为空表示未部署。预处理由 C++ 执行，不需要模型文件。
     std::string cameraOrientationRefModelPath;
     int yoloThreads = 1;
 };
@@ -59,6 +58,8 @@ struct LocateOptions
     std::optional<double> camera_heading_prior;
     // 仅供 C++ 调用方控制；镜头朝向导航可关闭，不暴露为 Recognition 参数。
     bool reject_occluded_frames = true;
+    // 精确接近读取已通过现有校验的本帧匹配坐标，不使用静止锁定或 HOLD；不改变内部追踪。
+    bool precise_position = false;
 
     MEO_JSONIZATION(
         MEO_OPT loc_threshold,
@@ -263,6 +264,7 @@ struct ImageProcessingConfig
     int whiteDilate;
     int colorDilate;
     bool useHsvWhiteMask;
+    int whiteMaskFloor = 255; // 三通道均不低于此值按白色图标剔除
 };
 
 } // namespace maplocator

@@ -17,8 +17,6 @@ namespace maplocator
 namespace
 {
 // 交付工件定死的输入/输出名；改动即契约变更。
-constexpr const char* kPreprocessInputNames[] = { "minimap", "asset", "x", "y", "scale" };
-constexpr const char* kPreprocessOutputNames[] = { "observed", "reference" };
 constexpr const char* kClassifierInputName = "strip";
 constexpr const char* kClassifierOutputName = "pmf";
 
@@ -35,14 +33,8 @@ constexpr float kSecondaryPeakRatio = 0.05f;
 const cv::Mat kUnavailableAsset(1, 1, CV_8UC4, cv::Scalar::all(0));
 } // namespace
 
-CameraOrientationPredictor::CameraOrientationPredictor(const std::string& preprocessModelPath, const std::string& refModelPath, int threads)
+CameraOrientationPredictor::CameraOrientationPredictor(const std::string& refModelPath, int threads)
 {
-    // 前处理图是观测条带的唯一来源；缺失时预测器不可用，无需加载分类器。
-    if (preprocessModelPath.empty()) {
-        LogError << "CameraOrientation: preprocess model path is empty; predictor disabled.";
-        return;
-    }
-
     try {
         ortEnv = std::make_unique<Ort::Env>(ORT_LOGGING_LEVEL_WARNING, "MapLocatorCameraOrientation");
     }
@@ -55,11 +47,8 @@ CameraOrientationPredictor::CameraOrientationPredictor(const std::string& prepro
     sessionOptions.SetIntraOpNumThreads(std::max(1, threads));
     sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
 
-    isPreprocessModelLoaded_ = loadSession(preprocessModelPath, "preprocess", sessionOptions, &preprocessSession);
-    isRefModelLoaded_ = loadSession(refModelPath, "polar_with_ref", sessionOptions, &refSession);
-
-    if (!isLoaded()) {
-        LogError << "CameraOrientation: predictor disabled" << VAR(isPreprocessModelLoaded_) << VAR(isRefModelLoaded_);
+    if (!loadSession(refModelPath, "polar_with_ref", sessionOptions, &refSession)) {
+        LogError << "CameraOrientation: predictor disabled";
         ortEnv.reset();
     }
 }
@@ -96,7 +85,7 @@ std::optional<CameraOrientation> CameraOrientationPredictor::predict(
     const std::string& zoneId,
     std::optional<double> camera_heading_prior)
 {
-    const bool assetUsable = !referenceAsset.empty() && referenceAsset.channels() == 4 && referenceAsset.isContinuous();
+    const bool assetUsable = !referenceAsset.empty() && referenceAsset.type() == CV_8UC4;
     const cv::Mat& asset = assetUsable ? referenceAsset : kUnavailableAsset;
     return infer(minimap, asset, x, y, scale, zoneId, camera_heading_prior);
 }
@@ -112,16 +101,16 @@ std::optional<CameraOrientation> CameraOrientationPredictor::infer(
 {
     std::lock_guard<std::mutex> lock(predictMutex);
 
-    if (!isLoaded() || !preprocessSession) {
+    if (!isLoaded()) {
         LogError << "CameraOrientation Error: Model is NOT loaded.";
         return std::nullopt;
     }
-    if (minimap.empty() || !minimap.isContinuous() || (minimap.channels() != 3 && minimap.channels() != 4)) {
+    if (minimap.empty() || (minimap.channels() != 3 && minimap.channels() != 4)) {
         LogError << "CameraOrientation Error: invalid minimap input" << VAR(minimap.cols) << VAR(minimap.rows) << VAR(minimap.channels());
         return std::nullopt;
     }
 
-    // 模型输入契约是 BGR HWC uint8；BGRA 先转 3 通道（机械类型转换）。
+    // 预处理输入契约是 BGR HWC uint8；BGRA 先转 3 通道（机械类型转换）。
     cv::Mat minimapBgr = minimap;
     cv::Mat converted;
     if (minimapBgr.channels() == 4) {
@@ -129,61 +118,18 @@ std::optional<CameraOrientation> CameraOrientationPredictor::infer(
         minimapBgr = converted;
     }
 
+    // 展开为极坐标条带（见 CameraOrientationPreprocess.h）。
+    if (!BuildOrientationStrips(minimapBgr, asset, static_cast<float>(x), static_cast<float>(y), static_cast<float>(scale), stripScratch)) {
+        LogError << "CameraOrientation: invalid preprocess input" << VAR(minimapBgr.cols) << VAR(minimapBgr.rows) << VAR(asset.cols)
+                 << VAR(asset.rows) << VAR(x) << VAR(y) << VAR(scale);
+        return std::nullopt;
+    }
+
     try {
         auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
-        // 前处理图：几何、参考采样与合成、取整约定全部在图内，这里只零拷贝喂入。
-        const std::array<int64_t, 4> minimapShape { 1, minimapBgr.rows, minimapBgr.cols, minimapBgr.channels() };
-        const std::array<int64_t, 4> assetShape { 1, asset.rows, asset.cols, asset.channels() };
-        float xValue = static_cast<float>(x);
-        float yValue = static_cast<float>(y);
-        float scaleValue = static_cast<float>(scale);
-        Ort::Value preprocessInputs[] = {
-            Ort::Value::CreateTensor<std::uint8_t>(
-                memoryInfo,
-                minimapBgr.data,
-                minimapBgr.total() * minimapBgr.channels(),
-                minimapShape.data(),
-                minimapShape.size()),
-            Ort::Value::CreateTensor<std::uint8_t>(
-                memoryInfo,
-                asset.data,
-                asset.total() * asset.channels(),
-                assetShape.data(),
-                assetShape.size()),
-            Ort::Value::CreateTensor<float>(memoryInfo, &xValue, 1, nullptr, 0),
-            Ort::Value::CreateTensor<float>(memoryInfo, &yValue, 1, nullptr, 0),
-            Ort::Value::CreateTensor<float>(memoryInfo, &scaleValue, 1, nullptr, 0),
-        };
-        auto strips = preprocessSession->Run(
-            Ort::RunOptions { nullptr },
-            kPreprocessInputNames,
-            preprocessInputs,
-            std::size(kPreprocessInputNames),
-            kPreprocessOutputNames,
-            std::size(kPreprocessOutputNames));
-        if (strips.size() != 2) {
-            LogError << "CameraOrientation: unexpected preprocess output count" << VAR(strips.size());
-            return std::nullopt;
-        }
-
-        const auto observedInfo = strips[0].GetTensorTypeAndShapeInfo();
-        const auto referenceInfo = strips[1].GetTensorTypeAndShapeInfo();
-        const auto observedShape = observedInfo.GetShape();
-        const auto referenceShape = referenceInfo.GetShape();
-        if (observedShape.size() != 4 || referenceShape.size() != 4 || observedShape[1] != referenceShape[1]
-            || observedShape[2] != referenceShape[2] || observedShape[3] != 3 || referenceShape[3] != 4
-            || observedInfo.GetElementType() != ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8
-            || referenceInfo.GetElementType() != ONNX_TENSOR_ELEMENT_DATA_TYPE_UINT8) {
-            LogError << "CameraOrientation: unexpected preprocess output shape";
-            return std::nullopt;
-        }
-
-        std::uint8_t* observedData = strips[0].GetTensorMutableData<std::uint8_t>();
-        std::uint8_t* referenceData = strips[1].GetTensorMutableData<std::uint8_t>();
-        const int64_t stripHeight = observedShape[1];
-        const int64_t stripWidth = observedShape[2];
-        const size_t stripPixels = static_cast<size_t>(stripHeight * stripWidth);
+        const std::uint8_t* referenceData = stripScratch.reference.ptr<std::uint8_t>();
+        const size_t stripPixels = stripScratch.reference.total();
 
         // 缺口占比：参考条带 alpha（第 4 通道）< 255 的像素占比，仅作诊断日志。
         int64_t gapPixels = 0;
@@ -196,23 +142,15 @@ std::optional<CameraOrientation> CameraOrientationPredictor::infer(
         LogInfo << "CameraOrientation ref:" << VAR(zoneId) << VAR(x) << VAR(y) << VAR(scale) << VAR(gapFraction);
 
         // 分类器输入固定为 7 通道参考配对 [obs.BGR, ref.BGR, ref.A]。
-        refInputScratch.create(static_cast<int>(stripHeight), static_cast<int>(stripWidth), CV_MAKETYPE(CV_8U, 7));
-        cv::Mat observedMat(static_cast<int>(stripHeight), static_cast<int>(stripWidth), CV_8UC3, observedData);
-        cv::Mat referenceMat(static_cast<int>(stripHeight), static_cast<int>(stripWidth), CV_8UC4, referenceData);
-        cv::Mat sources[] = { observedMat, referenceMat };
+        refInputScratch.create(kOrientationStripHeight, kOrientationStripWidth, CV_MAKETYPE(CV_8U, 7));
+        const cv::Mat sources[] = { stripScratch.observed, stripScratch.reference };
         // 源通道跨矩阵连续编号：[0,3) 观测 BGR、[3,7) 参考 BGR + alpha，因此恒等映射。
         const int fromTo[] = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6 };
         cv::mixChannels(sources, std::size(sources), &refInputScratch, 1, fromTo, 7);
         std::uint8_t* classifierData = refInputScratch.ptr<std::uint8_t>();
         const int classifierChannels = 7;
 
-        Ort::Session* classifierSession = refSession.get();
-        if (!classifierSession) {
-            LogError << "CameraOrientation: reference classifier unavailable" << VAR(zoneId);
-            return std::nullopt;
-        }
-
-        const std::array<int64_t, 4> classifierShape { 1, stripHeight, stripWidth, classifierChannels };
+        const std::array<int64_t, 4> classifierShape { 1, kOrientationStripHeight, kOrientationStripWidth, classifierChannels };
         Ort::Value classifierInput = Ort::Value::CreateTensor<std::uint8_t>(
             memoryInfo,
             classifierData,
@@ -222,7 +160,7 @@ std::optional<CameraOrientation> CameraOrientationPredictor::infer(
         const char* classifierInputNames[] = { kClassifierInputName };
         const char* classifierOutputNames[] = { kClassifierOutputName };
         auto outputTensors =
-            classifierSession->Run(Ort::RunOptions { nullptr }, classifierInputNames, &classifierInput, 1, classifierOutputNames, 1);
+            refSession->Run(Ort::RunOptions { nullptr }, classifierInputNames, &classifierInput, 1, classifierOutputNames, 1);
         if (outputTensors.empty()) {
             LogError << "CameraOrientation: empty inference output.";
             return std::nullopt;
