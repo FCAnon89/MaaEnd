@@ -523,6 +523,12 @@ bool NavigationStateMachine::Bootstrap()
 
 bool NavigationStateMachine::TickPhase(NaviPhase phase)
 {
+    // 相位切换等于把镜头交给了别的流程（滑索、找目标、传送），此前那一拍记下的观测不再算「没被指令动过」。
+    // 挂在这里而不是各条转向路径上：绕过 ActionWrapper 的开环转向（滑索俯仰的 pipeline 旁路等）也一并作废。
+    if (!last_tick_phase_ || *last_tick_phase_ != phase) {
+        last_tick_phase_ = phase;
+        action_wrapper_->NoteHeadingDisturbed();
+    }
     // Ahead of every early return, so no branch or phase can strand the game in walking mode.
     UpdateWalkMode(phase);
 
@@ -534,8 +540,7 @@ bool NavigationStateMachine::TickPhase(NaviPhase phase)
         return TickNavigate();
     case NaviPhase::WaitTransfer:
     case NaviPhase::WaitZipline:
-    case NaviPhase::WaitFind:
-    case NaviPhase::WaitTrigger: {
+    case NaviPhase::WaitFind: {
         // 顶墙计数和设备命中只在 Navigate 里攒, 语义动作做完人可能已换了地方
         runtime_state_.flow.motionless_hold_ticks = 0;
         runtime_state_.flow.futile_forward_reasserts = 0;
@@ -566,7 +571,24 @@ bool NavigationStateMachine::TickPhase(NaviPhase phase)
 
 bool NavigationStateMachine::CaptureCurrentPosition(bool force_global_search)
 {
-    const bool captured = position_provider_->Capture(position_, force_global_search, session_->current_zone_id());
+    // 先验是一次观测，不是一条指令：只有「上一拍成功取位记下的纪元 == 当前纪元」才说明自那次识别以来
+    // 镜头没被任何 yaw 指令动过。转过的角度大不大、落没落地都不必再判——任何 yaw 指令都会推高纪元。
+    const uint64_t heading_epoch = action_wrapper_->heading_epoch();
+    const bool prior_usable = !force_global_search && param_.heading_source == HeadingSource::Camera && position_->valid
+                              && prior_observation_epoch_ && *prior_observation_epoch_ == heading_epoch
+                              && session_->phase() == NaviPhase::Navigate;
+    const std::optional<double> camera_heading_prior = prior_usable ? std::optional<double>(position_->angle) : std::nullopt;
+    const bool captured =
+        position_provider_->Capture(position_, force_global_search, session_->current_zone_id(), {}, camera_heading_prior);
+    if (captured) {
+        // 纪录取的是取位前读到的值：这一拍后面再发的转向不该让这次观测提前作废，下一拍自会挡住它。
+        prior_observation_epoch_ = heading_epoch;
+        consecutive_prior_uses_ = camera_heading_prior ? consecutive_prior_uses_ + 1 : 0;
+        LogDebug << "MapNavigator camera heading prior" << VAR(camera_heading_prior.value_or(-1.0)) << VAR(consecutive_prior_uses_);
+    }
+    else {
+        consecutive_prior_uses_ = 0;
+    }
     UpdateDwellWatchdog(captured);
     return captured;
 }
@@ -611,6 +633,7 @@ bool NavigationStateMachine::HandleLocalizationLoss()
     LocalizationLossState& loss = runtime_state_.localization_loss;
     if (loss.started_at == std::chrono::steady_clock::time_point {}) {
         loss.started_at = now;
+        loss.last_fix = *position_;
     }
     runtime_state_.offroute.PauseAt(now);
     // River-fall discriminator: a black capture during a loss = fell in water (the locator folds it into a
@@ -663,7 +686,11 @@ bool NavigationStateMachine::HandleLocalizationLoss()
                 // CaptureCurrentPosition(false) would re-impose the stale expected_zone and fail again.
                 session_->UpdateCurrentZone(position_->zone_id);
             }
-            if (++runtime_state_.global_reacquire_streak >= kLocalizationThrashFailCount) {
+            // The streak counts recover/re-lose cycles; a short on-the-spot drop in the same zone is just lost frames.
+            const bool dropped_frames =
+                !zone_changed && !loss.saw_black_screen && loss_elapsed < std::chrono::milliseconds(kLocalizationLossUnstickIntervalMs)
+                && std::hypot(position_->x - loss.last_fix.x, position_->y - loss.last_fix.y) < kDwellWatchdogRadius;
+            if (!dropped_frames && ++runtime_state_.global_reacquire_streak >= kLocalizationThrashFailCount) {
                 return FailNavigation(
                     "localization_thrash",
                     "Re-acquired the route repeatedly without advancing a waypoint (wrong-tier fall thrashing "
@@ -673,7 +700,8 @@ bool NavigationStateMachine::HandleLocalizationLoss()
                     0);
             }
             LogInfo << "Localization recovered via global re-acquire; resuming navigation." << VAR(loss_elapsed.count()) << VAR(prior_zone)
-                    << VAR(position_->zone_id) << VAR(position_->x) << VAR(position_->y) << VAR(runtime_state_.global_reacquire_streak);
+                    << VAR(position_->zone_id) << VAR(position_->x) << VAR(position_->y) << VAR(runtime_state_.global_reacquire_streak)
+                    << VAR(dropped_frames);
             ArmRiverFallRecoveryIfBlackScreenLoss("global_reacquire");
             loss.Reset();
             runtime_state_.route.ResetTracking();
@@ -734,6 +762,8 @@ bool NavigationStateMachine::TryApplyDynamicOverlayToAnchor(
 
     const navmesh::WorldPoint start { .x = position_->x, .y = position_->y };
     const navmesh::WorldPoint goal { .x = anchor.x, .y = anchor.y };
+    // 被挤出网格(搬设备、卡墙脱困之后)时路线从网格上的入口点规划, 先直着走上入口点
+    std::optional<navmesh::WorldPoint> start_recovery_entry;
     const auto route = WithPlanningPause(motion_controller_, &runtime_state_, session_, [&] {
         return PlanNavmeshRoute(
             param_,
@@ -744,13 +774,18 @@ bool NavigationStateMachine::TryApplyDynamicOverlayToAnchor(
             session_->WalkedFloorY(*position_),
             nullptr,
             &runtime_state_.virtual_no_go,
-            session_->LandedTowerDeckY(*position_));
+            session_->LandedTowerDeckY(*position_),
+            &start_recovery_entry);
     });
     if (!route) {
         return false;
     }
 
     std::vector<Waypoint> generated_prefix;
+    if (start_recovery_entry) {
+        generated_prefix.emplace_back(start_recovery_entry->x, start_recovery_entry->y, ActionType::RUN);
+        generated_prefix.back().strict_arrival = false;
+    }
     if (!AppendGeneratedNavmeshWaypoints(
             param_,
             position_->zone_id,
@@ -771,6 +806,7 @@ bool NavigationStateMachine::TryApplyDynamicOverlayToAnchor(
     const size_t generated_count = generated_prefix.size();
     session_->ApplyDynamicOverlay(std::move(generated_prefix), continue_index, *position_);
     runtime_state_.route.Reset();
+    runtime_state_.offroute.InvalidateBaseline();
     runtime_state_.nav_run_dirty = true;
     if (generated_count == 0 && std::hypot(anchor.x - position_->x, anchor.y - position_->y) <= ArrivalBandForStartupBypass(anchor)) {
         runtime_state_.route.startup_anchor_pos = *position_;
@@ -1085,6 +1121,7 @@ bool NavigationStateMachine::TryReplanRemainingAuthoredRoute(const char* reason)
 
     session_->ReplaceRoute(std::move(replanned), *position_, reason);
     runtime_state_.route.Reset();
+    runtime_state_.offroute.InvalidateBaseline();
     runtime_state_.nav_run_dirty = true;
     runtime_state_.dynamic_replan_requested = false;
 
@@ -1637,6 +1674,11 @@ bool NavigationStateMachine::TickNavigate()
             arrival_distance = std::min(arrival_distance, kZiplineRestandBandWu);
         }
     }
+    // 交互点到点认空过一次: 收紧到站上点才再认, 走过去照常边走边转。真收不拢同样放回去, 别多出一种卡死
+    if (waypoint.IsAsyncInteract() && runtime_state_.interact_approach.PromptMissedAt(session_->CurrentAbsoluteNodeIndex())
+        && now - runtime_state_.interact_approach.missed_at <= std::chrono::milliseconds(kCollectArrivalRelaxMs)) {
+        arrival_distance = std::min(arrival_distance, kStrictSettleAcceptBandWu);
+    }
     // 台沿下落的落点: 进圈时人可能还在台上, 沿下落方向越过它才算到
     bool short_of_drop = false;
     if (waypoint.drop_from) {
@@ -1651,23 +1693,37 @@ bool NavigationStateMachine::TickNavigate()
                      << VAR(route.projection_anchor);
         }
         else {
-            // 严判点的判定圈只当纠正触发: 进圈后按残差转向目标接着走回去, 全程不松前进键。滑索和传送门
-            // 有各自的站位与提交距离, 判定圈被放宽或收紧的那几种情况要的也正是原来的宽松判定, 都不介入。
+            // 严判圈只触发精确接近: 停车、静止对齐镜头、前进脉冲、停稳验收。
+            // 滑索和传送门有各自的站位与提交距离，保持原启用范围。
             if (waypoint.SettlesAtArrival()) {
                 if (route.waypoint_distance <= route.arrival_band) {
-                    // 这一拍的位移可能直接跨过步行进带; 要走路纠正的点必须先进入步行再挪动。
-                    if (waypoint.Traits().settle_walking) {
-                        walk_mode_.Request(true);
-                    }
-                    semantic_nodes::SettleAtStrictGoal(semantic_ctx, waypoint);
-                    // 收尾里的转镜头没走操舵那条路, 在途转角账认不出来, 清掉重新起算
+                    // 这一拍可能直接跨过步行进带；先停车，再为所有精确接近点进入步行。
+                    semantic_nodes::StopMotionAndCommitment(semantic_ctx);
+                    walk_mode_.Request(true);
+                    const bool settled = semantic_nodes::SettleAtStrictGoal(semantic_ctx, waypoint, should_stop_);
+                    // 静止转镜头没有走操舵路径，清除在途转角记账。
                     runtime_state_.steering_rate.Reset();
-                    if (!position_->valid) {
-                        return HandleLocalizationLoss();
+                    if (should_stop_()) {
+                        walk_mode_.Request(false);
+                        return true;
+                    }
+                    if (!settled) {
+                        // 定位无效说明脉冲前的那个读数已经不成立, 人可能根本没到点: 拿它推进 waypoint 或记传送锚点
+                        // 都是错的, 交回定位恢复。定位仍有效只是收尾没达标时, 到点动作照旧非致命。
+                        if (!position_->valid) {
+                            walk_mode_.Request(false);
+                            return HandleLocalizationLoss();
+                        }
+                        LogWarn << "Strict arrival correction incomplete; arrival action remains non-fatal."
+                                << VAR(session_->current_node_idx()) << VAR(position_->valid);
                     }
                 }
                 // 走路买的是接近段和收尾的精度, 到点就还回去: 跳跃、冲刺这些动作照旧在慢跑态下执行
                 walk_mode_.Request(false);
+            }
+            // 恢复步行模式可能同步等待控制器，期间收到取消也不得再派发到点动作。
+            if (should_stop_()) {
+                return true;
             }
 
             // A plain corridor waypoint needs nothing beyond the advance, so the tick goes on to steer on this same fix:
@@ -1760,10 +1816,13 @@ bool NavigationStateMachine::TickNavigate()
                     << VAR(wedge.best_distance);
         }
         const double progress_epsilon = std::max(kNoProgressDistanceEpsilon, kMeasurementDefaultPositionQuantum);
-        if (!wedge.active || route.progress_distance + progress_epsilon < wedge.best_distance) {
+        const bool retaking_baseline = wedge.active && !wedge.HasBaseline();
+        if (!wedge.active || retaking_baseline || route.progress_distance + progress_epsilon < wedge.best_distance) {
             wedge.active = true;
             wedge.best_distance = route.progress_distance;
-            wedge.since = now;
+            if (!retaking_baseline) {
+                wedge.since = now;
+            }
         }
         const int64_t wedge_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - wedge.since).count();
         if (wedge_ms >= kOffRouteWedgeFailMs) {
@@ -1797,9 +1856,14 @@ bool NavigationStateMachine::TickNavigate()
     // stall clock is still gathering, only earlier and stronger: aimed, commanding no turn, and going nowhere.
     // Waiting out the remaining wall clock just spends it walking into the obstacle, so it opens recovery too.
     const bool forward_hold_futile = runtime_state_.flow.futile_forward_reasserts >= kForwardHoldFutileReassertsBeforeRecovery;
-    const bool should_try_recovery =
-        session_->phase() == NaviPhase::Navigate && (stalled_ms >= kObstacleRecoveryMinTriggerMs || forward_hold_futile)
-        && (effective_progress > kNoProgressMinDistance || waypoint.RequiresStrictArrival()) && !runtime_state_.cross_tier_escape.active;
+    // Near the anchor a pinned forward also waits for the stall clock (the agent often slides off) and skips device removal,
+    // since the interactable ahead is usually the destination; prompt points and zipline mounts keep their own fallback.
+    const bool pinned_without_own_fallback = forward_hold_futile && stalled_ms >= kObstacleRecoveryMinTriggerMs
+                                             && !waypoint.StopsOnPromptDetection() && waypoint.action != ActionType::ZIPLINE;
+    const bool far_or_strict = effective_progress > kNoProgressMinDistance || waypoint.RequiresStrictArrival();
+    const bool should_try_recovery = session_->phase() == NaviPhase::Navigate
+                                     && (stalled_ms >= kObstacleRecoveryMinTriggerMs || forward_hold_futile)
+                                     && (far_or_strict || pinned_without_own_fallback) && !runtime_state_.cross_tier_escape.active;
     if (should_try_recovery) {
         const std::optional<DynamicAnchor> anchor = ResolveCurrentAnchor(session_, *position_);
         if (anchor) {
@@ -1869,7 +1933,7 @@ bool NavigationStateMachine::TickNavigate()
                 // afterwards the jump below fires this same tick and the ladder keeps climbing. Every outcome
                 // but NotAttempted has run the subtask, so it spends the attempt either way.
                 const DeviceRemovalOutcome device_outcome =
-                    device_recovery_.TryRemove(route, waypoint, escalation.device_attempt_count < kRecoveryDeviceAttempts);
+                    device_recovery_.TryRemove(route, waypoint, escalation.device_attempt_count < kRecoveryDeviceAttempts && far_or_strict);
                 if (device_outcome != DeviceRemovalOutcome::NotAttempted) {
                     ++escalation.device_attempt_count;
                 }
@@ -2140,9 +2204,8 @@ bool NavigationStateMachine::TickNavigate()
             steering_rate.in_flight.push_back({ .delta_deg = issued_delta_deg, .sent_at = steer_sent_at });
         }
     }
-    // 只有走到这里的拍才记账。在上面就返回的拍留下拍号缺口，估计器拿输入出口的账判断那拍有没有发过转向。
-    const int64_t now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-    sensitivity::RecordTick(maa_context_, tick_seq, now_ms, steer_heading, issued_delta_deg, degraded_fix);
+    // 只有走到这里的拍才记账。在上面就返回的拍留下拍号缺口，那几拍可能发过转向，估计器把跨缺口的样本作废。
+    sensitivity::RecordTick(maa_context_, tick_seq, position_->camera_angle, issued_delta_deg, degraded_fix);
 
     // Closed the loop on the forward hold: the keydown goes out once on the transition, so a swallowed one
     // strands the agent aimed correctly and walking nowhere until an obstacle recovery notices seconds later.
@@ -2409,10 +2472,9 @@ bool NavigationStateMachine::TryZiplineMountPrompt(const Waypoint& waypoint, con
             LogWarn << "Zipline mount pre-filter not started; the chain stops on arrival instead." << VAR(kZiplineMountScanNode);
             return false;
         }
-        zipline_mount_scanner_ =
-            std::make_unique<RoiTemplateScanner>("zipline", profile.base_roi, profile.templ, profile.mask, profile.threshold);
         LogInfo << "Zipline mount pre-filter started." << VAR(kZiplineMountScanNode) << VAR(profile.base_roi.x) << VAR(profile.base_roi.y)
-                << VAR(profile.threshold);
+                << VAR(profile.icons.size());
+        zipline_mount_scanner_ = std::make_unique<RoiTemplateScanner>("zipline", profile.base_roi, std::move(profile.icons));
     }
     if (zipline_mount_scanner_ == nullptr) {
         return false;
@@ -2542,7 +2604,9 @@ bool NavigationStateMachine::TryRunPromptSubtaskWhileWalking(const RouteTracking
 
     const std::array<AsyncPromptAction*, 2> prompts = PromptActions();
     for (size_t index = 0; index < prompts.size(); ++index) {
-        if (!prompts[index]->TryTriggerWhileWalking(motion_controller_, route.waypoint_distance, session_->current_node_idx())) {
+        const PromptTriggerOutcome outcome =
+            prompts[index]->TryTriggerWhileWalking(motion_controller_, route.waypoint_distance, session_->current_node_idx());
+        if (outcome == PromptTriggerOutcome::NotTriggered) {
             continue;
         }
         // 屏幕上一次只弹一个提示, 一次观测只值一次停车: 清掉另一类的闩, 免得同一个提示被停两次
@@ -2551,7 +2615,7 @@ bool NavigationStateMachine::TryRunPromptSubtaskWhileWalking(const RouteTracking
                 prompts[other]->ForgetDetection();
             }
         }
-        if (prompts[index]->spec().CompletesWaypointOnTrigger()) {
+        if (outcome == PromptTriggerOutcome::Recognized && prompts[index]->spec().CompletesWaypointOnTrigger()) {
             CompleteWaypointAfterPromptTrigger();
         }
         return true;
@@ -2580,7 +2644,7 @@ void NavigationStateMachine::CompleteWaypointAfterPromptTrigger()
 }
 
 // 最后一个点被吃掉的同一拍路线就结束、扫描器随即销毁, 行进中的检测没机会报第二次, 所以收尾单独给一个窗口。
-// 放在成功判定之后, 这里失败不该翻掉跑成功的线路。只服务共用表那类: 点名目标的那类每个点必定恰好跑一次。
+// 放在成功判定之后, 这里失败不该翻掉跑成功的线路。只服务共用表那类: 点名目标的那类每个点不是行进中认中, 就是到点时自己认过。
 void NavigationStateMachine::TryRunPromptSubtaskAtRouteTail()
 {
     if (maa_context_ == nullptr || should_stop_() || session_->phase() != NaviPhase::Finished) {

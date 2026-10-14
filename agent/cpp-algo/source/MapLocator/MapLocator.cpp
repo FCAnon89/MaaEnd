@@ -785,7 +785,7 @@ private:
         FrameTemplateFeatureCache& featureCache,
         MapPosition* outBestRaw = nullptr);
     MapPosition stabilizePosition(const MapPosition& raw);
-    MapPosition acceptPosition(const MapPosition& raw, TimePoint now);
+    MapPosition acceptPosition(const MapPosition& raw, TimePoint now, const LocateOptions& options);
     MatchFeature
         getGlobalSearchFeature(const std::string& targetZoneId, const cv::Rect& roi, const cv::Mat& mapRoi, IMatchStrategy* strategy);
     void clearGlobalSearchFeatureCache();
@@ -841,7 +841,8 @@ private:
                                          .borderMargin = 8,
                                          .whiteDilate = 9,
                                          .colorDilate = 3,
-                                         .useHsvWhiteMask = false };
+                                         .useHsvWhiteMask = false,
+                                         .whiteMaskFloor = 240 }; // 白图标经缩放后常到不了 255
 };
 
 bool MapLocator::Impl::initialize(const MapLocatorConfig& cfg)
@@ -860,13 +861,10 @@ bool MapLocator::Impl::initialize(const MapLocatorConfig& cfg)
         zoneClassifier = std::make_unique<YoloPredictor>(config.yoloModelPath, matchCfg.yoloConfThreshold, config.yoloThreads);
     }
 
-    // 摄像机朝向两图工件：前处理图 + 参考配对分类器。推理是本阶段的主要开销，故用 2 个
-    // intra-op 线程并行，缩短同步帧追加的定位延迟；两图齐备时预测器才可用。
-    if (!config.cameraOrientationPreprocessModelPath.empty() || !config.cameraOrientationRefModelPath.empty()) {
-        orientationPredictor = std::make_unique<CameraOrientationPredictor>(
-            config.cameraOrientationPreprocessModelPath,
-            config.cameraOrientationRefModelPath,
-            2);
+    // 摄像机朝向：预处理在 C++ 里执行，参考配对分类器的推理是本阶段的主要开销，故用 2 个
+    // intra-op 线程并行，缩短同步帧追加的定位延迟。
+    if (!config.cameraOrientationRefModelPath.empty()) {
+        orientationPredictor = std::make_unique<CameraOrientationPredictor>(config.cameraOrientationRefModelPath, 2);
     }
 
     isInitialized = true;
@@ -985,11 +983,11 @@ MapPosition MapLocator::Impl::stabilizePosition(const MapPosition& raw)
     return *stablePosition;
 }
 
-MapPosition MapLocator::Impl::acceptPosition(const MapPosition& raw, TimePoint now)
+MapPosition MapLocator::Impl::acceptPosition(const MapPosition& raw, TimePoint now, const LocateOptions& options)
 {
     MapPosition stable = stabilizePosition(raw);
     motionTracker->update(stable, now);
-    return stable;
+    return options.precise_position ? raw : stable;
 }
 
 std::optional<MapPosition> MapLocator::Impl::tryTracking(
@@ -1186,7 +1184,7 @@ std::optional<MapPosition> MapLocator::Impl::tryTracking(
         pos.x = validation.absX;
         pos.y = validation.absY;
         pos.score = trackResult->score;
-        return acceptPosition(pos, now);
+        return acceptPosition(pos, now, options);
     }
 
     return std::nullopt;
@@ -1493,7 +1491,7 @@ std::optional<LocateResult> MapLocator::Impl::tryTrackingLocate(
 
             MapPosition verifiedPos = rawPrimaryPos;
             verifiedPos.score = std::max(rawPrimaryPos.score, rawFallbackPos.score);
-            verifiedPos = acceptPosition(verifiedPos, now);
+            verifiedPos = acceptPosition(verifiedPos, now, options);
             arbiterRejectedPrimaryStreak = 0;
             arbiterRejectedPrimary.reset();
 
@@ -1530,7 +1528,7 @@ std::optional<LocateResult> MapLocator::Impl::tryTrackingLocate(
                         arbiterRejectedPrimary.reset();
                         // 先 markLost 让 update 跳过速度 EMA，否则这次几十像素的修正会被当成一次高速位移
                         motionTracker->markLost(1);
-                        MapPosition reclaimed = acceptPosition(rawPrimaryPos, now);
+                        MapPosition reclaimed = acceptPosition(rawPrimaryPos, now, options);
                         motionTracker->clearVelocity();
                         return LocateResult {
                             .status = LocateStatus::Success,
@@ -1545,7 +1543,7 @@ std::optional<LocateResult> MapLocator::Impl::tryTrackingLocate(
                 }
                 LogInfo << "Dual-Mode arbitrated by motion continuity" << VAR(distPrimaryToPred) << VAR(distFallbackToPred)
                         << VAR(arbitrated.x) << VAR(arbitrated.y) << VAR(arbitrated.score) << VAR(dist);
-                MapPosition accepted = acceptPosition(arbitrated, now);
+                MapPosition accepted = acceptPosition(arbitrated, now, options);
                 return LocateResult {
                     .status = LocateStatus::Success,
                     .position = accepted,
@@ -1559,6 +1557,10 @@ std::optional<LocateResult> MapLocator::Impl::tryTrackingLocate(
 
     if (!holdPending) {
         return std::nullopt;
+    }
+    // 精确取位只要本帧实测：这帧直接判没认出，不交旧坐标，也不落到后面的全局搜索去改写跟踪状态。
+    if (options.precise_position) {
+        return LocateResult { .status = LocateStatus::TrackingLost, .debugMessage = "Tracking Hold" };
     }
 
     // 第二策略也没救回来，交付 tracker 里保留的上一帧坐标。丢失已在 tryTracking 里记账。
@@ -1825,8 +1827,14 @@ LocateResult MapLocator::Impl::locate(const cv::Mat& minimap, const LocateOption
         }
         const auto zoneIt = zones.find(zoneId);
         const cv::Mat referenceAsset = zoneIt != zones.end() ? zoneIt->second : cv::Mat();
-        result.camRot = orientationPredictor
-                            ->predict(minimap, referenceAsset, result.position->x, result.position->y, ZoneTemplateScale(zoneId), zoneId);
+        result.camRot = orientationPredictor->predict(
+            minimap,
+            referenceAsset,
+            result.position->x,
+            result.position->y,
+            ZoneTemplateScale(zoneId),
+            zoneId,
+            options.camera_heading_prior);
         return result;
     };
     // 箭头不可见时，小地图可能被横幅遮挡；在匹配及更新追踪状态前拒帧。
@@ -2115,7 +2123,7 @@ LocateResult MapLocator::Impl::locate(const cv::Mat& minimap, const LocateOption
 
     currentZoneId = globalResult->zoneId;
     globalResult->angle = angle_future.get();
-    MapPosition accepted = acceptPosition(*globalResult, now);
+    MapPosition accepted = acceptPosition(*globalResult, now, options);
     return attachCamRot(LocateResult { .status = LocateStatus::Success, .position = accepted, .debugMessage = "Global Search Success" });
 }
 
