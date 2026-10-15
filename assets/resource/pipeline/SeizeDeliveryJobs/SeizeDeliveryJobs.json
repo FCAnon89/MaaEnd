@@ -260,7 +260,7 @@
         "desc": "在筛选列表中选择全部区域",
         "recognition": "And",
         "all_of": ["__SeizeDeliveryJobsRecoFilterAll"],
-        "pre_delay": 0,
+        "pre_delay": 5000,
         "action": "Click",
         "post_delay": 0,
         "next": ["SeizeDeliveryJobsLoop"]

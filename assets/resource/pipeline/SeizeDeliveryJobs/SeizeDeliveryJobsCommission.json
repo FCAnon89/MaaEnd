@@ -80,7 +80,7 @@
         "all_of": [
             "__SeizeDeliveryJobsRecoFilterValleyIV"
         ],
-        "pre_delay": 0,
+        "pre_delay": 5000,
         "action": "Click",
         "post_delay": 0,
         "next": [
@@ -171,7 +171,7 @@
         "all_of": [
             "__SeizeDeliveryJobsRecoFilterWuling"
         ],
-        "pre_delay": 0,
+        "pre_delay": 5000,
         "action": "Click",
         "post_delay": 0,
         "next": [
