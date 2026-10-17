@@ -2,7 +2,7 @@
 
 This document explains the file distribution and execution flow of `DijiangRewards`.  
 The core design is "Control Nexus dispatching + sub-stage jump-back": each sub-stage is independent, and options only modify stage entry points or branches without altering the main flow skeleton.  
-This document was updated on October 14, 2026.
+This document was updated on October 17, 2026.
 
 ## File Paths
 
@@ -42,7 +42,7 @@ Each stage can be individually toggled via `StageTaskSetting`; by default, the r
 ### One-click Collect
 
 Implemented in `FastCollect.json`, directly clicks "products" and "clues" shortcuts at the Control Nexus for collection without entering the corresponding cabin.  
-Controlled by the `StageTaskSetting` → `FastCollect` switch, disabled by default.
+Controlled by the `StageTaskSetting` → `FastCollect` switch, disabled by default. When enabled, products and clues can be selected separately under “Items to Collect”; both are selected by default, and one-click collection is skipped when both are deselected.
 
 ### Recover Mood
 
