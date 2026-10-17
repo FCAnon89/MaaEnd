@@ -85,7 +85,7 @@ The connection settings and live test runs sit in the live card at the top of th
 
 The `断言` (Assert) mode produces [MapLocator](./map-locator.md) area-check nodes, used to confirm that the character is at the expected position before navigating. Drag on empty space to redraw the rectangle, drag the existing box to move it, and drag the handles on its four edges or four corners to resize it.
 
-`日志分析` (Log Analysis) extracts every `MapNavigateAction` call and distinguishes the author's path hints, the walking plan actually adopted, the walking baseline that lost to ziplines, and the zipline hops that were actually launched and confirmed to have landed. When a run fails, the page directly shows the termination reason, error description, and key values recorded by the runtime, and lists the most recent zipline abandonment record as a preceding recovery event; unknown reasons keep their raw identifier instead of being guessed by the frontend. The page also extracts the successful, non-held MapLocator coordinates from `PositionProvider::Capture` to draw the measured ground trajectory; zipline flights and localization gaps break the polyline instead of being filled with predicted positions. When all ZIP parts of the same log bundle are selected directly, the page decompresses the cpp-algo logs one by one and reads the `record/Ziplines.json` of the same group: zipline pylons that this run's logs can locate are shown as numbered dots, while same-map zipline pylons from the snapshot appear as purple diamonds with a dark outline as the candidate background. By default, clicking a point on the map shows the details of an author point, planned point, measured point, or zipline pylon; the floating detail card appears at the top right of the map only after something is hit. To measure distances, first click `滑索架测距` (Zipline Pylon Distance) in the map's top toolbar (it stays disabled until `滑索架` (Zipline Pylons) is checked in `图层` (Layers)); once the measuring card appears, select the two zipline pylons A / B in turn. Point details and measurement results are independent of each other, and dragging the map still pans; leaving the measuring tool only hides the result card and does not clear the existing A / B. Skland records a corner-cell anchor that changes with orientation, so the map and the floating card use the same `footprint` algorithm as the runtime to show the range of 3D world spans between the possible centers, the raw anchor distance, the horizontal distance range, the height difference, and the basemap pixel distance. The height difference is used as-is, without applying the footprint offset; when the two are of the same type, share the same `level_id`, and the lower bound of the range does not exceed `max_span`, the page marks them as geometrically connectable. This check does not cover power supply, reachability, disabled edges, or cost planning; the actual choice is still determined by the run log. The log does not record the full planned polylines for approaching the boarding point and leaving the last zipline of a zipline combination, so the page still uses clearly labeled dashed lines for the estimated endpoint connections and never passes them off as planned or measured trajectories. Files are read only locally in the browser; log mode cannot modify routes or start live test runs.
+`日志分析` (Log Analysis) extracts every `MapNavigateAction` call and distinguishes the author's path hints, the walking plan actually adopted, the walking baseline that lost to ziplines, and the zipline hops that were actually launched and confirmed to have landed. When a run fails, the page directly shows the termination reason, error description, and key values recorded by the runtime, and lists the most recent zipline abandonment record as a preceding recovery event; unknown reasons keep their raw identifier instead of being guessed by the frontend. The page also extracts the successful MapLocator coordinates (`status=0`) from the `PositionProvider` logs to draw the measured ground trajectory; zipline flights and localization gaps break the polyline instead of being filled with predicted positions. When all ZIP parts of the same log bundle are selected directly, the page decompresses the cpp-algo logs one by one and reads the `record/Ziplines.json` of the same group: zipline pylons that this run's logs can locate are shown as numbered dots, while same-map zipline pylons from the snapshot appear as purple diamonds with a dark outline as the candidate background. By default, clicking a point on the map shows the details of an author point, planned point, measured point, or zipline pylon; the floating detail card appears at the top right of the map only after something is hit. To measure distances, first click `滑索架测距` (Zipline Pylon Distance) in the map's top toolbar (it stays disabled until `滑索架` (Zipline Pylons) is checked in `图层` (Layers)); once the measuring card appears, select the two zipline pylons A / B in turn. Point details and measurement results are independent of each other, and dragging the map still pans; leaving the measuring tool only hides the result card and does not clear the existing A / B. Skland records a corner-cell anchor that changes with orientation, so the map and the floating card use the same `footprint` algorithm as the runtime to show the range of 3D world spans between the possible centers, the raw anchor distance, the horizontal distance range, the height difference, and the basemap pixel distance. The height difference is used as-is, without applying the footprint offset; when the two are of the same type, share the same `level_id`, and the lower bound of the range does not exceed `max_span`, the page marks them as geometrically connectable. This check does not cover power supply, reachability, disabled edges, or cost planning; the actual choice is still determined by the run log. The log does not record the full planned polylines for approaching the boarding point and leaving the last zipline of a zipline combination, so the page still uses clearly labeled dashed lines for the estimated endpoint connections and never passes them off as planned or measured trajectories. Files are read only locally in the browser; log mode cannot modify routes or start live test runs.
 
 `禁区` (No-Go Zones) is for outlining virtual no-go zones that the planner must not enter: choose `圈禁区` (Draw No-Go Zone), click on the map to place the vertices one by one, and double-click or press `Enter` to close the ring; once an existing zone is selected, drag its vertices, edges, or interior to adjust its shape and position, and press `Delete` to delete the selected vertex or zone. A zone drawn on the base map applies to every layer; to block a single layer only, switch to that tier first and then draw. `保存并重载` (Save and Reload) writes them back to `assets/data/MapNavigator/nogo_zones.json` and reloads the navmesh used by the tool's preview, with the reload result shown in the status bar; previews already on screen were planned with the old table, so back in `路径编辑` (Path Editing) the route is re-planned automatically if `自动展开` (Auto Expand) is checked, otherwise click `重新展开` (Re-expand). The runtime `MapNavigateAction` reads the same table, but each agent process reads it only once, when it first loads a map's navmesh, and never re-reads it: a running MaaEnd needs a restart; during a test run, `F4` only stops the current round, and pressing `结束会话 (F4)` (End Session) while idle ends the session, after which a new test run picks up the change. The planner treats a zone as a wall, and when the start or the end lies inside a zone, planning fails outright instead of handing over to fallbacks such as blind walking.
 
@@ -149,7 +149,7 @@ Ordinary coordinate actions can use the same object form to declare that point's
 }
 ```
 
-This form applies to `RUN / SPRINT / JUMP / FIGHT / INTERACT / PORTAL / TRANSFER / COLLECT / DIG / FIND / TRIGGER`, as well as `HEADING` with a `target`. `target_tier` **only interprets the coordinate of the current node**: it does not switch zones, does not change the context of following nodes, and cannot replace the `ZONE` / `PORTAL` required for an actual area transition.
+This form applies to `RUN / SPRINT / JUMP / FIGHT / INTERACT / PORTAL / TRANSFER / JUMP_PAD / COLLECT / DIG / FIND / TRIGGER`, as well as `HEADING` with a `target`. `target_tier` **only interprets the coordinate of the current node**: it does not switch zones, does not change the context of following nodes, and cannot replace the `ZONE` / `PORTAL` required for an actual area transition.
 
 The field also supports camelCase `targetTier`. An unknown tier on `NAVMESH` keeps the compatibility behavior of logging a warning and treating the target as base coordinates. An ordinary coordinate point that explicitly declares a nonexistent tier fails outright instead of silently moving toward the wrong location.
 
@@ -347,6 +347,7 @@ Only `INTERACT` points can take these fields — on any other action they are ig
 | `TRIGGER` | Route end point: recognizes `trigger_node` while walking; navigation succeeds on a hit or on reaching `target`, see [Ending on a Recognition Hit](#ending-on-a-recognition-hit-trigger) |
 | `NAVMESH` | Plans a route automatically from the current localization and moves to `target`; must use the object form above |
 | `TRANSFER` | Waits in place for an external force (story, teleport, etc.) to move the character to the next segment, then continues from the following points |
+| `JUMP_PAD` | Jump pad: stands on the pad center, jumps when needed, steps and retries if it did not launch, then continues from the following points after landing; see [Jump Pads](#jump-pads-jump_pad) |
 | `PORTAL` | Map transition point: after triggering, walks blind for a short distance and waits for the area switch |
 | `HEADING` | Turns the camera to the specified orientation, then presses `W` once to make the orientation take effect |
 
@@ -354,7 +355,7 @@ Only `INTERACT` points can take these fields — on any other action they are ig
 
 Without ziplines enabled, the navigator executes strictly in `path` order. Ordinary points and actions are all kept, and `NAVMESH` is expanded point by point too.
 
-Only with ziplines enabled does the navigator try to skip intermediate points, planning directly from the start of the current interval to its end. When the direct plan succeeds, the intermediate movement and reachability fallback points are skipped; when it fails, the author path is still executed point by point. Such optional points include `NAVMESH`, `RUN`, `SPRINT`, `JUMP`, `FIGHT`, `TRANSFER`, `PORTAL`, and `INTERACT`.
+Only with ziplines enabled does the navigator try to skip intermediate points, planning directly from the start of the current interval to its end. When the direct plan succeeds, the intermediate movement and reachability fallback points are skipped; when it fails, the author path is still executed point by point. Such optional points include `NAVMESH`, `RUN`, `SPRINT`, `JUMP`, `FIGHT`, `TRANSFER`, `JUMP_PAD`, `PORTAL`, and `INTERACT`.
 
 The following nodes are always kept and need no `required`:
 
@@ -366,14 +367,14 @@ The following nodes are always kept and need no `required`:
 
 With ziplines enabled, if another node must also be reached and executed, add `"required": true`. That node ends the current optimization interval, and the rest of the route starts again from there. The array form has no slot for this field, so required points must use the object form.
 
-For example, when the business flow must trigger a teleport, write:
+For example, when the route must go over a particular jump pad, write:
 
 ```json
 {
-    "action": "TRANSFER",
+    "action": "JUMP_PAD",
     "target": [
-        1002.89,
-        304.52
+        1001.89,
+        305.68
     ],
     "required": true
 }
@@ -438,7 +439,7 @@ You can also give a coordinate to turn in the direction "current position → th
 
 > [!NOTE]
 >
-> Point editing on the page covers path points with coordinates (`RUN / SPRINT / JUMP / FIGHT / INTERACT / PORTAL / TRANSFER / COLLECT / DIG / FIND / TRIGGER / NAVMESH`): it can edit `required` and `target_tier` per point, choose `target_deck_y` for a single `NAVMESH` target, and derive `ZONE` declarations from area information. `HEADING` is a non-coordinate control node outside this editing model; it is recommended to add and maintain it manually after exporting the `path`. Likewise, the `find_target` / `find_text` / `find_stop` / `find_arrive` fields of `FIND` and the `trigger_node` of `TRIGGER` are written by hand after exporting — the tool only preserves them as they are.
+> Point editing on the page covers path points with coordinates (`RUN / SPRINT / JUMP / FIGHT / INTERACT / PORTAL / TRANSFER / JUMP_PAD / COLLECT / DIG / FIND / TRIGGER / NAVMESH`): it can edit `required` and `target_tier` per point, choose `target_deck_y` for a single `NAVMESH` target, and derive `ZONE` declarations from area information. `HEADING` is a non-coordinate control node outside this editing model; it is recommended to add and maintain it manually after exporting the `path`. Likewise, the `find_target` / `find_text` / `find_stop` / `find_arrive` fields of `FIND` and the `trigger_node` of `TRIGGER` are written by hand after exporting — the tool only preserves them as they are.
 
 ---
 
@@ -545,7 +546,7 @@ Paste the `path` exported by the recording tool into it and you have a complete 
 
 > [!WARNING]
 >
-> Adjacent path points should be reachable from one another in one continuous walk. The navigator cannot pass through models or understand business mechanisms; segments such as map transitions, jump pads, falls, and ascent mechanisms can be split into `PORTAL` / `TRANSFER` / business nodes as an author-path fallback. With ziplines enabled, nodes that must be passed or executed should be marked `required`.
+> Adjacent path points should be reachable from one another in one continuous walk. The navigator cannot pass through models or understand business mechanisms; jump pads use `JUMP_PAD`, and segments such as map transitions, falls, and ascent mechanisms can be split into `PORTAL` / `TRANSFER` / business nodes as an author-path fallback. With ziplines enabled, nodes that must be passed or executed should be marked `required`.
 
 ---
 
@@ -1007,10 +1008,76 @@ The hit screen often covers the minimap. The navigator loses its position then, 
 
 ---
 
+## Jump Pads `JUMP_PAD`
+
+There are two kinds of jump pads: ones that launch the character as soon as it steps on, and ones that need a jump while standing on them. Both are written as the same point, with `target` at the pad center; the navigator decides whether to jump:
+
+```json
+[
+    {
+        "action": "NAVMESH",
+        "target": [
+            1001.4,
+            302.0
+        ]
+    },
+    {
+        "action": "JUMP_PAD",
+        "target": [
+            1001.89,
+            305.68
+        ]
+    },
+    [
+        995.79,
+        320.78
+    ],
+    {
+        "action": "NAVMESH",
+        "target": [
+            1021.31,
+            368.82
+        ]
+    }
+]
+```
+
+### Runtime Behavior
+
+1. Walks in and stops once inside the arrival band;
+2. Waits until the character stands still. If it is more than 0.5 from the center, turns the camera toward the center and holds forward for a short step until it is within that range; a pad that launches on contact launches during such a step;
+3. Still on the pad once within range, it jumps. If the character is still on the pad 1.2 seconds after the jump, that jump did not launch: the range tightens to 0.25, it steps again and jumps again;
+4. Moving more than 3 from the center counts as launched; two consecutive unchanged fixes after that count as landed, and the route continues with the following points from the landing spot. The landing spot is set by the pad and does not depend on the facing at the jump.
+
+### Writing Tips
+
+- `target` must be the pad center. A pad that needs a jump only reacts within about 0.8 of its center; off-center, the jump is just a regular jump in place.
+- Stop the previous point 3–4 away from the pad on the walkable side. Pads often sit at cliff edges, so never place the approach point over the drop.
+- Follow `JUMP_PAD` directly with the landing spot as a plain point, then continue with `NAVMESH` as usual. Each leg is planned from the point before it; without the landing point, the next leg would start from the pad side.
+
+### Failure
+
+`MapNavigateAction` returns false when:
+
+| Reason | Meaning |
+| -------------------------- | ------------------------------------------------------------ |
+| `jump_pad_not_reached` | The step budget ran out before the character stood within range |
+| `jump_pad_not_launched` | Three jumps did not launch, or no launch within 20 seconds of reaching the pad |
+| `jump_pad_landing_timeout` | Did not stand still within 15 seconds after launch |
+
+### Related Files
+
+| File | Responsibility | When Changes Are Needed |
+| ------------------------------------------------------ | -------------------------------------------- | --------------------------------- |
+| The business's own route JSON | The `JUMP_PAD` point, its approach point and landing point | Add or adjust a jump pad segment |
+| `agent/cpp-algo/source/MapNavigator/jump_pad_action.cpp` | Standing, jumping, launch and landing detection | Maintained by cpp-algo developers |
+
+---
+
 ## Practical Tips
 
 1. **Prefer `NAVMESH`; record only when semantics are needed.** For plain-movement routes, place the points by hand in the path editor, confirm them with planning, and copy; adjust a target the preview cannot reach on the spot instead of waiting for it to fail at runtime. Only routes with semantics such as interactions and map transitions need recording.
 2. **Record rather than hand-write.** Walking through once in reality is usually more accurate than filling coordinates by feeling; if the precision of the recorded points is insufficient, move more slowly.
 3. **Keep the starting state stable.** Before recording, tidy up the character's position and viewpoint, which significantly reduces later point correction.
-4. **Keep special action points few and precise.** Add `INTERACT`, `TRANSFER`, and `PORTAL` only where an interaction or an area switch is needed; with ziplines enabled, points that must be executed should be marked `required`. `HEADING`, `COLLECT`, `DIG`, `FIND`, and `TRIGGER` are always kept.
+4. **Keep special action points few and precise.** Add `INTERACT`, `JUMP_PAD`, `TRANSFER`, and `PORTAL` only where an interaction, a jump pad, or an area switch is needed; with ziplines enabled, points that must be executed should be marked `required`. `HEADING`, `COLLECT`, `DIG`, `FIND`, and `TRIGGER` are always kept.
 5. **Always check map transition points on cross-area routes.** Automatic addition of `PORTAL` is only a semantic annotation and does not mean every cross-area boundary is inherently reasonable.

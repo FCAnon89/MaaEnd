@@ -10,7 +10,7 @@ MapNavigator 是用于 C++ MapNavigator 模块使用的地图路径录制与编�
 - 录制地图路径并按区域切换浏览。
 - 导入已有 JSON/JSONC，递归搜索可识别的 `path` 数据并显示。
 - 在跨区域边界自动将前一区域的最后一个点和后一区域的第一个点标记为 `PORTAL`。
-- GUI 动作编辑主要面向坐标点动作：`NAVMESH / RUN / SPRINT / JUMP / FIGHT / INTERACT / PORTAL / TRANSFER / COLLECT / DIG / FIND / TRIGGER`。
+- GUI 动作编辑主要面向坐标点动作：`NAVMESH / RUN / SPRINT / JUMP / FIGHT / INTERACT / PORTAL / TRANSFER / JUMP_PAD / COLLECT / DIG / FIND / TRIGGER`。
 - `FIND` 是"只有识别框、没有坐标"的寻找语义点：地图上配置的是搜索锚点，`find_target` / `find_text` / `find_stop` / `find_arrive` 字段需在导出的 `path` 中手工维护，工具仅负责原样保留。
 - `TRIGGER` 放在路线末尾：边走边识别 `trigger_node`，命中就算导航成功；地图上的坐标是一直没命中时走到并等待的位置。`trigger_node` 同样在导出的 `path` 中手工维护。
 - `COLLECT / DIG` 是采集/挖掘语义点：精确抵达后由 `MapNavigator` 同步触发 `AutoCollectClickStart` / `AutoCollectDigStart` pipeline 子任务，期间不退出 NaviController，避免每次采集都重建定位/重新 Bootstrap/吃掉起步宽限。
@@ -271,7 +271,7 @@ dung01
 
 - 白色虚线：请求参数中的作者路径提示。
 - 粉色实线：运行时实际采用的步行规划。
-- 绿色实线：`PositionProvider::Capture` 中 MapLocator 成功且非保持的实测地面轨迹；滑索飞行和定位空窗会切断折线，不会用推测位置补齐。
+- 绿色实线：`PositionProvider` 的 `MapLocator` 日志中定位成功（`status=0`）的实测地面轨迹；滑索飞行和定位空窗会切断折线，不会用推测位置补齐。
 - 浅灰色细虚线：触发偏离走廊 `soft replan` 的前后两次定位之间的坐标变化；仅连接同一连续地面定位区间内的真实坐标，不表示角色实际走过这条直线。
 - 琥珀色虚线：规划器计算过、但因选择滑索而未采用的步行基线。
 - 青色箭头：日志已记录发射、并由 `ride landed` 确认落地的滑索跳。

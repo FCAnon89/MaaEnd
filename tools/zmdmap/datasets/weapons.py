@@ -9,8 +9,8 @@
 
 数据来自 ``WeaponBasicTable`` + ``ForesightWeaponTable`` + ``ItemTable`` + ``SkillPatchTable``：
 前者是已上线的武器，后者是还没上线的前瞻武器（同一把武器上线后会出现在 ``WeaponBasicTable`` 里，
-所以要先按 id、再按五语名字去重）。上游那份 ``weapons.json`` 里的 ``icon_path``、``foresight``、
-``skill_ids`` 与其余语言的字段都没读，这里不生成。
+所以要先按 id、再按五语名字去重）。输出里不含 ``icon_path``、``foresight``、``skill_ids`` 与其余语言的
+字段：消费端没有读它们。
 """
 
 from __future__ import annotations
@@ -18,58 +18,63 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from ..constants import UPSTREAM_LOCALES
+from ..utils.config import UPSTREAM_LOCALES
 from ..utils.game_data import Record, as_text, logger, read_table_cfg, ref_texts, texts_of, text_id_of
+from .base import Dataset
 
 
-def build_weapons(table_cfg_dir: Path, json_data_dir: Path) -> dict[str, dict[str, Any]]:
-    """武器：稀有度、类型、图标 id 与五语名字/技能名（含还没上线的前瞻武器）。"""
-    weapons = read_table_cfg(table_cfg_dir, "WeaponBasicTable")
-    items = read_table_cfg(table_cfg_dir, "ItemTable")
-    patches = read_table_cfg(table_cfg_dir, "SkillPatchTable")
-    foresight = read_table_cfg(table_cfg_dir, "ForesightWeaponTable")
+class Weapons(Dataset):
+    """EssenceFilter 与 IconRecognition 共用的武器表（``weapons.json``）。"""
 
-    skill_name_ids = _skill_name_ids(patches)
-    output: dict[str, dict[str, Any]] = {}
-    released: set[str] = set()
+    @classmethod
+    def build(cls, table_cfg_dir: Path, json_data_dir: Path) -> dict[str, dict[str, Any]]:
+        """武器：稀有度、类型、图标 id 与五语名字/技能名（含还没上线的前瞻武器）。"""
+        weapons = read_table_cfg(table_cfg_dir, "WeaponBasicTable")
+        items = read_table_cfg(table_cfg_dir, "ItemTable")
+        patches = read_table_cfg(table_cfg_dir, "SkillPatchTable")
+        foresight = read_table_cfg(table_cfg_dir, "ForesightWeaponTable")
 
-    for weapon_id, weapon in weapons.items():
-        item = items.get(weapon_id)
-        output[weapon_id] = _weapon_entry(
-            table_cfg_dir,
-            weapon_id=weapon_id,
-            icon_id=as_text(item.get("iconId")) if item else "",
-            name_ref=item.get("name") if item else weapon.get("engName"),
-            weapon_type=as_text(weapon.get("weaponType")),
-            rarity=weapon.get("rarity"),
-            skill_ids=weapon.get("weaponSkillList") or [],
-            skill_name_ids=skill_name_ids,
-        )
-        released.add(weapon_id)
+        skill_name_ids = _skill_name_ids(patches)
+        output: dict[str, dict[str, Any]] = {}
+        released: set[str] = set()
 
-    for row_key, row in foresight.items():
-        # ``weaponId`` 才是真 id，行 key 不可靠（有的 dump 整表按数字排序 id 做 key）。
-        weapon_id = as_text(row.get("weaponId")) or row_key
-        if _already_released(table_cfg_dir, weapon_id, row.get("name"), output, released):
-            logger.warning(f"前瞻武器 {row_key}（{weapon_id}）已经发布过，跳过")
-            continue
-        skill_ids = row.get("skIds") or []
-        output[weapon_id] = _weapon_entry(
-            table_cfg_dir,
-            weapon_id=weapon_id,
-            # 前瞻武器还没有 ItemTable 行，自家 iconId 就是图标键。
-            icon_id=as_text(row.get("iconId")) or weapon_id,
-            name_ref=row.get("name"),
-            weapon_type=as_text(row.get("wpnType")),
-            rarity=row.get("rarity"),
-            skill_ids=skill_ids,
-            skill_name_ids=skill_name_ids,
-            row_skill_names=_row_skill_names(table_cfg_dir, skill_ids, row.get("skNames")),
-        )
-        logger.info(f"前瞻武器 {weapon_id} 入库")
+        for weapon_id, weapon in weapons.items():
+            item = items.get(weapon_id)
+            output[weapon_id] = _weapon_entry(
+                table_cfg_dir,
+                weapon_id=weapon_id,
+                icon_id=as_text(item.get("iconId")) if item else "",
+                name_ref=item.get("name") if item else weapon.get("engName"),
+                weapon_type=as_text(weapon.get("weaponType")),
+                rarity=weapon.get("rarity"),
+                skill_ids=weapon.get("weaponSkillList") or [],
+                skill_name_ids=skill_name_ids,
+            )
+            released.add(weapon_id)
 
-    logger.info(f"武器 {len(output)} 把")
-    return output
+        for row_key, row in foresight.items():
+            # ``weaponId`` 才是真 id，行 key 不可靠（有的 dump 整表按数字排序 id 做 key）。
+            weapon_id = as_text(row.get("weaponId")) or row_key
+            if _already_released(table_cfg_dir, weapon_id, row.get("name"), output, released):
+                logger.warning(f"前瞻武器 {row_key}（{weapon_id}）已经发布过，跳过")
+                continue
+            skill_ids = row.get("skIds") or []
+            output[weapon_id] = _weapon_entry(
+                table_cfg_dir,
+                weapon_id=weapon_id,
+                # 前瞻武器还没有 ItemTable 行，自家 iconId 就是图标键。
+                icon_id=as_text(row.get("iconId")) or weapon_id,
+                name_ref=row.get("name"),
+                weapon_type=as_text(row.get("wpnType")),
+                rarity=row.get("rarity"),
+                skill_ids=skill_ids,
+                skill_name_ids=skill_name_ids,
+                row_skill_names=_row_skill_names(table_cfg_dir, skill_ids, row.get("skNames")),
+            )
+            logger.info(f"前瞻武器 {weapon_id} 入库")
+
+        logger.info(f"武器 {len(output)} 把")
+        return output
 
 
 def _already_released(

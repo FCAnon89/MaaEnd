@@ -2506,5 +2506,8 @@
     "resource/image/MapLocator/Wuling/Lv010Tier468": "206af2530411863784b74c4dfc0272d9cb6692a9f32945ef48cb6514c2b1d195",
     "resource/image/MapLocator/Wuling/Lv010Tier467": "66768c29c0242ff9c8b18c83ed8f27506e3d1f43fe4461505e19621175d2416e",
     "resource/image/SceneManager/NewTipsNext": "a88a6ec1744454537515b060531e95bacbafdc5545a9213a9f4e0a566d0a4e01",
-    "resource/image/GameLauncher/EndfieldIcon": "ce62dec911997c0b983e33111511061e4df14972c890a15bfe0b7dc2b22f5b7f"
+    "resource/image/GameLauncher/EndfieldIcon": "ce62dec911997c0b983e33111511061e4df14972c890a15bfe0b7dc2b22f5b7f",
+    "resource/image/AutoStockpile/Goods/Wuling/ChubbyLungBlimp.Tier2": "b3df732596bb1835f4d6a728d3e48089e3f3d9c6c426186c28402a77f4f61b07",
+    "resource/image/ProtocolSpace/AdvancedProgression6": "71eba8842a0abe1601fb5d19ff46603c675d0e3212edfd5f3bac95541ce887d8",
+    "resource/image/ProtocolSpace/AdvancedProgression6Low": "998eff6973a89e85d8e5c81225ae06f027750ea4f2bed2515a02286f8ddbd551"
 }

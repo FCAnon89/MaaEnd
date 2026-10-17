@@ -47,14 +47,10 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
-      # 这个 job 只下载一次：下面的 generate 脚本各自也会 fetch:zmdmap，同一次运行里会直接复用。
-      - name: Fetch zmdmap data
-        run: |
-          pnpm fetch:zmdmap
-
+      # 不必先整包下载：下面的 generate 脚本各自只 fetch 自己用得到的那几份数据。
+      # generate:DeliveryJobs 的第一条就是 generate:AutoDelivery，不必再单独跑一遍。
       - name: Generate pipeline data
         run: |
-          pnpm generate:AutoDelivery
           pnpm generate:DeliveryJobs
           pnpm generate:EnvironmentMonitoring
           pnpm generate:OutpostTrading
@@ -62,7 +58,8 @@ jobs:
       - name: Get version info
         id: version
         run: |
-          echo "version=$(cat tools/zmdmap/data/version.txt)" >> "$GITHUB_OUTPUT"
+          # 版本写在每份数据的最前面（version 字段），不再有单独的 version.txt。
+          echo "version=$(jq -r .version tools/zmdmap/data/delivery_destinations.json)" >> "$GITHUB_OUTPUT"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
@@ -89,6 +86,79 @@ jobs:
             - DeliveryJobs
             - EnvironmentMonitoring
             - OutpostTrading
+
+            **Version Information:**
+            - Version: ${{ steps.version.outputs.version }}
+
+  sync-seize-delivery-jobs:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Generate MaaEndBot GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.MAAEND_BOT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MAAEND_BOT_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.event.repository.default_branch }}
+
+      - uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      # 这个任务生成器复用 AutoDelivery 的模型与文案，脚本自己只 fetch delivery_destinations 那一份数据。
+      - name: Generate pipeline data
+        run: |
+          pnpm generate:SeizeDeliveryJobs
+
+      - name: Get version info
+        id: version
+        run: |
+          echo "version=$(jq -r .version tools/zmdmap/data/delivery_destinations.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          committer: "maaendbotapp[bot] <305547419+maaendbotapp[bot]@users.noreply.github.com>"
+          author: "maaendbotapp[bot] <305547419+maaendbotapp[bot]@users.noreply.github.com>"
+          add-paths: |
+            tools/zmdmap
+            tools/pipeline-generate
+            assets
+          commit-message: "chore: sync zmdmap seize delivery jobs data ${{ steps.version.outputs.version }}"
+          branch: chore/sync-zmdmap-seize-delivery-jobs
+          title: "chore: sync zmdmap seize delivery jobs data ${{ steps.version.outputs.version }}"
+          body: |
+            ## Summary
+
+            This PR automatically synchronized zmdmap data used by the SeizeDeliveryJobs generator and regenerated its pipeline and task artifacts.
+
+            Please review the changes before merging it.
+
+            **Generated Tasks:**
+            - SeizeDeliveryJobs
 
             **Version Information:**
             - Version: ${{ steps.version.outputs.version }}
@@ -120,14 +190,14 @@ jobs:
           enable-cache: true
 
       - name: Fetch zmdmap data
-        run: uv run --frozen --no-default-groups zmdmap fetch
+        run: uv run --frozen --no-default-groups zmdmap fetch --only weapons --only energy_point_gems
 
       # 依赖就地声明：uv 按 uv.lock 建环境，再叠加这里点名的包，不必单独装 python 或 pip install。
       - name: Generate EssenceFilter data
         run: |
           uv run --frozen --no-default-groups --with json5 python -u tools/essence_filter/sync_zmdmap.py
           uv run --frozen --no-default-groups --with json5 python -u tools/essence_filter/extract_skill_pools.py
-          uv run --frozen --no-default-groups --with json5 python -u tools/essence_filter/build_locations.py --data-version "$(cat tools/zmdmap/data/version.txt)"
+          uv run --frozen --no-default-groups --with json5 python -u tools/essence_filter/build_locations.py --data-version "$(jq -r '.version // "unknown"' tools/zmdmap/data/energy_point_gems.json)"
           uv run --frozen --no-default-groups --with json5 python -u tools/essence_filter/build_autoessence_tasks.py
 
       - name: Create Pull Request
@@ -180,7 +250,7 @@ jobs:
           enable-cache: true
 
       - name: Fetch zmdmap data
-        run: uv run --frozen --no-default-groups zmdmap fetch
+        run: uv run --frozen --no-default-groups zmdmap fetch --only item_mini_table --only weapons
 
       # 图标脚本要 json5（读物品表）与 pillow（合成 UI 图标），httpx 已经是核心依赖。
       - name: Download icon resources

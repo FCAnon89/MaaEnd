@@ -27,9 +27,8 @@ const (
 	regionGlobal   = "Global"
 	regionBilibili = "Bilibili"
 
-	gameProcessName     = "Endfield.exe"
-	launcherProcessName = "Games.exe"
-	launcherExeName     = "Launcher.exe"
+	gameProcessName = "Endfield.exe"
+	launcherExeName = "Launcher.exe"
 
 	pipelineEntry = "GameLauncherMain"
 
@@ -59,7 +58,11 @@ var launchers = map[string]launcherInfo{
 }
 
 type launchGamePCOptions struct {
-	Region          string `json:"LaunchGamePCRegion"`
+	Region       string `json:"LaunchGamePCRegion"`
+	LauncherPath string `json:"LaunchGamePCLauncherPath"`
+	LauncherExe  struct {
+		LauncherExe string `json:"LauncherExe"`
+	} `json:"LaunchGamePCLauncherExe"`
 	GameSetting     string `json:"LaunchGamePCGameSetting"`
 	Language        string `json:"LaunchGamePCLanguage"`
 	DisplayType     string `json:"LaunchGamePCDisplayType"`
@@ -128,15 +131,34 @@ func Run(args []string) bool {
 			Msg("game setting is disabled, skip applying")
 	}
 
-	installDir, err := gamesetting.FindLauncherInstallDir(info.uninstallKey)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("component", component).
-			Str("region", opts.Region).
-			Str("uninstall_key", info.uninstallKey).
-			Msg("failed to find launcher install directory, please check the selected region")
-		return false
+	var installDir string
+	if opts.LauncherPath == "Manual" {
+		launcherPath := filepath.Clean(strings.Trim(strings.TrimSpace(opts.LauncherExe.LauncherExe), `"`))
+		_, err := os.Stat(launcherPath)
+		if err == nil && !strings.EqualFold(filepath.Base(launcherPath), launcherExeName) {
+			err = fmt.Errorf("path is not %s", launcherExeName)
+		}
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("component", component).
+				Str("launcher_path", launcherPath).
+				Msg("填写的 Launcher.exe 路径无效，请检查任务设置中的路径")
+			return false
+		}
+		installDir = filepath.Dir(launcherPath)
+	} else {
+		dir, err := gamesetting.FindLauncherInstallDir(info.uninstallKey)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("component", component).
+				Str("region", opts.Region).
+				Str("uninstall_key", info.uninstallKey).
+				Msg("无法找到启动器，请在任务设置中手动填写路径")
+			return false
+		}
+		installDir = dir
 	}
 	log.Info().
 		Str("component", component).
@@ -144,12 +166,8 @@ func Run(args []string) bool {
 		Str("install_dir", installDir).
 		Msg("launcher install directory found")
 
-	if isProcessRunning(launcherProcessName, installDir) {
-		log.Info().
-			Str("component", component).
-			Str("install_dir", installDir).
-			Msg("launcher is already running, skip starting")
-	} else if err := startLauncher(installDir); err != nil {
+	// 启动器最小化到托盘时进程仍在但窗口不可见，因此无论进程是否存在都执行一次以唤出窗口。
+	if err := startLauncher(installDir); err != nil {
 		log.Error().
 			Err(err).
 			Str("component", component).
