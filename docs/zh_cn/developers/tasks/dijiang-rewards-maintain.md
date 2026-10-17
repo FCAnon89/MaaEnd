@@ -42,7 +42,7 @@
 ### 一键收取
 
 实现位于 `FastCollect.json`，在总控中枢直接点击「产物」「线索」快捷收取，无需进入对应舱室。  
-由 `StageTaskSetting` → `FastCollect` 开关控制，默认关闭。
+由 `StageTaskSetting` → `FastCollect` 开关控制，默认关闭；开启后可在「收取项目」中分别选择产物和线索，默认全选，全部取消时跳过一键收取。
 
 ### 恢复心情
 

@@ -160,12 +160,15 @@
             "cases": [
                 {
                     "name": "Yes",
+                    "option": [
+                        "FastCollectItems"
+                    ],
                     "pipeline_override": {
                         "DijiangRewardsFastCollectProduction": {
-                            "enabled": true
+                            "enabled": false
                         },
                         "DijiangRewardsFastCollectClues": {
-                            "enabled": true
+                            "enabled": false
                         }
                     }
                 },
@@ -182,6 +185,34 @@
                 }
             ],
             "default_case": "No"
+        },
+        "FastCollectItems": {
+            "type": "checkbox",
+            "label": "$option.FastCollectItems.label",
+            "cases": [
+                {
+                    "name": "Products",
+                    "label": "$option.FastCollectItems.cases.Products.label",
+                    "pipeline_override": {
+                        "DijiangRewardsFastCollectProduction": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "Clues",
+                    "label": "$option.FastCollectItems.cases.Clues.label",
+                    "pipeline_override": {
+                        "DijiangRewardsFastCollectClues": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ],
+            "default_case": [
+                "Products",
+                "Clues"
+            ]
         },
         "RecoveryEmotionStage": {
             "type": "switch",
