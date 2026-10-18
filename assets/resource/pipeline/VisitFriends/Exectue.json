@@ -99,6 +99,23 @@
             "VisitFriendsEnterShipSuccess"
         ]
     },
+    "VisitFriendsEnterShipTerminalButton": {
+        "desc": "识别访客终端入口按钮",
+        "recognition": "OCR",
+        "roi": [
+            10,
+            200,
+            230,
+            200
+        ],
+        "expected": [
+            "打开访客终端",
+            "打開訪客終端",
+            "Guest Terminal",
+            "訪問端末",
+            "방문자 단말기"
+        ]
+    },
     "VisitFriendsEnterShipSuccess": {
         "desc": "进入好友船成功的标志",
         "recognition": "And",
@@ -116,34 +133,17 @@
                 ],
                 "threshold": 0.9
             },
-            {
-                "recognition": "OCR",
-                "roi": [
-                    10,
-                    200,
-                    230,
-                    200
-                ],
-                "expected": [
-                    "打开访客终端",
-                    "打開訪客終端",
-                    "Guest Terminal",
-                    "訪問端末",
-                    "방문자 단말기"
-                ]
-            }
+            "VisitFriendsEnterShipTerminalButton"
         ],
         "box_index": 1, // 访客终端 OCR
         "pre_delay": 0,
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "RepeatUntilFoundAction",
+                "custom_action": "RepeatUntilNotFoundAction",
                 "custom_action_param": {
                     "custom_action": "AutoAltClickAction",
-                    "wait_nodes": [
-                        "VisitFriendsEnterMenuTerminalSuccess"
-                    ],
+                    "wait_node": "VisitFriendsEnterShipTerminalButton",
                     "interval_ms": 6000
                 }
             }
