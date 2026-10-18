@@ -96,9 +96,7 @@ function buildDepotOption(depot) {
                       {
                           name: "AutoDelivery",
                           label: "$task.DeliveryJobs.DepotAction.AutoDelivery",
-                          pipeline_override: buildAutoDeliveryOverride(depot, {
-                              bidAction: "DeliveryJobsRedistributionBidNextStep",
-                          }),
+                          pipeline_override: buildAutoDeliveryOverride(depot),
                       },
                   ]
                 : []),
@@ -261,7 +259,7 @@ function buildQuoteActionOption(depot, {comparison, label, description, defaultC
     };
 }
 
-function buildAutoDeliveryOverride(depot, {bidAction}) {
+function buildAutoDeliveryOverride(depot) {
     const deliveryNode = `DeliveryJobsEnter${depot.Id}DeliveryJob`;
     const cargoNode = `DeliveryJobsEnter${depot.Id}Cargo`;
     const autoDelivery = `DeliveryJobsAutoDelivery${depot.Id}`;
@@ -274,7 +272,7 @@ function buildAutoDeliveryOverride(depot, {bidAction}) {
         },
         [cargoNode]: {
             enabled: true,
-            anchor: buildCargoAnchor(depot, bidAction, autoDelivery),
+            anchor: buildCargoAnchor(depot, "DeliveryJobsRedistributionBidNextStep", autoDelivery),
         },
         [`DeliveryJobsOngoingDeliveryFor${depot.Id}`]: {
             next: [
