@@ -21,14 +21,14 @@
                 ]
             }
         },
+        "anchor": {
+            "DailyEmailTSAEntry": "DailyEmailExistTSA"
+        },
         "next": [
             "[JumpBack][Anchor]DailyEmailTSAEntry",
             "[JumpBack]DailyEmailReceiveEmail",
             "DailyEmailFinish"
         ],
-        "anchor": {
-            "DailyEmailTSAEntry": "DailyEmailExistTSA"
-        },
         "focus": {
             "Node.Recognition.Succeeded": "已进入邮件界面"
         }
@@ -43,8 +43,7 @@
             }
         },
         "action": {
-            "type": "Click",
-            "param": {}
+            "type": "Click"
         },
         "repeat": 2,
         "repeat_wait_freezes": 1000,
@@ -157,8 +156,7 @@
         },
         "pre_wait_freezes": 200,
         "action": {
-            "type": "Click",
-            "param": {}
+            "type": "Click"
         },
         "focus": {
             "Node.Recognition.Succeeded": "获取邮件奖励"
@@ -184,8 +182,7 @@
         },
         "pre_wait_freezes": 200,
         "action": {
-            "type": "Click",
-            "param": {}
+            "type": "Click"
         }
     },
     "DailyEmailExistTSA": {
@@ -198,8 +195,7 @@
             }
         },
         "action": {
-            "type": "Click",
-            "param": {}
+            "type": "Click"
         },
         "next": [
             "DailyEmailReceiveTSACannotClaim",
@@ -208,32 +204,6 @@
         "focus": {
             "Node.Recognition.Succeeded": "收取暂存区物资"
         }
-    },
-    "DailyEmailExitTSA": {
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    1074,
-                    204,
-                    32,
-                    29
-                ],
-                "template": [
-                    "CheckEmail/TSAExitIcon.png"
-                ]
-            }
-        },
-        "action": {
-            "type": "Click",
-            "param": {}
-        },
-        "anchor": {
-            "DailyEmailTSAEntry": ""
-        },
-        "next": [
-            "DailyEmailReceiveEmail"
-        ]
     },
     "DailyEmailNoEmailRewards": {
         "recognition": {
@@ -368,14 +338,14 @@
         },
         "pre_wait_freezes": 200,
         "action": {
-            "type": "Click",
-            "param": {}
+            "type": "Click"
         },
         "next": [
             "DailyEmailTSAStorageFull",
             "DailyEmailConfirmTSA"
         ]
     },
+    "DailyEmailFinish": {},
     "DailyEmailTSAStorageFull": {
         "recognition": {
             "type": "OCR",
@@ -399,5 +369,29 @@
             "DailyEmailExitTSA"
         ]
     },
-    "DailyEmailFinish": {}
+    "DailyEmailExitTSA": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1074,
+                    204,
+                    32,
+                    29
+                ],
+                "template": [
+                    "CheckEmail/TSAExitIcon.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "anchor": {
+            "DailyEmailTSAEntry": ""
+        },
+        "next": [
+            "DailyEmailReceiveEmail"
+        ]
+    }
 }
