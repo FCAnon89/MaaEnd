@@ -41,6 +41,19 @@
                 "PuzzleRecognition",
                 "ReceptionRoomExchangeCountdownWithinThresholdRecognition",
                 "ReceptionRoomWaitExchangeKeepAliveDueRecognition",
+                "RestaurantMenuInitializeRecognition",
+                "RestaurantKitchenOperatorsRecognition",
+                "RestaurantMenuNextSelectionRecognition",
+                "RestaurantMenuPlanFailureRecognition",
+                "RestaurantMenuPlanRecognition",
+                "RestaurantMenuSelectionBottomRecognition",
+                "RestaurantMenuSelectionCompleteRecognition",
+                "RestaurantMenuSelectionFailureRecognition",
+                "RestaurantMenuSelectionVerifiedRecognition",
+                "RestaurantRuntimeFailureRecognition",
+                "RestaurantRuntimeNextDishRecognition",
+                "RestaurantRuntimeNextKitchenRecognition",
+                "RestaurantRuntimeVerifyDispatchRecognition",
                 "ScheduleRecognition",
                 "ScreenshotStableRecognition",
                 "ScrollbarRecognition",
@@ -535,6 +548,68 @@
                 "required": [ "custom_recognition_param" ],
                 "properties": {
                     "custom_recognition_param": { "$ref": "./components/outpost_trading.schema.json#/$defs/PriorityItemRecognitionParam" }
+                }
+            }
+        },
+        {
+            "if": {
+                "type": "object",
+                "required": [ "custom_recognition" ],
+                "properties": {
+                    "custom_recognition": {
+                        "enum": [
+                            "RestaurantMenuNextSelectionRecognition",
+                            "RestaurantMenuSelectionBottomRecognition",
+                            "RestaurantMenuSelectionCompleteRecognition",
+                            "RestaurantMenuSelectionVerifiedRecognition"
+                        ]
+                    }
+                }
+            },
+            "then": {
+                "type": "object",
+                "required": [ "custom_recognition_param" ],
+                "properties": {
+                    "custom_recognition_param": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [ "kind" ],
+                        "properties": {
+                            "kind": {
+                                "type": "string",
+                                "enum": [ "dish", "drink" ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "type": "object",
+                "required": [ "custom_recognition" ],
+                "properties": { "custom_recognition": { "const": "RestaurantKitchenOperatorsRecognition" } }
+            },
+            "then": {
+                "type": "object",
+                "required": [ "custom_recognition_param" ],
+                "properties": {
+                    "custom_recognition_param": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [ "kitchen", "view" ],
+                        "properties": {
+                            "kitchen": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3
+                            },
+                            "view": {
+                                "type": "string",
+                                "enum": [ "picker", "setup" ]
+                            }
+                        }
+                    }
                 }
             }
         }

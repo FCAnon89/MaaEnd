@@ -1,0 +1,16 @@
+{
+    "task": [
+        {
+            "name": "RestaurantDaily",
+            "label": "$task.RestaurantDaily.label",
+            "entry": "RestaurantMenuInitialize",
+            "description": "$task.RestaurantDaily.description",
+            "group": [
+                "other_menu"
+            ],
+            "controller": [
+                "Win32-Front"
+            ]
+        }
+    ]
+}

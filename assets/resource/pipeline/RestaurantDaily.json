@@ -1,0 +1,1620 @@
+{
+    "RestaurantMenuInitialize": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuInitializeRecognition",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantOpenDailyTheme",
+            "RestaurantEnterCounterStart"
+        ],
+        "attach": {}
+    },
+    "RestaurantEnterCounterStart": {
+        "recognition": "OCR",
+        "roi": [
+            828,
+            420,
+            206,
+            44
+        ],
+        "expected": [
+            "开始经营"
+        ],
+        "pre_delay": 0,
+        "action": "ClickKey",
+        "key": 70,
+        "post_wait_freezes": {
+            "time": 500,
+            "target": [
+                40,
+                20,
+                1200,
+                680
+            ],
+            "timeout": 5000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantOpenDailyTheme"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantOpenDailyTheme": {
+        "recognition": "OCR",
+        "roi": [
+            525,
+            95,
+            180,
+            35
+        ],
+        "expected": [
+            "缘缘本色"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantFormalStart"
+        ]
+    },
+    "RestaurantFormalStart": {
+        "recognition": "OCR",
+        "roi": [
+            1005,
+            640,
+            205,
+            45
+        ],
+        "expected": [
+            "正式经营"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 500,
+            "target": [
+                43,
+                75,
+                1190,
+                575
+            ],
+            "timeout": 5000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantManagementReady"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantManagementReady": {
+        "recognition": "OCR",
+        "roi": [
+            24,
+            10,
+            170,
+            32
+        ],
+        "expected": [
+            "营业设定"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantEmptySetup",
+            "RestaurantClearPreviousSetup"
+        ]
+    },
+    "RestaurantClearPreviousSetup": {
+        "recognition": "OCR",
+        "roi": [
+            715,
+            642,
+            200,
+            36
+        ],
+        "expected": [
+            "清空当前人员和菜单设定"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            975,
+            660
+        ],
+        "post_wait_freezes": {
+            "time": 400,
+            "target": [
+                527,
+                183,
+                680,
+                450
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantEmptySetup"
+        ]
+    },
+    "RestaurantEmptySetup": {
+        "recognition": "And",
+        "all_of": [
+            {
+                "recognition": "OCR",
+                "roi": [
+                    552,
+                    362,
+                    200,
+                    42
+                ],
+                "expected": [
+                    "安排干员"
+                ]
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    775,
+                    362,
+                    200,
+                    42
+                ],
+                "expected": [
+                    "安排干员"
+                ]
+            },
+            {
+                "recognition": "OCR",
+                "roi": [
+                    1001,
+                    362,
+                    200,
+                    42
+                ],
+                "expected": [
+                    "安排干员"
+                ]
+            }
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantOpenKitchen1"
+        ]
+    },
+    "RestaurantOpenKitchen1": {
+        "recognition": "OCR",
+        "roi": [
+            552,
+            365,
+            198,
+            44
+        ],
+        "expected": [
+            "安排干员"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen1Picker"
+        ]
+    },
+    "RestaurantKitchen1Picker": {
+        "recognition": "OCR",
+        "roi": [
+            25,
+            640,
+            135,
+            35
+        ],
+        "expected": [
+            "厨房进驻干员"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen1PickFirst"
+        ]
+    },
+    "RestaurantKitchen1PickFirst": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "0/2"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            75,
+            182
+        ],
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen1PickSecond"
+        ]
+    },
+    "RestaurantKitchen1PickSecond": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "1/2"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            165,
+            182
+        ],
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen1CountComplete"
+        ]
+    },
+    "RestaurantKitchen1CountComplete": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "2/2"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen1ReadOperators"
+        ]
+    },
+    "RestaurantKitchen1Confirm": {
+        "recognition": "OCR",
+        "roi": [
+            1134,
+            638,
+            132,
+            42
+        ],
+        "expected": [
+            "确认"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 300,
+            "target": [
+                527,
+                183,
+                680,
+                450
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen1Assigned"
+        ]
+    },
+    "RestaurantKitchen1Assigned": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
+        "custom_recognition_param": {
+            "kitchen": 1,
+            "view": "setup"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantOpenKitchen2"
+        ]
+    },
+    "RestaurantOpenKitchen2": {
+        "recognition": "OCR",
+        "roi": [
+            775,
+            365,
+            198,
+            44
+        ],
+        "expected": [
+            "安排干员"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen2Picker"
+        ]
+    },
+    "RestaurantKitchen2Picker": {
+        "recognition": "OCR",
+        "roi": [
+            25,
+            640,
+            135,
+            35
+        ],
+        "expected": [
+            "厨房进驻干员"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen2PickFirst"
+        ]
+    },
+    "RestaurantKitchen2PickFirst": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "0/2"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            75,
+            182
+        ],
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen2PickSecond"
+        ]
+    },
+    "RestaurantKitchen2PickSecond": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "1/2"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            165,
+            182
+        ],
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen2CountComplete"
+        ]
+    },
+    "RestaurantKitchen2CountComplete": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "2/2"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen2ReadOperators"
+        ]
+    },
+    "RestaurantKitchen2Confirm": {
+        "recognition": "OCR",
+        "roi": [
+            1134,
+            638,
+            132,
+            42
+        ],
+        "expected": [
+            "确认"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 300,
+            "target": [
+                527,
+                183,
+                680,
+                450
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen2Assigned"
+        ]
+    },
+    "RestaurantKitchen2Assigned": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
+        "custom_recognition_param": {
+            "kitchen": 2,
+            "view": "setup"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantOpenKitchen3"
+        ]
+    },
+    "RestaurantOpenKitchen3": {
+        "recognition": "OCR",
+        "roi": [
+            1001,
+            365,
+            198,
+            44
+        ],
+        "expected": [
+            "安排干员"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen3Picker"
+        ]
+    },
+    "RestaurantKitchen3Picker": {
+        "recognition": "OCR",
+        "roi": [
+            25,
+            640,
+            135,
+            35
+        ],
+        "expected": [
+            "厨房进驻干员"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen3PickFirst"
+        ]
+    },
+    "RestaurantKitchen3PickFirst": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "0/2"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            75,
+            182
+        ],
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen3PickSecond"
+        ]
+    },
+    "RestaurantKitchen3PickSecond": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "1/2"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            165,
+            182
+        ],
+        "post_wait_freezes": {
+            "time": 250,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen3CountComplete"
+        ]
+    },
+    "RestaurantKitchen3CountComplete": {
+        "recognition": "OCR",
+        "roi": [
+            211,
+            640,
+            54,
+            35
+        ],
+        "expected": [
+            "2/2"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen3ReadOperators"
+        ]
+    },
+    "RestaurantKitchen3Confirm": {
+        "recognition": "OCR",
+        "roi": [
+            1134,
+            638,
+            132,
+            42
+        ],
+        "expected": [
+            "确认"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 300,
+            "target": [
+                527,
+                183,
+                680,
+                450
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen3Assigned"
+        ]
+    },
+    "RestaurantKitchen3Assigned": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
+        "custom_recognition_param": {
+            "kitchen": 3,
+            "view": "setup"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantOpenMenu"
+        ]
+    },
+    "RestaurantOpenMenu": {
+        "recognition": "OCR",
+        "roi": [
+            1012,
+            641,
+            207,
+            41
+        ],
+        "expected": [
+            "设定菜单"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                45,
+                86,
+                1170,
+                574
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuScreenReady"
+        ]
+    },
+    "RestaurantMenuScreenReady": {
+        "recognition": "OCR",
+        "roi": [
+            48,
+            105,
+            470,
+            32
+        ],
+        "expected": [
+            "菜单要求"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantPlanMenu"
+        ]
+    },
+    "RestaurantMenuDishesActive": {
+        "recognition": "ColorMatch",
+        "roi": [
+            582,
+            112,
+            21,
+            11
+        ],
+        "method": 4,
+        "lower": [
+            160,
+            120,
+            0
+        ],
+        "upper": [
+            255,
+            225,
+            100
+        ],
+        "count": 30
+    },
+    "RestaurantMenuDrinksActive": {
+        "recognition": "ColorMatch",
+        "roi": [
+            1137,
+            112,
+            21,
+            11
+        ],
+        "method": 4,
+        "lower": [
+            160,
+            120,
+            0
+        ],
+        "upper": [
+            255,
+            225,
+            100
+        ],
+        "count": 30
+    },
+    "RestaurantPlanMenu": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuPlanRecognition",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuPlanFailure",
+            "RestaurantMenuSelectDishTab"
+        ],
+        "attach": {
+            "plan": null,
+            "error": ""
+        }
+    },
+    "RestaurantMenuPlanFailure": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuPlanFailureRecognition",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuSelectionFailure": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionFailureRecognition",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuSelectionFailureAfterAttempt": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionFailureRecognition",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuSelectDishTab": {
+        "recognition": "OCR",
+        "roi": [
+            528,
+            84,
+            113,
+            34
+        ],
+        "expected": [
+            "全部菜品"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            591,
+            99
+        ],
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishScrollTopLoop"
+        ]
+    },
+    "RestaurantMenuSelectDishScrollTopLoop": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuDishesActive"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishIsAtTop",
+            "RestaurantMenuSelectDishScrollUp"
+        ]
+    },
+    "RestaurantMenuSelectDishIsAtTop": {
+        "recognition": "Custom",
+        "custom_recognition": "ListCompleteRecognition",
+        "custom_recognition_param": {
+            "threshold": 0.99
+        },
+        "roi": [
+            552,
+            134,
+            635,
+            402
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishLoop"
+        ],
+        "attach": {
+            "ready": false
+        }
+    },
+    "RestaurantMenuSelectDishScrollUp": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Scroll",
+        "target": [
+            850,
+            350
+        ],
+        "dy": 240,
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishScrollTopLoop"
+        ]
+    },
+    "RestaurantMenuSelectDishLoop": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectionFailure",
+            "RestaurantMenuSelectionCompleteDishes",
+            "RestaurantMenuSelectDishNext",
+            "RestaurantMenuSelectionFailureAfterAttempt",
+            "RestaurantMenuSelectionCompleteDishAfterAttempt",
+            "RestaurantMenuSelectDishIsAtBottom",
+            "RestaurantMenuSelectDishScrollDown"
+        ]
+    },
+    "RestaurantMenuSelectDishNext": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuNextSelectionRecognition",
+        "custom_recognition_param": {
+            "kind": "dish"
+        },
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishVerify"
+        ]
+    },
+    "RestaurantMenuSelectDishVerify": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionVerifiedRecognition",
+        "custom_recognition_param": {
+            "kind": "dish"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishLoop"
+        ]
+    },
+    "RestaurantMenuSelectionCompleteDishes": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
+        "custom_recognition_param": {
+            "kind": "dish"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkTab"
+        ]
+    },
+    "RestaurantMenuSelectionCompleteDishAfterAttempt": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
+        "custom_recognition_param": {
+            "kind": "dish"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkTab"
+        ]
+    },
+    "RestaurantMenuSelectDishIsAtBottom": {
+        "recognition": "Custom",
+        "custom_recognition": "ListCompleteRecognition",
+        "custom_recognition_param": {
+            "threshold": 0.99
+        },
+        "roi": [
+            552,
+            134,
+            635,
+            402
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuDishSelectionIncomplete"
+        ],
+        "attach": {
+            "ready": false
+        }
+    },
+    "RestaurantMenuDishSelectionIncomplete": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionBottomRecognition",
+        "custom_recognition_param": {
+            "kind": "dish"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuSelectDishScrollDown": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Scroll",
+        "target": [
+            850,
+            350
+        ],
+        "dy": -240,
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishLoop"
+        ]
+    },
+    "RestaurantMenuSelectDrinkTab": {
+        "recognition": "OCR",
+        "roi": [
+            1098,
+            84,
+            105,
+            34
+        ],
+        "expected": [
+            "饮品"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": [
+            1152,
+            99
+        ],
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkScrollTopLoop"
+        ]
+    },
+    "RestaurantMenuSelectDrinkScrollTopLoop": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuDrinksActive"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkIsAtTop",
+            "RestaurantMenuSelectDrinkScrollUp"
+        ]
+    },
+    "RestaurantMenuSelectDrinkIsAtTop": {
+        "recognition": "Custom",
+        "custom_recognition": "ListCompleteRecognition",
+        "custom_recognition_param": {
+            "threshold": 0.99
+        },
+        "roi": [
+            552,
+            134,
+            635,
+            402
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkLoop"
+        ],
+        "attach": {
+            "ready": false
+        }
+    },
+    "RestaurantMenuSelectDrinkScrollUp": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Scroll",
+        "target": [
+            850,
+            350
+        ],
+        "dy": 240,
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkScrollTopLoop"
+        ]
+    },
+    "RestaurantMenuSelectDrinkLoop": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectionFailure",
+            "RestaurantMenuSelectionCompleteDrinks",
+            "RestaurantMenuSelectDrinkNext",
+            "RestaurantMenuSelectionFailureAfterAttempt",
+            "RestaurantMenuSelectionCompleteDrinkAfterAttempt",
+            "RestaurantMenuSelectDrinkIsAtBottom",
+            "RestaurantMenuSelectDrinkScrollDown"
+        ]
+    },
+    "RestaurantMenuSelectDrinkNext": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuNextSelectionRecognition",
+        "custom_recognition_param": {
+            "kind": "drink"
+        },
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkVerify"
+        ]
+    },
+    "RestaurantMenuSelectDrinkVerify": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionVerifiedRecognition",
+        "custom_recognition_param": {
+            "kind": "drink"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkLoop"
+        ]
+    },
+    "RestaurantMenuSelectionCompleteDrinks": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
+        "custom_recognition_param": {
+            "kind": "drink"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuStartBusiness"
+        ]
+    },
+    "RestaurantMenuSelectionCompleteDrinkAfterAttempt": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
+        "custom_recognition_param": {
+            "kind": "drink"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuStartBusiness"
+        ]
+    },
+    "RestaurantMenuSelectDrinkIsAtBottom": {
+        "recognition": "Custom",
+        "custom_recognition": "ListCompleteRecognition",
+        "custom_recognition_param": {
+            "threshold": 0.99
+        },
+        "roi": [
+            552,
+            134,
+            635,
+            402
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuDrinkSelectionIncomplete"
+        ],
+        "attach": {
+            "ready": false
+        }
+    },
+    "RestaurantMenuDrinkSelectionIncomplete": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantMenuSelectionBottomRecognition",
+        "custom_recognition_param": {
+            "kind": "drink"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuSelectDrinkScrollDown": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Scroll",
+        "target": [
+            850,
+            350
+        ],
+        "dy": -240,
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkLoop"
+        ]
+    },
+    "RestaurantMenuStartBusiness": {
+        "recognition": "OCR",
+        "roi": [
+            1005,
+            640,
+            205,
+            45
+        ],
+        "expected": [
+            "开始经营"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 600,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 5000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantKitchenPanelReady",
+            "RestaurantOpenKitchenPanel"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantOpenKitchenPanel": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RepeatUntilFoundAction",
+        "custom_action_param": {
+            "custom_action": "AutoAltClickAction",
+            "wait_nodes": [
+                "RestaurantKitchenPanelReady",
+                "RestaurantGameEnded"
+            ]
+        },
+        "target": [
+            867,
+            630
+        ],
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                140,
+                140,
+                1000,
+                470
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantKitchenPanelReady"
+        ],
+        "on_error": [
+            "RestaurantOpenKitchenPanel"
+        ]
+    },
+    "RestaurantKitchenPanelReady": {
+        "recognition": "OCR",
+        "roi": [
+            210,
+            472,
+            180,
+            26
+        ],
+        "expected": [
+            "珍馐产出概率"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantRuntimeLoop"
+        ]
+    },
+    "RestaurantRuntimeLoop": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantSettlementContinue",
+            "RestaurantSettlementComplete",
+            "RestaurantRuntimeFailure",
+            "RestaurantRuntimeVerifyDispatch",
+            "RestaurantRuntimeNextDish",
+            "RestaurantRuntimeNextKitchen",
+            "RestaurantRuntimeIdle"
+        ]
+    },
+    "RestaurantRuntimeNextKitchen": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantRuntimeNextKitchenRecognition",
+        "pre_delay": 0,
+        "action": "LongPress",
+        "duration": 100,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantRuntimeNextDish",
+            "RestaurantRuntimeFailure",
+            "RestaurantRuntimeIdle"
+        ],
+        "attach": {
+            "state": null
+        }
+    },
+    "RestaurantRuntimeNextDish": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantRuntimeNextDishRecognition",
+        "pre_delay": 0,
+        "action": "LongPress",
+        "duration": 100,
+        "post_wait_freezes": {
+            "time": 200,
+            "target": [
+                210,
+                504,
+                240,
+                74
+            ],
+            "timeout": 2000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantRuntimeVerifyDispatch",
+            "RestaurantRuntimeFailure",
+            "RestaurantRuntimeIdle"
+        ]
+    },
+    "RestaurantRuntimeVerifyDispatch": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantRuntimeVerifyDispatchRecognition",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantRuntimeLoop"
+        ]
+    },
+    "RestaurantRuntimeFailure": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantRuntimeFailureRecognition",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantGameEnded": {
+        "recognition": "OCR",
+        "roi": [
+            500,
+            335,
+            280,
+            45
+        ],
+        "expected": [
+            "经营结束"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantSettlementContinue"
+        ]
+    },
+    "RestaurantSettlementContinue": {
+        "recognition": "OCR",
+        "roi": [
+            1020,
+            620,
+            180,
+            48
+        ],
+        "expected": [
+            "继续"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 400,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 4000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantSettlementComplete"
+        ]
+    },
+    "RestaurantSettlementComplete": {
+        "recognition": "OCR",
+        "roi": [
+            1020,
+            620,
+            180,
+            48
+        ],
+        "expected": [
+            "完成"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 400,
+            "target": [
+                0,
+                0,
+                1280,
+                720
+            ],
+            "timeout": 4000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantReturnedWorld"
+        ]
+    },
+    "RestaurantKitchen1ReadOperators": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
+        "custom_recognition_param": {
+            "kitchen": 1,
+            "view": "picker"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen1Confirm"
+        ]
+    },
+    "RestaurantKitchen2ReadOperators": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
+        "custom_recognition_param": {
+            "kitchen": 2,
+            "view": "picker"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen2Confirm"
+        ]
+    },
+    "RestaurantKitchen3ReadOperators": {
+        "recognition": "Custom",
+        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
+        "custom_recognition_param": {
+            "kitchen": 3,
+            "view": "picker"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantKitchen3Confirm"
+        ]
+    },
+    "RestaurantRuntimeIdle": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 250,
+        "next": [
+            "RestaurantRuntimeLoop"
+        ]
+    },
+    "RestaurantReturnedWorld": {
+        "recognition": "And",
+        "all_of": [
+            "InWorld"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "StopNode"
+        ]
+    }
+}
