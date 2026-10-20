@@ -21,11 +21,8 @@
                 ]
             }
         },
-        "anchor": {
-            "DailyEmailTSAEntry": "DailyEmailExistTSA"
-        },
         "next": [
-            "[JumpBack][Anchor]DailyEmailTSAEntry",
+            "[JumpBack]DailyEmailExistTSA",
             "[JumpBack]DailyEmailReceiveEmail",
             "DailyEmailFinish"
         ],
@@ -186,6 +183,7 @@
         }
     },
     "DailyEmailExistTSA": {
+        "max_hit": 1,
         "recognition": {
             "type": "TemplateMatch",
             "param": {
@@ -386,12 +384,6 @@
         },
         "action": {
             "type": "Click"
-        },
-        "anchor": {
-            "DailyEmailTSAEntry": ""
-        },
-        "next": [
-            "DailyEmailReceiveEmail"
-        ]
+        }
     }
 }
