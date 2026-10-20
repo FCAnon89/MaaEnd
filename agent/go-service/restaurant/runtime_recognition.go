@@ -487,7 +487,7 @@ func readTablePoints(ctx *maa.Context, img image.Image, table int, itemIDs []str
 			if err != nil {
 				return nil, err
 			}
-			if !ocrContains(texts, "用餐中") {
+			if !ocrContainsAny(texts, "用餐中", "Dining", "食事中", "식사 중") {
 				return nil, fmt.Errorf("table %d is waiting for delivery or eating confirmation", table)
 			}
 			// Eating confirms every item in this table's previous order was delivered.
@@ -607,7 +607,7 @@ func detectRestockMarkers(ctx *maa.Context, img image.Image, state *runtimeState
 	return marked, nil
 }
 
-var kitchenSecondsPattern = regexp.MustCompile(`(\d+)\s*[sS秒]`)
+var kitchenSecondsPattern = regexp.MustCompile(`(\d+)\s*[sS秒초]`)
 
 func readKitchenQueue(ctx *maa.Context, img image.Image, state *runtimeState, kitchen int) (kitchenQueueView, error) {
 	count, err := kitchenQueueCount(img, kitchen)

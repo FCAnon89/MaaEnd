@@ -14,7 +14,11 @@ const (
 	PrestockTrayLimit = 6
 )
 
-var closingCountdownPattern = regexp.MustCompile(`^[^0-9:]*营业[^0-9:]*([0-9]{1,2})[^0-9:]*$`)
+var (
+	closingCountdownPattern = regexp.MustCompile(`^[^0-9:]*营业[^0-9:]*([0-9]{1,2})[^0-9:]*$`)
+	closingCountdownPhrases = []string{"营业", "Session Ending Soon", "営業終了間近", "곧 운영이 종료됩니다.", "即將結束營業"}
+	countdownNumberPattern  = regexp.MustCompile(`[0-9]{1,2}`)
+)
 
 type OrderPointKey struct {
 	Table int `json:"table"`
@@ -101,6 +105,21 @@ func ParseCountdown(text string) (int, error) {
 	text = strings.TrimSpace(text)
 	parts := strings.Split(text, ":")
 	if len(parts) != 2 {
+		closingText := strings.ToLower(strings.Join(strings.Fields(text), ""))
+		for _, phrase := range closingCountdownPhrases {
+			localizedPhrase := strings.ToLower(strings.Join(strings.Fields(phrase), ""))
+			if !strings.Contains(closingText, localizedPhrase) {
+				continue
+			}
+			matches := countdownNumberPattern.FindAllString(text, -1)
+			if len(matches) > 0 {
+				seconds, _ := strconv.Atoi(matches[len(matches)-1])
+				if seconds <= 20 {
+					return seconds, nil
+				}
+			}
+			break
+		}
 		if match := closingCountdownPattern.FindStringSubmatch(text); len(match) == 2 {
 			seconds, _ := strconv.Atoi(match[1])
 			if seconds <= 20 {

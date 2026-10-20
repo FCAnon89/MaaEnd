@@ -270,7 +270,24 @@ type visibleMenuCard struct {
 	Available bool
 }
 
-var menuQuantityPattern = regexp.MustCompile(`(?:可烹饪|库存)\s*(∞|\d+)`)
+var (
+	menuDishQuantityPatterns = []*regexp.Regexp{
+		regexp.MustCompile(`可烹饪(∞|\d+)`),
+		regexp.MustCompile(`Preparable:(∞|\d+)`),
+		regexp.MustCompile(`調理可能：(∞|\d+)`),
+		regexp.MustCompile(`(∞|\d+)조리가능`),
+		regexp.MustCompile(`可烹飪(∞|\d+)`),
+	}
+	menuDrinkQuantityPatterns = []*regexp.Regexp{
+		regexp.MustCompile(`库存(∞|\d+)`),
+		regexp.MustCompile(`Stock:(∞|\d+)`),
+		regexp.MustCompile(`在庫(∞|\d+)`),
+		regexp.MustCompile(`재고(∞|\d+)`),
+		regexp.MustCompile(`庫存(∞|\d+)`),
+	}
+	menuDishQuantityLabels  = []string{"可烹饪", "Preparable:", "調理可能：", "조리 가능", "可烹飪"}
+	menuDrinkQuantityLabels = []string{"库存", "Stock:", "在庫", "재고", "庫存"}
+)
 
 // Visible availability labels locate rows after arbitrary scrolling; partial
 // cards are revisited on an overlapping page instead of using fixed row slots.
@@ -279,13 +296,21 @@ func visibleMenuCards(ctx *maa.Context, img image.Image, kind string) ([]visible
 	if err != nil {
 		return nil, err
 	}
-	prefix := "可烹饪"
+	patterns, labels := menuDishQuantityPatterns, menuDishQuantityLabels
 	if kind == "drink" {
-		prefix = "库存"
+		patterns, labels = menuDrinkQuantityPatterns, menuDrinkQuantityLabels
 	}
 	cards := make([]visibleMenuCard, 0, 8)
 	for _, text := range texts {
-		if !strings.Contains(text.Text, prefix) {
+		normalized := strings.Join(strings.Fields(text.Text), "")
+		labelFound := false
+		for _, label := range labels {
+			if strings.Contains(normalized, strings.Join(strings.Fields(label), "")) {
+				labelFound = true
+				break
+			}
+		}
+		if !labelFound {
 			continue
 		}
 		x := menuCardsX[0]
@@ -298,14 +323,20 @@ func visibleMenuCards(ctx *maa.Context, img image.Image, kind string) ([]visible
 		if icon[1] < 134 || icon[1]+icon[3] > 536 {
 			continue
 		}
-		match := menuQuantityPattern.FindStringSubmatch(strings.ReplaceAll(text.Text, " ", ""))
-		if len(match) != 2 {
+		var quantity string
+		for _, pattern := range patterns {
+			if match := pattern.FindStringSubmatch(normalized); len(match) == 2 {
+				quantity = match[1]
+				break
+			}
+		}
+		if quantity == "" {
 			return nil, fmt.Errorf("menu availability quantity was not recognized: %q", text.Text)
 		}
-		available := match[1] == "∞"
+		available := quantity == "∞"
 		if !available {
-			quantity, _ := strconv.Atoi(match[1])
-			available = quantity > 0
+			count, _ := strconv.Atoi(quantity)
+			available = count > 0
 		}
 		cards = append(cards, visibleMenuCard{Box: maa.Rect{x, y, menuCardWidth, menuCardHeight}, Icon: icon, Available: available})
 	}

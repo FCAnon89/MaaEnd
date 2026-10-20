@@ -21,8 +21,14 @@ const (
 )
 
 var (
-	menuSizeRequirementPattern = regexp.MustCompile(`至少需要(\d+)道菜品和(\d+)种饮品`)
-	menuCardsX                 = [2]int{552, 870}
+	menuSizeRequirementPatterns = []*regexp.Regexp{
+		regexp.MustCompile(`至少需要(\d+)道菜品和(\d+)种饮品`),
+		regexp.MustCompile(`Atleast(\d+)dish\(es\)and(\d+)drink\(s\)`),
+		regexp.MustCompile(`料理：(\d+)品以上、飲み物：(\d+)種類以上`),
+		regexp.MustCompile(`최소(\d+)개의요리와최소(\d+)종의음료가필요합니다\.`),
+		regexp.MustCompile(`至少需要(\d+)道菜品和(\d+)種飲品`),
+	}
+	menuCardsX = [2]int{552, 870}
 )
 
 type MenuInitializeRecognition struct{}
@@ -393,7 +399,12 @@ func appendUnique(values []string, value string) []string {
 
 func parseMenuRequirements(text string) (Level, error) {
 	text = strings.Join(strings.Fields(text), "")
-	sizes := menuSizeRequirementPattern.FindStringSubmatch(text)
+	var sizes []string
+	for _, pattern := range menuSizeRequirementPatterns {
+		if sizes = pattern.FindStringSubmatch(text); len(sizes) == 3 {
+			break
+		}
+	}
 	if len(sizes) != 3 {
 		return Level{}, fmt.Errorf("could not read the visible menu quantities from %q", text)
 	}
@@ -416,4 +427,13 @@ func joinOCR(texts []ocrText) string {
 
 func ocrContains(texts []ocrText, fragment string) bool {
 	return strings.Contains(joinOCR(texts), fragment)
+}
+
+func ocrContainsAny(texts []ocrText, fragments ...string) bool {
+	for _, fragment := range fragments {
+		if ocrContains(texts, fragment) {
+			return true
+		}
+	}
+	return false
 }

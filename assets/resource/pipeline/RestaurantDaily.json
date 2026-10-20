@@ -20,7 +20,11 @@
             44
         ],
         "expected": [
-            "开始经营"
+            "开始经营",
+            "Open the Inn",
+            "営業開始",
+            "운영 시작하기",
+            "開始經營"
         ],
         "pre_delay": 0,
         "action": "ClickKey",
@@ -53,7 +57,11 @@
             35
         ],
         "expected": [
-            "缘缘本色"
+            "缘缘本色",
+            "Yuanyuan Style",
+            "縁縁の本質",
+            "인연 마을 스타일",
+            "緣緣本色"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -71,7 +79,11 @@
             45
         ],
         "expected": [
-            "正式经营"
+            "正式经营",
+            "Open the Inn",
+            "営業開始",
+            "정식 운영",
+            "正式經營"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -103,7 +115,11 @@
             32
         ],
         "expected": [
-            "营业设定"
+            "营业设定",
+            "Inn Settings",
+            "営業管理",
+            "운영 설정",
+            "營業設定"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -122,7 +138,11 @@
             36
         ],
         "expected": [
-            "清空当前人员和菜单设定"
+            "清空当前人员和菜单设定",
+            "Reset all Chefs and Menu Designs",
+            "メンバーとメニューをリセット",
+            "현재 인원 및 메뉴 설정 초기화",
+            "清空目前人員和菜單設定"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -158,7 +178,11 @@
                     42
                 ],
                 "expected": [
-                    "安排干员"
+                    "安排干员",
+                    "Assign Operator",
+                    "メンバー追加",
+                    "오퍼레이터 배치",
+                    "安排幹員"
                 ]
             },
             {
@@ -170,7 +194,11 @@
                     42
                 ],
                 "expected": [
-                    "安排干员"
+                    "安排干员",
+                    "Assign Operator",
+                    "メンバー追加",
+                    "오퍼레이터 배치",
+                    "安排幹員"
                 ]
             },
             {
@@ -182,7 +210,11 @@
                     42
                 ],
                 "expected": [
-                    "安排干员"
+                    "安排干员",
+                    "Assign Operator",
+                    "メンバー追加",
+                    "오퍼레이터 배치",
+                    "安排幹員"
                 ]
             }
         ],
@@ -202,7 +234,11 @@
             44
         ],
         "expected": [
-            "安排干员"
+            "安排干员",
+            "Assign Operator",
+            "メンバー追加",
+            "오퍼레이터 배치",
+            "安排幹員"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -231,7 +267,11 @@
             35
         ],
         "expected": [
-            "厨房进驻干员"
+            "厨房进驻干员",
+            "Operator Chefs",
+            "キッチン配属",
+            "주방에 배치한 오퍼레이터",
+            "廚房進駐幹員"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -333,7 +373,10 @@
             42
         ],
         "expected": [
-            "确认"
+            "确认",
+            "Confirm",
+            "確定",
+            "확인"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -376,7 +419,11 @@
             44
         ],
         "expected": [
-            "安排干员"
+            "安排干员",
+            "Assign Operator",
+            "メンバー追加",
+            "오퍼레이터 배치",
+            "安排幹員"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -405,7 +452,11 @@
             35
         ],
         "expected": [
-            "厨房进驻干员"
+            "厨房进驻干员",
+            "Operator Chefs",
+            "キッチン配属",
+            "주방에 배치한 오퍼레이터",
+            "廚房進駐幹員"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -507,7 +558,10 @@
             42
         ],
         "expected": [
-            "确认"
+            "确认",
+            "Confirm",
+            "確定",
+            "확인"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -550,7 +604,11 @@
             44
         ],
         "expected": [
-            "安排干员"
+            "安排干员",
+            "Assign Operator",
+            "メンバー追加",
+            "오퍼레이터 배치",
+            "安排幹員"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -579,7 +637,11 @@
             35
         ],
         "expected": [
-            "厨房进驻干员"
+            "厨房进驻干员",
+            "Operator Chefs",
+            "キッチン配属",
+            "주방에 배치한 오퍼레이터",
+            "廚房進駐幹員"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -681,7 +743,10 @@
             42
         ],
         "expected": [
-            "确认"
+            "确认",
+            "Confirm",
+            "確定",
+            "확인"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -724,7 +789,11 @@
             41
         ],
         "expected": [
-            "设定菜单"
+            "设定菜单",
+            "Set Menu",
+            "メニューを設定",
+            "메뉴 설정",
+            "設定菜單"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -753,7 +822,11 @@
             32
         ],
         "expected": [
-            "菜单要求"
+            "菜单要求",
+            "Menu REQ",
+            "メニュー要件",
+            "메뉴 요구 사항",
+            "菜單要求"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -858,7 +931,10 @@
             34
         ],
         "expected": [
-            "全部菜品"
+            "全部菜品",
+            "All Dishes",
+            "すべて",
+            "전체 요리"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -1089,7 +1165,11 @@
             34
         ],
         "expected": [
-            "饮品"
+            "饮品",
+            "Drinks",
+            "飲み物",
+            "음료",
+            "飲品"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -1320,7 +1400,11 @@
             45
         ],
         "expected": [
-            "开始经营"
+            "开始经营",
+            "Open the Inn",
+            "営業開始",
+            "운영 시작하기",
+            "開始經營"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -1390,7 +1474,11 @@
             26
         ],
         "expected": [
-            "珍馐产出概率"
+            "珍馐产出概率",
+            "Chance for [Choice]",
+            "極上の出現率",
+            "진수성찬 출현 확률",
+            "珍饈產出機率"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -1487,7 +1575,12 @@
             45
         ],
         "expected": [
-            "经营结束"
+            "经营结束",
+            "End Session",
+            "SESSION ENDED",
+            "営業終了",
+            "운영 종료",
+            "經營結束"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -1505,7 +1598,11 @@
             48
         ],
         "expected": [
-            "继续"
+            "继续",
+            "Continue",
+            "続ける",
+            "계속하기",
+            "繼續"
         ],
         "pre_delay": 0,
         "action": "Click",
@@ -1534,7 +1631,10 @@
             48
         ],
         "expected": [
-            "完成"
+            "完成",
+            "Finish",
+            "完了",
+            "완료"
         ],
         "pre_delay": 0,
         "action": "Click",

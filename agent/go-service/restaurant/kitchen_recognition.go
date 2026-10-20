@@ -80,11 +80,19 @@ func (r *KitchenOperatorsRecognition) Run(ctx *maa.Context, arg *maa.CustomRecog
 }
 
 func kitchenCharacterID(characters []Character, text string) (string, error) {
-	name := strings.TrimPrefix(strings.Join(strings.Fields(text), ""), "大厨")
+	name := strings.Join(strings.Fields(text), "")
 	var selected *Character
 	for index := range characters {
 		character := &characters[index]
-		if character.Names["CN"] != name {
+		matched := false
+		for _, localizedName := range character.Names {
+			localizedName = strings.Join(strings.Fields(localizedName), "")
+			if localizedName != "" && strings.HasSuffix(name, localizedName) {
+				matched = true
+				break
+			}
+		}
+		if !matched {
 			continue
 		}
 		if selected != nil && strings.Join(selected.InnSkillIDs, ",") != strings.Join(character.InnSkillIDs, ",") {
