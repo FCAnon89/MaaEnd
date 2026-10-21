@@ -81,10 +81,12 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 	}
 	var param decisionParam
 	if err := json.Unmarshal([]byte(arg.CustomActionParam), &param); err != nil {
+		log.Error().Err(err).Str("component", "RestaurantDecisionAction").Msg("cannot parse restaurant decision parameters")
 		return false
 	}
 	raw, err := ctx.GetNodeJSON("RestaurantState")
 	if err != nil {
+		log.Error().Err(err).Str("component", "RestaurantDecisionAction").Str("step", param.Step).Msg("cannot read restaurant state node")
 		return false
 	}
 	var node struct {
@@ -93,6 +95,7 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 		} `json:"attach"`
 	}
 	if err = json.Unmarshal([]byte(raw), &node); err != nil {
+		log.Error().Err(err).Str("component", "RestaurantDecisionAction").Str("step", param.Step).Msg("cannot parse restaurant state")
 		return false
 	}
 	state := &node.Attach.State
@@ -631,17 +634,23 @@ type menuCatalog struct {
 }
 
 const (
-	KitchenCount      = 3
-	KitchenQueueSize  = 3
-	CounterTrayCount  = 8
+	// KitchenCount is the number of kitchens available during daily operation.
+	KitchenCount = 3
+	// KitchenQueueSize includes the cooking dish and the dishes waiting behind it.
+	KitchenQueueSize = 3
+	// CounterTrayCount is the maximum number of cooked dishes held at the counter.
+	CounterTrayCount = 8
+	// PrestockTrayLimit is the tray budget for one reserve portion per selected dish.
 	PrestockTrayLimit = 6
 )
 
+// OrderPointKey identifies one meal slot at a table.
 type OrderPointKey struct {
 	Table int `json:"table"`
 	Point int `json:"point"`
 }
 
+// OrderPoint records the observed item and delivery state of a table's meal slot.
 type OrderPoint struct {
 	Key    OrderPointKey `json:"key"`
 	ItemID string        `json:"item_id"`
@@ -649,17 +658,20 @@ type OrderPoint struct {
 	Served bool          `json:"served"`
 }
 
+// GameSnapshot contains observed table orders and dishes marked for restocking.
 type GameSnapshot struct {
 	Points       []OrderPoint `json:"points"`
 	NeedsRestock []string     `json:"needs_restock"`
 }
 
+// Dispatch records a dish assignment and whether its enqueue result is uncertain.
 type Dispatch struct {
 	DishID    string `json:"dish_id"`
 	Kitchen   int    `json:"kitchen"`
 	Uncertain bool   `json:"uncertain,omitempty"`
 }
 
+// Ledger tracks kitchen queues, counter stock, table orders, and the pending dispatch.
 type Ledger struct {
 	Kitchens [KitchenCount][]string
 	Counter  map[string]int
