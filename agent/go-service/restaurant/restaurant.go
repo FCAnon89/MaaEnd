@@ -100,7 +100,7 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 	}
 	state := &node.Attach.State
 	patch := make(map[string]any)
-	observed := observationHits(ctx.GetTasker(), arg.RecognitionDetail)
+	observed := observationHits(arg.RecognitionDetail)
 	switch param.Step {
 	case "requirements":
 		err = prepareMenu(state, arg.RecognitionDetail)
@@ -161,22 +161,13 @@ func findDetail(detail *maa.RecognitionDetail, name string) *maa.RecognitionDeta
 	return nil
 }
 
-// CombinedResult children omit Hit in maa-framework-go beta.19. Resolve their
-// current recognition IDs instead of treating the zero value as a failed match.
-func observationHits(tasker *maa.Tasker, detail *maa.RecognitionDetail) func(string) bool {
-	cache := make(map[int64]bool)
+// CombinedResult children omit Hit in maa-framework-go beta.19. The restaurant
+// nodes queried here return nonempty boxes on a hit; failed matches have no box.
+// Read that result locally instead of fetching their Raw and Draws images again.
+func observationHits(detail *maa.RecognitionDetail) func(string) bool {
 	return func(name string) bool {
 		result := findDetail(detail, name)
-		if result == nil || tasker == nil {
-			return false
-		}
-		if value, found := cache[result.ID]; found {
-			return value
-		}
-		actual, err := tasker.GetRecognitionDetail(result.ID)
-		matched := err == nil && actual != nil && actual.Hit
-		cache[result.ID] = matched
-		return matched
+		return result != nil && result.Box[2] > 0 && result.Box[3] > 0
 	}
 }
 
