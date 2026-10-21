@@ -8,7 +8,6 @@ from typing import Any
 from ..utils.game_data import as_text, read_table_cfg, ref_texts
 from .base import Dataset, DatasetError
 
-
 # 日常经营界面的流行趋势说明：每匹配一条热门信息，额外获得 10% 赏钱。
 POPULARITY_TIP_RATE = 0.1
 
