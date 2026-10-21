@@ -78,6 +78,7 @@
                 "PipelineOverrideAction",
                 "PostStop",
                 "PullCountCalculatorAction",
+                "RestaurantDecisionAction",
                 "PuzzleAction",
                 "SeizeDeliveryJobsResetScanStateAction",
                 "SeizeDeliveryJobsScanTargetAction",
@@ -342,7 +343,66 @@
 				},
 				"required": [ "custom_action_param" ]
 			}
-		}
+		},
+        {
+            "if": {
+                "type": "object",
+                "required": [
+                    "custom_action"
+                ],
+                "properties": {
+                    "custom_action": {
+                        "const": "RestaurantDecisionAction"
+                    }
+                }
+            },
+            "then": {
+                "type": "object",
+                "required": [
+                    "custom_action_param"
+                ],
+                "properties": {
+                    "custom_action_param": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "step"
+                        ],
+                        "properties": {
+                            "step": {
+                                "enum": [
+                                    "operators",
+                                    "requirements",
+                                    "menu_page",
+                                    "menu_card",
+                                    "menu_confirm",
+                                    "runtime",
+                                    "dispatch",
+                                    "verify"
+                                ]
+                            },
+                            "kind": {
+                                "enum": [
+                                    "dish",
+                                    "drink"
+                                ]
+                            },
+                            "kitchen": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 3
+                            },
+                            "view": {
+                                "enum": [
+                                    "picker",
+                                    "setup"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
 	],
     "if": {
         "type": "object",

@@ -1,15 +1,80 @@
 {
     "RestaurantMenuInitialize": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuInitializeRecognition",
+        "recognition": "DirectHit",
         "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "RestaurantState": {
+                    "attach": {
+                        "state": null
+                    }
+                },
+                "RestaurantMenuSelectDishIsAtTop": {
+                    "attach": {
+                        "ready": false
+                    }
+                },
+                "RestaurantMenuSelectDishIsAtBottom": {
+                    "attach": {
+                        "ready": false
+                    }
+                },
+                "RestaurantMenuSelectDrinkIsAtTop": {
+                    "attach": {
+                        "ready": false
+                    }
+                },
+                "RestaurantMenuSelectDrinkIsAtBottom": {
+                    "attach": {
+                        "ready": false
+                    }
+                },
+                "RestaurantMenuDishesComplete": {
+                    "enabled": false
+                },
+                "RestaurantMenuDrinksComplete": {
+                    "enabled": false
+                },
+                "RestaurantMenuClickCard": {
+                    "enabled": false
+                },
+                "RestaurantMenuReadCard": {
+                    "enabled": false
+                },
+                "RestaurantMenuDishPageEnd": {
+                    "enabled": false
+                },
+                "RestaurantMenuDrinkPageEnd": {
+                    "enabled": false
+                },
+                "RestaurantRuntimeFailure": {
+                    "enabled": false
+                },
+                "RestaurantRuntimeSwitchKitchen": {
+                    "enabled": false
+                },
+                "RestaurantRuntimeLocateDish": {
+                    "enabled": false
+                },
+                "RestaurantRuntimeWaitQueue": {
+                    "enabled": false
+                },
+                "RestaurantRuntimeReturn": {
+                    "enabled": false
+                },
+                "RestaurantRuntimeIdle": {
+                    "enabled": false
+                }
+            }
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
             "RestaurantOpenDailyTheme",
             "RestaurantEnterCounterStart"
-        ],
-        "attach": {}
+        ]
     },
     "RestaurantEnterCounterStart": {
         "recognition": "OCR",
@@ -397,17 +462,26 @@
         ]
     },
     "RestaurantKitchen1Assigned": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
-        "custom_recognition_param": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantKitchen1Operator1NameOCR",
+            "RestaurantKitchen1Operator2NameOCR"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "operators",
             "kitchen": 1,
             "view": "setup"
         },
-        "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
             "RestaurantOpenKitchen2"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantOpenKitchen2": {
@@ -582,17 +656,26 @@
         ]
     },
     "RestaurantKitchen2Assigned": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
-        "custom_recognition_param": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantKitchen2Operator1NameOCR",
+            "RestaurantKitchen2Operator2NameOCR"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "operators",
             "kitchen": 2,
             "view": "setup"
         },
-        "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
             "RestaurantOpenKitchen3"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantOpenKitchen3": {
@@ -767,17 +850,26 @@
         ]
     },
     "RestaurantKitchen3Assigned": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
-        "custom_recognition_param": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantKitchen3Operator1NameOCR",
+            "RestaurantKitchen3Operator2NameOCR"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "operators",
             "kitchen": 3,
             "view": "setup"
         },
-        "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
             "RestaurantOpenMenu"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantOpenMenu": {
@@ -877,51 +969,6 @@
         ],
         "count": 30
     },
-    "RestaurantPlanMenu": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuPlanRecognition",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuPlanFailure",
-            "RestaurantMenuSelectDishTab"
-        ],
-        "attach": {
-            "plan": null,
-            "error": ""
-        }
-    },
-    "RestaurantMenuPlanFailure": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuPlanFailureRecognition",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ]
-    },
-    "RestaurantMenuSelectionFailure": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionFailureRecognition",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ]
-    },
-    "RestaurantMenuSelectionFailureAfterAttempt": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionFailureRecognition",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ]
-    },
     "RestaurantMenuSelectDishTab": {
         "recognition": "OCR",
         "roi": [
@@ -1019,81 +1066,29 @@
         ]
     },
     "RestaurantMenuSelectDishLoop": {
-        "recognition": "DirectHit",
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuAvailabilityOCR"
+        ],
         "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectionFailure",
-            "RestaurantMenuSelectionCompleteDishes",
-            "RestaurantMenuSelectDishNext",
-            "RestaurantMenuSelectionFailureAfterAttempt",
-            "RestaurantMenuSelectionCompleteDishAfterAttempt",
-            "RestaurantMenuSelectDishIsAtBottom",
-            "RestaurantMenuSelectDishScrollDown"
-        ]
-    },
-    "RestaurantMenuSelectDishNext": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuNextSelectionRecognition",
-        "custom_recognition_param": {
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "menu_page",
             "kind": "dish"
         },
-        "pre_delay": 0,
-        "action": "Click",
-        "post_wait_freezes": {
-            "time": 350,
-            "target": [
-                551,
-                133,
-                641,
-                403
-            ],
-            "timeout": 3000
-        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantMenuSelectDishVerify"
-        ]
-    },
-    "RestaurantMenuSelectDishVerify": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionVerifiedRecognition",
-        "custom_recognition_param": {
-            "kind": "dish"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDishLoop"
-        ]
-    },
-    "RestaurantMenuSelectionCompleteDishes": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
-        "custom_recognition_param": {
-            "kind": "dish"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDrinkTab"
-        ]
-    },
-    "RestaurantMenuSelectionCompleteDishAfterAttempt": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
-        "custom_recognition_param": {
-            "kind": "dish"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDrinkTab"
+            "RestaurantMenuDishesComplete",
+            "RestaurantMenuDrinksComplete",
+            "RestaurantMenuClickCard",
+            "RestaurantMenuReadCard",
+            "RestaurantMenuDishPageEnd",
+            "RestaurantMenuDrinkPageEnd"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantMenuSelectDishIsAtBottom": {
@@ -1117,19 +1112,6 @@
         "attach": {
             "ready": false
         }
-    },
-    "RestaurantMenuDishSelectionIncomplete": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionBottomRecognition",
-        "custom_recognition_param": {
-            "kind": "dish"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ]
     },
     "RestaurantMenuSelectDishScrollDown": {
         "recognition": "DirectHit",
@@ -1254,81 +1236,29 @@
         ]
     },
     "RestaurantMenuSelectDrinkLoop": {
-        "recognition": "DirectHit",
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuAvailabilityOCR"
+        ],
         "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectionFailure",
-            "RestaurantMenuSelectionCompleteDrinks",
-            "RestaurantMenuSelectDrinkNext",
-            "RestaurantMenuSelectionFailureAfterAttempt",
-            "RestaurantMenuSelectionCompleteDrinkAfterAttempt",
-            "RestaurantMenuSelectDrinkIsAtBottom",
-            "RestaurantMenuSelectDrinkScrollDown"
-        ]
-    },
-    "RestaurantMenuSelectDrinkNext": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuNextSelectionRecognition",
-        "custom_recognition_param": {
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "menu_page",
             "kind": "drink"
         },
-        "pre_delay": 0,
-        "action": "Click",
-        "post_wait_freezes": {
-            "time": 350,
-            "target": [
-                551,
-                133,
-                641,
-                403
-            ],
-            "timeout": 3000
-        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantMenuSelectDrinkVerify"
-        ]
-    },
-    "RestaurantMenuSelectDrinkVerify": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionVerifiedRecognition",
-        "custom_recognition_param": {
-            "kind": "drink"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDrinkLoop"
-        ]
-    },
-    "RestaurantMenuSelectionCompleteDrinks": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
-        "custom_recognition_param": {
-            "kind": "drink"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuStartBusiness"
-        ]
-    },
-    "RestaurantMenuSelectionCompleteDrinkAfterAttempt": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionCompleteRecognition",
-        "custom_recognition_param": {
-            "kind": "drink"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuStartBusiness"
+            "RestaurantMenuDishesComplete",
+            "RestaurantMenuDrinksComplete",
+            "RestaurantMenuClickCard",
+            "RestaurantMenuReadCard",
+            "RestaurantMenuDishPageEnd",
+            "RestaurantMenuDrinkPageEnd"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantMenuSelectDrinkIsAtBottom": {
@@ -1352,19 +1282,6 @@
         "attach": {
             "ready": false
         }
-    },
-    "RestaurantMenuDrinkSelectionIncomplete": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantMenuSelectionBottomRecognition",
-        "custom_recognition_param": {
-            "kind": "drink"
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ]
     },
     "RestaurantMenuSelectDrinkScrollDown": {
         "recognition": "DirectHit",
@@ -1496,74 +1413,7 @@
             "RestaurantGameEnded",
             "RestaurantSettlementContinue",
             "RestaurantSettlementComplete",
-            "RestaurantRuntimeFailure",
-            "RestaurantRuntimeVerifyDispatch",
-            "RestaurantRuntimeNextDish",
-            "RestaurantRuntimeNextKitchen",
-            "RestaurantRuntimeIdle"
-        ]
-    },
-    "RestaurantRuntimeNextKitchen": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantRuntimeNextKitchenRecognition",
-        "pre_delay": 0,
-        "action": "LongPress",
-        "duration": 100,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantGameEnded",
-            "RestaurantRuntimeNextDish",
-            "RestaurantRuntimeFailure",
-            "RestaurantRuntimeIdle"
-        ],
-        "attach": {
-            "state": null
-        }
-    },
-    "RestaurantRuntimeNextDish": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantRuntimeNextDishRecognition",
-        "pre_delay": 0,
-        "action": "LongPress",
-        "duration": 100,
-        "post_wait_freezes": {
-            "time": 200,
-            "target": [
-                210,
-                504,
-                240,
-                74
-            ],
-            "timeout": 2000
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantGameEnded",
-            "RestaurantRuntimeVerifyDispatch",
-            "RestaurantRuntimeFailure",
-            "RestaurantRuntimeIdle"
-        ]
-    },
-    "RestaurantRuntimeVerifyDispatch": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantRuntimeVerifyDispatchRecognition",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantRuntimeLoop"
-        ]
-    },
-    "RestaurantRuntimeFailure": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantRuntimeFailureRecognition",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
+            "RestaurantRuntimeObserve"
         ]
     },
     "RestaurantGameEnded": {
@@ -1605,7 +1455,12 @@
             "繼續"
         ],
         "pre_delay": 0,
-        "action": "Click",
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "RestaurantSettlementContinue"
+        },
         "post_wait_freezes": {
             "time": 400,
             "target": [
@@ -1637,7 +1492,12 @@
             "완료"
         ],
         "pre_delay": 0,
-        "action": "Click",
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "RestaurantSettlementComplete"
+        },
         "post_wait_freezes": {
             "time": 400,
             "target": [
@@ -1655,48 +1515,76 @@
         ]
     },
     "RestaurantKitchen1ReadOperators": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
-        "custom_recognition_param": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantKitchenPickerOperator1NameOCR",
+            "RestaurantKitchenPickerOperator2NameOCR"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "operators",
             "kitchen": 1,
             "view": "picker"
         },
-        "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
             "RestaurantKitchen1Confirm"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantKitchen2ReadOperators": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
-        "custom_recognition_param": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantKitchenPickerOperator1NameOCR",
+            "RestaurantKitchenPickerOperator2NameOCR"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "operators",
             "kitchen": 2,
             "view": "picker"
         },
-        "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
             "RestaurantKitchen2Confirm"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantKitchen3ReadOperators": {
-        "recognition": "Custom",
-        "custom_recognition": "RestaurantKitchenOperatorsRecognition",
-        "custom_recognition_param": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantKitchenPickerOperator1NameOCR",
+            "RestaurantKitchenPickerOperator2NameOCR"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "operators",
             "kitchen": 3,
             "view": "picker"
         },
-        "pre_delay": 0,
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
             "RestaurantKitchen3Confirm"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantRuntimeIdle": {
+        "enabled": false,
         "recognition": "DirectHit",
         "pre_delay": 0,
         "post_delay": 0,
@@ -1715,6 +1603,321 @@
         "rate_limit": 0,
         "next": [
             "StopNode"
+        ]
+    },
+    "RestaurantPlanMenu": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuRequirementOCR"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "requirements"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishTab"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuDishesComplete": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkTab"
+        ]
+    },
+    "RestaurantMenuDishPageEnd": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDishIsAtBottom",
+            "RestaurantMenuSelectDishScrollDown"
+        ]
+    },
+    "RestaurantMenuDishSelectionIncomplete": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuDrinksComplete": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuStartBusiness"
+        ]
+    },
+    "RestaurantMenuDrinkPageEnd": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuSelectDrinkIsAtBottom",
+            "RestaurantMenuSelectDrinkScrollDown"
+        ]
+    },
+    "RestaurantMenuDrinkSelectionIncomplete": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuReadCard": {
+        "enabled": false,
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuCardFacts"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "menu_card"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuDishesComplete",
+            "RestaurantMenuDrinksComplete",
+            "RestaurantMenuClickCard",
+            "RestaurantMenuReadCard",
+            "RestaurantMenuDishPageEnd",
+            "RestaurantMenuDrinkPageEnd"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantMenuClickCard": {
+        "enabled": false,
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuCardAnchor",
+            "RestaurantMenuPendingIcon"
+        ],
+        "box_index": 1,
+        "pre_delay": 0,
+        "action": "Click",
+        "target": "RestaurantMenuCardAnchor",
+        "target_offset": [
+            230,
+            46,
+            -306,
+            -92
+        ],
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuConfirmCard"
+        ]
+    },
+    "RestaurantMenuConfirmCard": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantMenuCardAnchor",
+            "RestaurantMenuPendingIcon",
+            "RestaurantMenuCardSelected"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "menu_confirm"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuDishesComplete",
+            "RestaurantMenuDrinksComplete",
+            "RestaurantMenuClickCard",
+            "RestaurantMenuReadCard",
+            "RestaurantMenuDishPageEnd",
+            "RestaurantMenuDrinkPageEnd"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantRuntimeObserve": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantRuntimeFullFrame"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "runtime"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantRuntimeFailure",
+            "RestaurantRuntimeSwitchKitchen",
+            "RestaurantRuntimeLocateDish",
+            "RestaurantRuntimeWaitQueue",
+            "RestaurantRuntimeReturn",
+            "RestaurantRuntimeIdle"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantRuntimeSwitchKitchen": {
+        "enabled": false,
+        "recognition": "And",
+        "all_of": [
+            "RestaurantRuntimeSelectedKitchen"
+        ],
+        "pre_delay": 0,
+        "action": "LongPress",
+        "target": "RestaurantKitchen1Tab",
+        "duration": 100,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantRuntimeObserve"
+        ]
+    },
+    "RestaurantRuntimeLocateDish": {
+        "enabled": false,
+        "recognition": "And",
+        "all_of": [
+            "RestaurantRuntimeTargetKitchen",
+            "RestaurantRuntimeTargetDish"
+        ],
+        "box_index": 1,
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "dispatch"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantRuntimeClickDish"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantRuntimeClickDish": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantRuntimeTargetKitchen",
+            "RestaurantRuntimeClickDishIcon"
+        ],
+        "box_index": 1,
+        "pre_delay": 0,
+        "action": "LongPress",
+        "duration": 100,
+        "post_wait_freezes": {
+            "time": 200,
+            "target": [
+                210,
+                504,
+                240,
+                74
+            ],
+            "timeout": 2000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantRuntimeVerifyDispatch"
+        ]
+    },
+    "RestaurantRuntimeVerifyDispatch": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantRuntimeDispatchFrame"
+        ],
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "verify"
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantRuntimeFailure",
+            "RestaurantRuntimeSwitchKitchen",
+            "RestaurantRuntimeLocateDish",
+            "RestaurantRuntimeWaitQueue",
+            "RestaurantRuntimeReturn",
+            "RestaurantRuntimeIdle"
+        ],
+        "on_error": [
+            "FailedNode"
+        ]
+    },
+    "RestaurantRuntimeWaitQueue": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 250,
+        "next": [
+            "RestaurantGameEnded",
+            "RestaurantRuntimeVerifyDispatch"
+        ]
+    },
+    "RestaurantRuntimeReturn": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantRuntimeLoop"
+        ]
+    },
+    "RestaurantRuntimeFailure": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
         ]
     }
 }
