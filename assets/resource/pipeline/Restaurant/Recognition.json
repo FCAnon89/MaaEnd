@@ -16,8 +16,7 @@
             171,
             367,
             58
-        ],
-        "only_rec": false
+        ]
     },
     "RestaurantMenuAvailabilityOCR": {
         "recognition": "OCR",
@@ -138,25 +137,7 @@
                     "RestaurantObservationEmpty"
                 ]
             }
-        ],
-        "box_index": 1
-    },
-    "RestaurantKitchen1Tab": {
-        "recognition": "ColorMatch",
-        "roi": [
-            174,
-            145,
-            209,
-            46
-        ],
-        "method": 6,
-        "lower": [
-            0
-        ],
-        "upper": [
-            255
-        ],
-        "count": 1
+        ]
     },
     "RestaurantKitchen1Selected": {
         "recognition": "ColorMatch",
@@ -342,23 +323,6 @@
             "RestaurantKitchen1Count3"
         ]
     },
-    "RestaurantKitchen2Tab": {
-        "recognition": "ColorMatch",
-        "roi": [
-            386,
-            145,
-            217,
-            46
-        ],
-        "method": 6,
-        "lower": [
-            0
-        ],
-        "upper": [
-            255
-        ],
-        "count": 1
-    },
     "RestaurantKitchen2Selected": {
         "recognition": "ColorMatch",
         "roi": [
@@ -542,23 +506,6 @@
             "RestaurantKitchen2Count2",
             "RestaurantKitchen2Count3"
         ]
-    },
-    "RestaurantKitchen3Tab": {
-        "recognition": "ColorMatch",
-        "roi": [
-            605,
-            145,
-            220,
-            46
-        ],
-        "method": 6,
-        "lower": [
-            0
-        ],
-        "upper": [
-            255
-        ],
-        "count": 1
     },
     "RestaurantKitchen3Selected": {
         "recognition": "ColorMatch",
@@ -4283,12 +4230,6 @@
             220,
             66,
             66
-        ]
-    },
-    "RestaurantRuntimeDispatchFrame": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRuntimeQueueCounts"
         ]
     },
     "RestaurantRuntimeFullFrame": {

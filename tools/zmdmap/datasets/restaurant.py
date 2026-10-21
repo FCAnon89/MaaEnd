@@ -16,7 +16,6 @@ class Restaurant(Dataset):
 
     @classmethod
     def build(cls, table_cfg_dir: Path, json_data_dir: Path) -> dict[str, Any]:
-        del json_data_dir
         return {
             "dishes": list(read_table_cfg(table_cfg_dir, "InnDishTable")),
             "drinks": list(read_table_cfg(table_cfg_dir, "InnDrinkTable")),

@@ -187,16 +187,9 @@ func readOCR(detail *maa.RecognitionDetail, name string) []ocrText {
 	if detail == nil || detail.Results == nil {
 		return nil
 	}
-	results := detail.Results.Filtered
-	if len(results) == 0 {
-		results = detail.Results.All
-	}
-	if len(results) == 0 && detail.Results.Best != nil {
-		results = []*maa.RecognitionResult{detail.Results.Best}
-	}
 	var texts []ocrText
 	seen := make(map[string]bool)
-	for _, result := range results {
+	for _, result := range detail.Results.Filtered {
 		if result == nil {
 			continue
 		}
@@ -263,7 +256,7 @@ func prepareMenu(state *session, detail *maa.RecognitionDetail) error {
 		}
 		dishes, _ := strconv.Atoi(sizes[1])
 		drinks, _ := strconv.Atoi(sizes[2])
-		if dishes <= 0 || dishes > PrestockTrayLimit || drinks < 0 {
+		if dishes <= 0 || dishes > PrestockTrayLimit {
 			return fmt.Errorf("invalid menu quantities %q", text)
 		}
 		state.Menu = menuState{MinimumDishes: dishes, MinimumDrinks: drinks}
@@ -371,11 +364,7 @@ func nextMenuCard(state *session, patch map[string]any) error {
 	}
 	if selected >= required {
 		if menu.Kind == "drink" {
-			ledger, err := NewLedger(menu.Dishes, menu.Drinks)
-			if err != nil {
-				return err
-			}
-			state.Runtime = &runtimeState{Ledger: *ledger}
+			state.Runtime = &runtimeState{Ledger: newLedger(menu.Dishes, menu.Drinks)}
 			dishes := append([]string(nil), menu.Dishes...)
 			all := append(append([]string(nil), dishes...), menu.Drinks...)
 			for table := 1; table <= 6; table++ {
@@ -440,48 +429,27 @@ func readKitchenView(observed func(string) bool) (kitchenQueueView, error) {
 	return view, nil
 }
 
-func readRuntimeFrame(detail *maa.RecognitionDetail, observed func(string) bool, state *runtimeState, full bool) (GameSnapshot, error) {
-	if !full {
-		points := make([]OrderPoint, 0, len(state.Ledger.Points))
-		for _, point := range state.Ledger.Points {
-			points = append(points, point)
-		}
-		return GameSnapshot{Known: len(points) == 12, Points: points}, nil
-	}
-	snapshot := GameSnapshot{Known: true, Complete: true}
-	var firstErr error
+func readRuntimeFrame(detail *maa.RecognitionDetail, observed func(string) bool, state *runtimeState) (GameSnapshot, error) {
+	var snapshot GameSnapshot
 	for table := 1; table <= 6; table++ {
 		points, err := readTablePoints(detail, observed, table, state)
 		if err != nil {
-			snapshot.Complete = false
-			if firstErr == nil {
-				firstErr = err
-			}
-			points = make([]OrderPoint, 2)
-			for point := 1; point <= 2; point++ {
-				previous, found := state.Ledger.Points[orderPointStorageKey(OrderPointKey{Table: table, Point: point})]
-				snapshot.Known = snapshot.Known && found
-				points[point-1] = previous
-			}
+			return GameSnapshot{}, err
 		}
 		snapshot.Points = append(snapshot.Points, points...)
 	}
-	if snapshot.Complete {
-		for slot := 1; slot <= 6; slot++ {
-			prefix := fmt.Sprintf("RestaurantRecipe%d", slot)
-			if !observed(prefix + "RestockMarker") {
-				continue
-			}
-			id, err := readIcon(detail, prefix+"Icon")
-			if err != nil || id == "" {
-				snapshot.Complete = false
-				firstErr = fmt.Errorf("supplement marker has an unrecognized dish: %v", err)
-				break
-			}
-			snapshot.NeedsRestock = append(snapshot.NeedsRestock, id)
+	for slot := 1; slot <= 6; slot++ {
+		prefix := fmt.Sprintf("RestaurantRecipe%d", slot)
+		if !observed(prefix + "RestockMarker") {
+			continue
 		}
+		id, err := readIcon(detail, prefix+"Icon")
+		if err != nil || id == "" {
+			return GameSnapshot{}, fmt.Errorf("supplement marker has an unrecognized dish: %v", err)
+		}
+		snapshot.NeedsRestock = append(snapshot.NeedsRestock, id)
 	}
-	return snapshot, firstErr
+	return snapshot, nil
 }
 
 func readTablePoints(detail *maa.RecognitionDetail, observed func(string) bool, table int, state *runtimeState) ([]OrderPoint, error) {
@@ -536,28 +504,22 @@ func decideRuntime(state *session, detail *maa.RecognitionDetail, observed func(
 		return fmt.Errorf("runtime ledger is missing")
 	}
 	ledger := &current.Ledger
-	if verify && ledger.Pending == nil {
-		route(patch, runtimeRoutes, "RestaurantRuntimeReturn")
-		return nil
-	}
 	view, err := readKitchenView(observed)
 	added := false
 	if err == nil {
 		added, err = ledger.observeQueues(view, detail, verify)
 	}
-	full := observed("RestaurantRuntimeFullFrame")
-	snapshot, frameErr := readRuntimeFrame(detail, observed, current, full)
-	if snapshot.Known {
-		if tableErr := ledger.observeTables(snapshot); err == nil {
-			err = tableErr
+	if observed("RestaurantRuntimeFullFrame") {
+		snapshot, frameErr := readRuntimeFrame(detail, observed, current)
+		if frameErr == nil {
+			frameErr = ledger.observeTables(snapshot)
 		}
-	}
-	if err == nil {
-		err = frameErr
-	}
-	if err == nil && !verify && snapshot.Complete {
-		// No click is pending during this route; use the latest three queue lengths.
-		ledger.Pending = ledger.suggestDispatch(snapshot.NeedsRestock)
+		if err == nil {
+			err = frameErr
+		}
+		if err == nil && !verify {
+			ledger.Pending = ledger.suggestDispatch(snapshot.NeedsRestock)
+		}
 	}
 	if err != nil {
 		if current.PauseReason != err.Error() {
@@ -581,12 +543,12 @@ func decideRuntime(state *session, detail *maa.RecognitionDetail, observed func(
 		return nil
 	}
 	pending := ledger.Pending
-	if pending == nil || ledger.counterCount() >= CounterTrayCount {
+	if pending == nil {
 		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
 		return nil
 	}
 	// A confirmed failed click may be retried in the newly shortest kitchen.
-	next := ledger.makeDispatch(pending.DishID, pending.Prestock)
+	next := ledger.makeDispatch(pending.DishID)
 	if next == nil {
 		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
 		return nil
@@ -594,9 +556,7 @@ func decideRuntime(state *session, detail *maa.RecognitionDetail, observed func(
 	ledger.Pending = next
 	setDispatchTarget(next, patch)
 	if view.Selected != next.Kitchen {
-		if err := configureKitchenSwitch(patch, next.Kitchen); err != nil {
-			return err
-		}
+		route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeSwitchKitchen%d", next.Kitchen))
 	} else {
 		route(patch, runtimeRoutes, "RestaurantRuntimeLocateDish")
 	}
@@ -608,14 +568,6 @@ func setDispatchTarget(dispatch *Dispatch, patch map[string]any) {
 	for slot := 1; slot <= 6; slot++ {
 		iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot), []string{dispatch.DishID})
 	}
-}
-
-func configureKitchenSwitch(patch map[string]any, kitchen int) error {
-	if kitchen < 1 || kitchen > KitchenCount {
-		return fmt.Errorf("invalid target kitchen %d", kitchen)
-	}
-	route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeSwitchKitchen%d", kitchen))
-	return nil
 }
 
 func recipeClickSlot(observed func(string) bool) (int, error) {
@@ -642,7 +594,7 @@ func prepareDispatch(state *session, detail *maa.RecognitionDetail, observed fun
 		return err
 	}
 	pending := current.Ledger.Pending
-	pending = current.Ledger.makeDispatch(pending.DishID, pending.Prestock)
+	pending = current.Ledger.makeDispatch(pending.DishID)
 	current.Ledger.Pending = pending
 	if pending == nil {
 		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
@@ -650,7 +602,8 @@ func prepareDispatch(state *session, detail *maa.RecognitionDetail, observed fun
 	}
 	if pending.Kitchen != view.Selected {
 		setDispatchTarget(pending, patch)
-		return configureKitchenSwitch(patch, pending.Kitchen)
+		route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeSwitchKitchen%d", pending.Kitchen))
+		return nil
 	}
 	iconCandidates(patch, "RestaurantRuntimeClickDishIcon", []string{pending.DishID})
 	patch["RestaurantRuntimeClickDishIcon"].(map[string]any)["roi"] = box
@@ -658,8 +611,8 @@ func prepareDispatch(state *session, detail *maa.RecognitionDetail, observed fun
 	for _, queue := range current.Ledger.Kitchens {
 		portions += len(queue)
 	}
-	frame := "RestaurantRuntimeDispatchFrame"
-	if current.PauseReason != "" || portions >= CounterTrayCount {
+	frame := "RestaurantRuntimeQueueCounts"
+	if portions >= CounterTrayCount {
 		frame = "RestaurantRuntimeFullFrame"
 	}
 	clickSlot, err := recipeClickSlot(observed)
@@ -697,8 +650,6 @@ type OrderPoint struct {
 }
 
 type GameSnapshot struct {
-	Known        bool         `json:"known"`
-	Complete     bool         `json:"complete"`
 	Points       []OrderPoint `json:"points"`
 	NeedsRestock []string     `json:"needs_restock"`
 }
@@ -706,7 +657,6 @@ type GameSnapshot struct {
 type Dispatch struct {
 	DishID    string `json:"dish_id"`
 	Kitchen   int    `json:"kitchen"`
-	Prestock  bool   `json:"prestock"`
 	Uncertain bool   `json:"uncertain,omitempty"`
 }
 
@@ -720,11 +670,8 @@ type Ledger struct {
 	Pending  *Dispatch
 }
 
-func NewLedger(dishes, drinks []string) (*Ledger, error) {
-	if len(dishes) == 0 || len(dishes) > PrestockTrayLimit {
-		return nil, fmt.Errorf("dish menu size %d is outside 1..%d", len(dishes), PrestockTrayLimit)
-	}
-	ledger := &Ledger{
+func newLedger(dishes, drinks []string) Ledger {
+	ledger := Ledger{
 		Counter:  make(map[string]int),
 		Dishes:   append([]string(nil), dishes...),
 		DishIDs:  make(map[string]struct{}, len(dishes)),
@@ -732,21 +679,12 @@ func NewLedger(dishes, drinks []string) (*Ledger, error) {
 		Points:   make(map[string]OrderPoint),
 	}
 	for _, dishID := range dishes {
-		if dishID == "" {
-			return nil, fmt.Errorf("menu contains an empty dish ID")
-		}
-		if _, exists := ledger.DishIDs[dishID]; exists {
-			return nil, fmt.Errorf("menu contains duplicate dish %q", dishID)
-		}
 		ledger.DishIDs[dishID] = struct{}{}
 	}
 	for _, drinkID := range drinks {
-		if drinkID == "" {
-			return nil, fmt.Errorf("menu contains an empty drink ID")
-		}
 		ledger.DrinkIDs[drinkID] = struct{}{}
 	}
-	return ledger, nil
+	return ledger
 }
 
 // A queue may lose only a known FIFO prefix, and a verified click may add one
@@ -775,9 +713,6 @@ func (l *Ledger) observeQueues(view kitchenQueueView, detail *maa.RecognitionDet
 queues:
 	for kitchen, count := range view.Counts {
 		queue := l.Kitchens[kitchen]
-		if count < 0 || count > KitchenQueueSize {
-			return false, fmt.Errorf("invalid kitchen %d queue count %d", kitchen+1, count)
-		}
 		removed[kitchen] = len(queue) - count
 		if verify && l.Pending != nil && l.Pending.Kitchen == kitchen+1 {
 			if view.Selected != kitchen+1 {
@@ -800,13 +735,14 @@ queues:
 				}
 				visible = append(visible, id)
 			}
-			var err error
-			removed[kitchen], added, err = queueProgress(queue, count, visible, l.Pending.DishID)
+			completed, accepted, err := queueProgress(queue, count, visible, l.Pending.DishID)
 			if err != nil {
 				l.Pending.Uncertain = true
-				removed[kitchen] = max(0, len(queue)-count)
 				queueErr = err
-			} else if l.Pending.Uncertain && !added && count == 0 {
+				continue
+			}
+			removed[kitchen], added = completed, accepted
+			if l.Pending.Uncertain && !added && count == 0 {
 				// Later empty slots do not prove that an earlier ambiguous click failed.
 				queueErr = errAmbiguousQueue
 			} else if !added {
@@ -833,12 +769,16 @@ queues:
 }
 
 func (l *Ledger) observeTables(snapshot GameSnapshot) error {
-	if !snapshot.Known || len(snapshot.Points) != 12 {
-		return fmt.Errorf("table or menu state is uncertain")
-	}
-	current, err := validatePoints(snapshot.Points, l.DishIDs, l.DrinkIDs)
-	if err != nil {
-		return err
+	current := make(map[string]OrderPoint, len(snapshot.Points))
+	for _, point := range snapshot.Points {
+		if point.Exists {
+			if _, dish := l.DishIDs[point.ItemID]; !dish {
+				if _, drink := l.DrinkIDs[point.ItemID]; !drink {
+					return fmt.Errorf("table point %d/%d has unselected item %q", point.Key.Table, point.Key.Point, point.ItemID)
+				}
+			}
+		}
+		current[orderPointStorageKey(point.Key)] = point
 	}
 	for _, dishID := range snapshot.NeedsRestock {
 		if _, selected := l.DishIDs[dishID]; !selected {
@@ -877,42 +817,11 @@ func (l *Ledger) observeTables(snapshot GameSnapshot) error {
 	return nil
 }
 
-func validatePoints(points []OrderPoint, dishes map[string]struct{}, drinks map[string]struct{}) (map[string]OrderPoint, error) {
-	current := make(map[string]OrderPoint, len(points))
-	for _, point := range points {
-		if point.Key.Table < 1 || point.Key.Table > 6 || point.Key.Point < 1 || point.Key.Point > 2 {
-			return nil, fmt.Errorf("invalid table point %d/%d", point.Key.Table, point.Key.Point)
-		}
-		if point.Exists {
-			if point.ItemID == "" {
-				return nil, fmt.Errorf("occupied table point %d/%d has no recognized item", point.Key.Table, point.Key.Point)
-			}
-			if _, dish := dishes[point.ItemID]; !dish {
-				if _, drink := drinks[point.ItemID]; !drink {
-					return nil, fmt.Errorf("table point %d/%d has unselected item %q", point.Key.Table, point.Key.Point, point.ItemID)
-				}
-			}
-		}
-		key := orderPointStorageKey(point.Key)
-		if _, exists := current[key]; exists {
-			return nil, fmt.Errorf("duplicate table point %d/%d", point.Key.Table, point.Key.Point)
-		}
-		current[key] = point
-	}
-	if len(current) != 12 {
-		return nil, fmt.Errorf("recognized %d table points, expected 12", len(current))
-	}
-	return current, nil
-}
-
 func orderPointStorageKey(key OrderPointKey) string {
 	return fmt.Sprintf("%d/%d", key.Table, key.Point)
 }
 
 func (l *Ledger) suggestDispatch(needsRestock []string) *Dispatch {
-	if l.counterCount() >= CounterTrayCount {
-		return nil
-	}
 	marked := make(map[string]struct{}, len(needsRestock))
 	for _, dishID := range needsRestock {
 		marked[dishID] = struct{}{}
@@ -921,38 +830,26 @@ func (l *Ledger) suggestDispatch(needsRestock []string) *Dispatch {
 		if _, needs := marked[dishID]; !needs {
 			continue
 		}
-		if l.Counter[dishID]+l.inFlight(dishID) >= max(1, l.unservedDemand(dishID)) {
-			continue
-		}
-		if dispatch := l.makeDispatch(dishID, false); dispatch != nil {
-			return dispatch
-		}
-		return nil
+		return l.makeDispatch(dishID)
 	}
 	for _, dishID := range l.Dishes {
 		if l.Counter[dishID]+l.inFlight(dishID) >= l.unservedDemand(dishID) {
 			continue
 		}
-		if dispatch := l.makeDispatch(dishID, false); dispatch != nil {
-			return dispatch
-		}
-		return nil
+		return l.makeDispatch(dishID)
 	}
 	for _, dishID := range l.Dishes {
 		if l.Counter[dishID]+l.inFlight(dishID) > 0 {
 			continue
 		}
-		if dispatch := l.makeDispatch(dishID, true); dispatch != nil {
-			return dispatch
-		}
-		return nil
+		return l.makeDispatch(dishID)
 	}
 	return nil
 }
 
 // Stable iteration implements kitchen 1 > 2 > 3 when queue lengths tie.
-func (l *Ledger) makeDispatch(dishID string, prestock bool) *Dispatch {
-	if _, exists := l.DishIDs[dishID]; !exists || l.counterCount() >= CounterTrayCount {
+func (l *Ledger) makeDispatch(dishID string) *Dispatch {
+	if l.counterCount() >= CounterTrayCount {
 		return nil
 	}
 	selected := -1
@@ -964,7 +861,7 @@ func (l *Ledger) makeDispatch(dishID string, prestock bool) *Dispatch {
 	if selected < 0 {
 		return nil
 	}
-	return &Dispatch{DishID: dishID, Kitchen: selected + 1, Prestock: prestock}
+	return &Dispatch{DishID: dishID, Kitchen: selected + 1}
 }
 
 func (l *Ledger) counterCount() int {

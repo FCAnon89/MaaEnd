@@ -93,45 +93,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantOpenDailyTheme",
-            "RestaurantEnterCounterStart"
-        ]
-    },
-    "RestaurantEnterCounterStart": {
-        "recognition": "OCR",
-        "roi": [
-            828,
-            420,
-            206,
-            44
-        ],
-        "expected": [
-            "开始经营",
-            "Open the Inn",
-            "営業開始",
-            "운영 시작하기",
-            "開始經營"
-        ],
-        "pre_delay": 0,
-        "action": "ClickKey",
-        "key": 70,
-        "post_wait_freezes": {
-            "time": 500,
-            "target": [
-                40,
-                20,
-                1200,
-                680
-            ],
-            "timeout": 5000
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
             "RestaurantOpenDailyTheme"
-        ],
-        "on_error": [
-            "FailedNode"
         ]
     },
     "RestaurantOpenDailyTheme": {
@@ -1059,7 +1021,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantMenuDishSelectionIncomplete"
+            "FailedNode"
         ],
         "attach": {
             "ready": false
@@ -1229,7 +1191,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantMenuDrinkSelectionIncomplete"
+            "FailedNode"
         ],
         "attach": {
             "ready": false
@@ -1529,15 +1491,6 @@
             "RestaurantMenuSelectDishScrollDown"
         ]
     },
-    "RestaurantMenuDishSelectionIncomplete": {
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ]
-    },
     "RestaurantMenuDrinksComplete": {
         "enabled": false,
         "recognition": "DirectHit",
@@ -1557,15 +1510,6 @@
         "next": [
             "RestaurantMenuSelectDrinkIsAtBottom",
             "RestaurantMenuSelectDrinkScrollDown"
-        ]
-    },
-    "RestaurantMenuDrinkSelectionIncomplete": {
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
         ]
     },
     "RestaurantMenuReadCard": {
@@ -1601,7 +1545,6 @@
             "RestaurantMenuCardAnchor",
             "RestaurantMenuPendingIcon"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "Click",
         "target": "RestaurantMenuCardAnchor",
@@ -1684,10 +1627,8 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeSelectedKitchen",
-            "RestaurantKitchen1Tab"
+            "RestaurantRuntimeSelectedKitchen"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1706,10 +1647,8 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeSelectedKitchen",
-            "RestaurantKitchen2Tab"
+            "RestaurantRuntimeSelectedKitchen"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1728,10 +1667,8 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeSelectedKitchen",
-            "RestaurantKitchen3Tab"
+            "RestaurantRuntimeSelectedKitchen"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1800,7 +1737,6 @@
             "RestaurantRuntimeTargetKitchen",
             "RestaurantRuntimeClickDishIcon"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1832,7 +1768,6 @@
             "RestaurantRuntimeTargetKitchen",
             "RestaurantRuntimeClickDishIcon"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1864,7 +1799,6 @@
             "RestaurantRuntimeTargetKitchen",
             "RestaurantRuntimeClickDishIcon"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1896,7 +1830,6 @@
             "RestaurantRuntimeTargetKitchen",
             "RestaurantRuntimeClickDishIcon"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1928,7 +1861,6 @@
             "RestaurantRuntimeTargetKitchen",
             "RestaurantRuntimeClickDishIcon"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1960,7 +1892,6 @@
             "RestaurantRuntimeTargetKitchen",
             "RestaurantRuntimeClickDishIcon"
         ],
-        "box_index": 1,
         "pre_delay": 0,
         "action": "LongPress",
         "target": [
@@ -1988,7 +1919,7 @@
     "RestaurantRuntimeVerifyDispatch": {
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeDispatchFrame",
+            "RestaurantRuntimeQueueCounts",
             "RestaurantRuntimeQueueIcons"
         ],
         "pre_delay": 0,
