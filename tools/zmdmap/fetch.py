@@ -16,8 +16,6 @@
 下载走 :mod:`tools.zmdmap.utils.http` 的共享连接池并发拉取：数据文件各自独立，串行等一个文件会把整包耗时乘上文件数。
 """
 
-from __future__ import annotations
-
 import json
 import sys
 import time
@@ -385,7 +383,7 @@ def fetch_command(
             raise click.ClickException(str(error)) from error
     else:
         click.echo("── 下载：跳过（--no-download），直接用现有 data/raw/")
-        pending = set((*pipeline_files, *plain_files))
+        pending = {*pipeline_files, *plain_files}
 
     if raw_only:
         click.echo("入库：未执行（--raw-only）")
