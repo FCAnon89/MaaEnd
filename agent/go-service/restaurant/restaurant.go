@@ -56,7 +56,7 @@ type kitchenQueueView struct {
 
 var (
 	errAmbiguousQueue           = errors.New("queue icons cannot distinguish the pending dish from a completed identical dish")
-	menuRoutes                  = []string{"RestaurantMenuDishesComplete", "RestaurantMenuDrinksComplete", "RestaurantMenuClickCard", "RestaurantMenuReadCard", "RestaurantMenuDishPageEnd", "RestaurantMenuDrinkPageEnd"}
+	menuRoutes                  = []string{"RestaurantMenuDishesComplete", "RestaurantMenuDrinksComplete", "RestaurantMenuClickCard", "RestaurantMenuReadCard"}
 	runtimeRoutes               = []string{"RestaurantRuntimeSwitchKitchen1", "RestaurantRuntimeSwitchKitchen2", "RestaurantRuntimeSwitchKitchen3", "RestaurantRuntimeLocateDish", "RestaurantRuntimeClickDish1", "RestaurantRuntimeClickDish2", "RestaurantRuntimeClickDish3", "RestaurantRuntimeClickDish4", "RestaurantRuntimeClickDish5", "RestaurantRuntimeClickDish6", "RestaurantRuntimeWaitQueue", "RestaurantRuntimeReturn", "RestaurantRuntimeIdle"}
 	restaurantData              menuCatalog
 	restaurantDataOnce          sync.Once
@@ -352,9 +352,9 @@ func chooseMenuCard(state *session, detail *maa.RecognitionDetail, observed func
 
 func nextMenuCard(state *session, patch map[string]any) error {
 	menu := &state.Menu
-	selected, required, suffix := len(menu.Dishes), menu.MinimumDishes, "Dish"
+	selected, required := len(menu.Dishes), menu.MinimumDishes
 	if menu.Kind == "drink" {
-		selected, required, suffix = len(menu.Drinks), menu.MinimumDrinks, "Drink"
+		selected, required = len(menu.Drinks), menu.MinimumDrinks
 	}
 	if selected >= required {
 		if menu.Kind == "drink" {
@@ -381,8 +381,7 @@ func nextMenuCard(state *session, patch map[string]any) error {
 		return nil
 	}
 	if menu.Index >= len(menu.Cards) {
-		route(patch, menuRoutes, "RestaurantMenu"+suffix+"PageEnd")
-		return nil
+		return fmt.Errorf("not enough available %s menu cards on the current page: selected %d, required %d", menu.Kind, selected, required)
 	}
 	data, err := loadRestaurantData()
 	if err != nil {

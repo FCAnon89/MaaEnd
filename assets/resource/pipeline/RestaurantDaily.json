@@ -11,26 +11,6 @@
                         "state": null
                     }
                 },
-                "RestaurantMenuSelectDishIsAtTop": {
-                    "attach": {
-                        "ready": false
-                    }
-                },
-                "RestaurantMenuSelectDishIsAtBottom": {
-                    "attach": {
-                        "ready": false
-                    }
-                },
-                "RestaurantMenuSelectDrinkIsAtTop": {
-                    "attach": {
-                        "ready": false
-                    }
-                },
-                "RestaurantMenuSelectDrinkIsAtBottom": {
-                    "attach": {
-                        "ready": false
-                    }
-                },
                 "RestaurantMenuDishesComplete": {
                     "enabled": false
                 },
@@ -41,12 +21,6 @@
                     "enabled": false
                 },
                 "RestaurantMenuReadCard": {
-                    "enabled": false
-                },
-                "RestaurantMenuDishPageEnd": {
-                    "enabled": false
-                },
-                "RestaurantMenuDrinkPageEnd": {
                     "enabled": false
                 },
                 "RestaurantRuntimeSwitchKitchen1": {
@@ -916,72 +890,13 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantMenuSelectDishScrollTopLoop"
-        ]
-    },
-    "RestaurantMenuSelectDishScrollTopLoop": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantMenuDishesActive"
-        ],
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDishIsAtTop",
-            "RestaurantMenuSelectDishScrollUp"
-        ]
-    },
-    "RestaurantMenuSelectDishIsAtTop": {
-        "recognition": "Custom",
-        "custom_recognition": "ListCompleteRecognition",
-        "custom_recognition_param": {
-            "threshold": 0.99
-        },
-        "roi": [
-            552,
-            134,
-            635,
-            402
-        ],
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
             "RestaurantMenuSelectDishLoop"
-        ],
-        "attach": {
-            "ready": false
-        }
-    },
-    "RestaurantMenuSelectDishScrollUp": {
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "action": "Scroll",
-        "target": [
-            850,
-            350
-        ],
-        "dy": 240,
-        "post_wait_freezes": {
-            "time": 350,
-            "target": [
-                551,
-                133,
-                641,
-                403
-            ],
-            "timeout": 3000
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDishScrollTopLoop"
         ]
     },
     "RestaurantMenuSelectDishLoop": {
         "recognition": "And",
         "all_of": [
+            "RestaurantMenuDishesActive",
             "RestaurantMenuAvailabilityOCR"
         ],
         "pre_delay": 0,
@@ -997,59 +912,10 @@
             "RestaurantMenuDishesComplete",
             "RestaurantMenuDrinksComplete",
             "RestaurantMenuClickCard",
-            "RestaurantMenuReadCard",
-            "RestaurantMenuDishPageEnd",
-            "RestaurantMenuDrinkPageEnd"
+            "RestaurantMenuReadCard"
         ],
         "on_error": [
             "FailedNode"
-        ]
-    },
-    "RestaurantMenuSelectDishIsAtBottom": {
-        "recognition": "Custom",
-        "custom_recognition": "ListCompleteRecognition",
-        "custom_recognition_param": {
-            "threshold": 0.99
-        },
-        "roi": [
-            552,
-            134,
-            635,
-            402
-        ],
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ],
-        "attach": {
-            "ready": false
-        }
-    },
-    "RestaurantMenuSelectDishScrollDown": {
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "action": "Scroll",
-        "target": [
-            850,
-            350
-        ],
-        "dy": -240,
-        "post_wait_freezes": {
-            "time": 350,
-            "target": [
-                551,
-                133,
-                641,
-                403
-            ],
-            "timeout": 3000
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDishLoop"
         ]
     },
     "RestaurantMenuSelectDrinkTab": {
@@ -1086,72 +952,13 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantMenuSelectDrinkScrollTopLoop"
-        ]
-    },
-    "RestaurantMenuSelectDrinkScrollTopLoop": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantMenuDrinksActive"
-        ],
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDrinkIsAtTop",
-            "RestaurantMenuSelectDrinkScrollUp"
-        ]
-    },
-    "RestaurantMenuSelectDrinkIsAtTop": {
-        "recognition": "Custom",
-        "custom_recognition": "ListCompleteRecognition",
-        "custom_recognition_param": {
-            "threshold": 0.99
-        },
-        "roi": [
-            552,
-            134,
-            635,
-            402
-        ],
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
             "RestaurantMenuSelectDrinkLoop"
-        ],
-        "attach": {
-            "ready": false
-        }
-    },
-    "RestaurantMenuSelectDrinkScrollUp": {
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "action": "Scroll",
-        "target": [
-            850,
-            350
-        ],
-        "dy": 240,
-        "post_wait_freezes": {
-            "time": 350,
-            "target": [
-                551,
-                133,
-                641,
-                403
-            ],
-            "timeout": 3000
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDrinkScrollTopLoop"
         ]
     },
     "RestaurantMenuSelectDrinkLoop": {
         "recognition": "And",
         "all_of": [
+            "RestaurantMenuDrinksActive",
             "RestaurantMenuAvailabilityOCR"
         ],
         "pre_delay": 0,
@@ -1167,59 +974,10 @@
             "RestaurantMenuDishesComplete",
             "RestaurantMenuDrinksComplete",
             "RestaurantMenuClickCard",
-            "RestaurantMenuReadCard",
-            "RestaurantMenuDishPageEnd",
-            "RestaurantMenuDrinkPageEnd"
+            "RestaurantMenuReadCard"
         ],
         "on_error": [
             "FailedNode"
-        ]
-    },
-    "RestaurantMenuSelectDrinkIsAtBottom": {
-        "recognition": "Custom",
-        "custom_recognition": "ListCompleteRecognition",
-        "custom_recognition_param": {
-            "threshold": 0.99
-        },
-        "roi": [
-            552,
-            134,
-            635,
-            402
-        ],
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "FailedNode"
-        ],
-        "attach": {
-            "ready": false
-        }
-    },
-    "RestaurantMenuSelectDrinkScrollDown": {
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "action": "Scroll",
-        "target": [
-            850,
-            350
-        ],
-        "dy": -240,
-        "post_wait_freezes": {
-            "time": 350,
-            "target": [
-                551,
-                133,
-                641,
-                403
-            ],
-            "timeout": 3000
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDrinkLoop"
         ]
     },
     "RestaurantMenuStartBusiness": {
@@ -1480,17 +1238,6 @@
             "RestaurantMenuSelectDrinkTab"
         ]
     },
-    "RestaurantMenuDishPageEnd": {
-        "enabled": false,
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDishIsAtBottom",
-            "RestaurantMenuSelectDishScrollDown"
-        ]
-    },
     "RestaurantMenuDrinksComplete": {
         "enabled": false,
         "recognition": "DirectHit",
@@ -1499,17 +1246,6 @@
         "rate_limit": 0,
         "next": [
             "RestaurantMenuStartBusiness"
-        ]
-    },
-    "RestaurantMenuDrinkPageEnd": {
-        "enabled": false,
-        "recognition": "DirectHit",
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantMenuSelectDrinkIsAtBottom",
-            "RestaurantMenuSelectDrinkScrollDown"
         ]
     },
     "RestaurantMenuReadCard": {
@@ -1530,9 +1266,7 @@
             "RestaurantMenuDishesComplete",
             "RestaurantMenuDrinksComplete",
             "RestaurantMenuClickCard",
-            "RestaurantMenuReadCard",
-            "RestaurantMenuDishPageEnd",
-            "RestaurantMenuDrinkPageEnd"
+            "RestaurantMenuReadCard"
         ],
         "on_error": [
             "FailedNode"
@@ -1589,9 +1323,7 @@
             "RestaurantMenuDishesComplete",
             "RestaurantMenuDrinksComplete",
             "RestaurantMenuClickCard",
-            "RestaurantMenuReadCard",
-            "RestaurantMenuDishPageEnd",
-            "RestaurantMenuDrinkPageEnd"
+            "RestaurantMenuReadCard"
         ],
         "on_error": [
             "FailedNode"
