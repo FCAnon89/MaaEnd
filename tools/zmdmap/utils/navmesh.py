@@ -9,8 +9,6 @@ nav 数据默认读 ``assets/resource/model`` 子模块里的 ``map/navmesh/base
 :mod:`tools.zmdmap.utils.http` —— 与数据下载同一套 UA / 超时 / 重试，反复加长前缀时也复用同一条连接。
 """
 
-from __future__ import annotations
-
 import math
 import re
 import struct
@@ -171,7 +169,7 @@ def resolve_nav_source(client: httpx.Client, nav: str | None, repo_root: Path) -
     for name in NAVMESH_FILES:
         candidate = nav_dir / name
         if candidate.exists():
-            return str(candidate), lambda count: _read_file_prefix(candidate, count)
+            return str(candidate), lambda count, candidate=candidate: _read_file_prefix(candidate, count)
 
     url = NAV_REMOTE_TEMPLATE.format(sha=_resolve_nav_submodule_sha(client))
     return url, lambda count: _read_remote(client, url, count)

@@ -17,12 +17,17 @@
 没有名字，两类都不收。
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 from typing import Any
 
-from ..utils.game_data import as_text, logger, read_table_cfg, ref_text, texts_of, text_id_of
+from ..utils.game_data import (
+    as_text,
+    logger,
+    read_table_cfg,
+    ref_text,
+    text_id_of,
+    texts_of,
+)
 from .base import Dataset
 
 # 配方 / 配方升级 / 装备配方：制造说明，不是可用物品。
