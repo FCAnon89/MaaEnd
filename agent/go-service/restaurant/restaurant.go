@@ -57,7 +57,7 @@ type tableOrder struct {
 
 var (
 	menuRoutes                  = []string{"RestaurantMenuDishesComplete", "RestaurantMenuDrinksComplete", "RestaurantMenuClickCard", "RestaurantMenuReadCard"}
-	runtimeRoutes               = []string{"RestaurantRuntimeSwitchKitchen1", "RestaurantRuntimeSwitchKitchen2", "RestaurantRuntimeSwitchKitchen3", "RestaurantRuntimeNextKitchen", "RestaurantRuntimeLocateDish", "RestaurantRuntimeClickDish1", "RestaurantRuntimeClickDish2", "RestaurantRuntimeClickDish3", "RestaurantRuntimeClickDish4", "RestaurantRuntimeClickDish5", "RestaurantRuntimeClickDish6", "RestaurantRuntimeIdle"}
+	runtimeRoutes               = []string{"RestaurantRuntimeSwitchKitchen1", "RestaurantRuntimeSwitchKitchen2", "RestaurantRuntimeSwitchKitchen3", "RestaurantRuntimeNextKitchen", "RestaurantRuntimeClickDish1", "RestaurantRuntimeClickDish2", "RestaurantRuntimeClickDish3", "RestaurantRuntimeClickDish4", "RestaurantRuntimeClickDish5", "RestaurantRuntimeClickDish6", "RestaurantRuntimeIdle"}
 	restaurantData              menuCatalog
 	restaurantDataOnce          sync.Once
 	restaurantDataErr           error
@@ -118,8 +118,6 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 		err = nextMenuCard(state, patch)
 	case "runtime":
 		err = decideRuntime(state, observed, patch)
-	case "dispatch":
-		err = prepareDispatch(state, observed, arg.Box, patch)
 	case "dispatched":
 		if state.Runtime == nil || state.Runtime.PendingID == "" {
 			return false
@@ -373,8 +371,7 @@ func nextMenuCard(state *session, patch map[string]any) error {
 			for _, id := range menu.Dishes {
 				state.Runtime.Cache[id] = 0
 			}
-			dishes := append([]string(nil), menu.Dishes...)
-			all := append(append([]string(nil), dishes...), menu.Drinks...)
+			all := slices.Concat(menu.Dishes, menu.Drinks)
 			for table := 1; table <= 6; table++ {
 				setTableObservation(patch, table, tableOrder{})
 				for _, layout := range []string{"SinglePoint1", "DoublePoint1", "DoublePoint2"} {
@@ -382,8 +379,9 @@ func nextMenuCard(state *session, patch map[string]any) error {
 				}
 			}
 			for slot := 1; slot <= 6; slot++ {
-				iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dIcon", slot), dishes)
+				iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dIcon", slot), menu.Dishes)
 			}
+			menu.Cards = nil
 		}
 		name := "RestaurantMenuDishesComplete"
 		if menu.Kind == "drink" {
@@ -564,36 +562,21 @@ func decideRuntime(state *session, observed observations, patch map[string]any) 
 		return nil
 	}
 	current.PendingID = id
-	for slot := 1; slot <= 6; slot++ {
-		iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot), []string{id})
-	}
 	target := "RestaurantKitchenPanelReady"
 	name := "RestaurantRuntimeNextKitchen"
 	if kitchen != 0 {
 		target = fmt.Sprintf("RestaurantKitchen%dSelected", kitchen)
-		name = "RestaurantRuntimeLocateDish"
+		name = ""
 		if !observed.hit(target) {
 			name = fmt.Sprintf("RestaurantRuntimeSwitchKitchen%d", kitchen)
 		}
 	}
 	patch["RestaurantRuntimeTargetKitchen"] = map[string]any{"all_of": []string{target}}
 	route(patch, runtimeRoutes, name)
-	return nil
-}
-
-func prepareDispatch(state *session, observed observations, box maa.Rect, patch map[string]any) error {
-	current := state.Runtime
-	if current == nil || current.PendingID == "" || box[2] <= 0 || box[3] <= 0 {
-		return fmt.Errorf("pending dispatch or recipe observation is missing")
-	}
+	// Pipeline matches the requested dish's slot; switching routes take priority.
 	for slot := 1; slot <= 6; slot++ {
-		if !observed.hit(fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot)) {
-			continue
-		}
-		iconCandidates(patch, "RestaurantRuntimeClickDishIcon", []string{current.PendingID})
-		patch["RestaurantRuntimeClickDishIcon"].(map[string]any)["roi"] = box
-		route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeClickDish%d", slot))
-		return nil
+		iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot), []string{id})
+		patch[fmt.Sprintf("RestaurantRuntimeClickDish%d", slot)] = map[string]any{"enabled": true}
 	}
-	return fmt.Errorf("target dish slot is uncertain")
+	return nil
 }

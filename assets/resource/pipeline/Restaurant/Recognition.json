@@ -29,21 +29,13 @@
         "order_by": "Vertical"
     },
     "RestaurantMenuCardAnchor": {
-        "recognition": "ColorMatch",
+        "recognition": "DirectHit",
         "roi": [
             552,
             134,
             307,
             93
-        ],
-        "method": 6,
-        "lower": [
-            0
-        ],
-        "upper": [
-            255
-        ],
-        "count": 1
+        ]
     },
     "RestaurantMenuCardIcon": {
         "recognition": "Custom",
@@ -3072,34 +3064,6 @@
         "roi": [
             828,
             405,
-            66,
-            66
-        ]
-    },
-    "RestaurantRuntimeTargetDish": {
-        "recognition": "Or",
-        "any_of": [
-            "RestaurantRecipe1TargetIcon",
-            "RestaurantRecipe2TargetIcon",
-            "RestaurantRecipe3TargetIcon",
-            "RestaurantRecipe4TargetIcon",
-            "RestaurantRecipe5TargetIcon",
-            "RestaurantRecipe6TargetIcon"
-        ]
-    },
-    "RestaurantRuntimeClickDishIcon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
-            ]
-        },
-        "roi": [
-            519,
-            220,
             66,
             66
         ]

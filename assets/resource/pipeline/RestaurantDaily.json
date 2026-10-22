@@ -32,9 +32,6 @@
                 "RestaurantRuntimeSwitchKitchen3": {
                     "enabled": false
                 },
-                "RestaurantRuntimeLocateDish": {
-                    "enabled": false
-                },
                 "RestaurantRuntimeIdle": {
                     "enabled": false
                 },
@@ -1061,7 +1058,7 @@
         ],
         "expected": [
             "珍馐产出概率",
-            "Chance for [Choice]",
+            "Chance for \\[Choice\\]",
             "極上の出現率",
             "진수성찬 출현 확률",
             "珍饈產出機率"
@@ -1340,11 +1337,17 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantGameEnded",
             "RestaurantRuntimeSwitchKitchen1",
             "RestaurantRuntimeSwitchKitchen2",
             "RestaurantRuntimeSwitchKitchen3",
             "RestaurantRuntimeNextKitchen",
-            "RestaurantRuntimeLocateDish",
+            "RestaurantRuntimeClickDish1",
+            "RestaurantRuntimeClickDish2",
+            "RestaurantRuntimeClickDish3",
+            "RestaurantRuntimeClickDish4",
+            "RestaurantRuntimeClickDish5",
+            "RestaurantRuntimeClickDish6",
             "RestaurantRuntimeIdle"
         ],
         "on_error": [
@@ -1368,7 +1371,12 @@
         "rate_limit": 0,
         "next": [
             "RestaurantGameEnded",
-            "RestaurantRuntimeKitchenReady"
+            "RestaurantRuntimeClickDish1",
+            "RestaurantRuntimeClickDish2",
+            "RestaurantRuntimeClickDish3",
+            "RestaurantRuntimeClickDish4",
+            "RestaurantRuntimeClickDish5",
+            "RestaurantRuntimeClickDish6"
         ]
     },
     "RestaurantRuntimeSwitchKitchen2": {
@@ -1388,7 +1396,12 @@
         "rate_limit": 0,
         "next": [
             "RestaurantGameEnded",
-            "RestaurantRuntimeKitchenReady"
+            "RestaurantRuntimeClickDish1",
+            "RestaurantRuntimeClickDish2",
+            "RestaurantRuntimeClickDish3",
+            "RestaurantRuntimeClickDish4",
+            "RestaurantRuntimeClickDish5",
+            "RestaurantRuntimeClickDish6"
         ]
     },
     "RestaurantRuntimeSwitchKitchen3": {
@@ -1408,61 +1421,12 @@
         "rate_limit": 0,
         "next": [
             "RestaurantGameEnded",
-            "RestaurantRuntimeKitchenReady"
-        ]
-    },
-    "RestaurantRuntimeKitchenReady": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRuntimeTargetKitchen"
-        ],
-        "pre_delay": 0,
-        "action": "Custom",
-        "custom_action": "PipelineOverrideAction",
-        "custom_action_param": {
-            "patch": {
-                "RestaurantRuntimeLocateDish": {
-                    "enabled": true
-                }
-            }
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantGameEnded",
-            "RestaurantRuntimeLocateDish"
-        ],
-        "on_error": [
-            "FailedNode"
-        ]
-    },
-    "RestaurantRuntimeLocateDish": {
-        "enabled": false,
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRuntimeTargetKitchen",
-            "RestaurantRuntimeTargetDish"
-        ],
-        "box_index": 1,
-        "pre_delay": 0,
-        "action": "Custom",
-        "custom_action": "RestaurantDecisionAction",
-        "custom_action_param": {
-            "step": "dispatch"
-        },
-        "post_delay": 0,
-        "rate_limit": 0,
-        "next": [
-            "RestaurantGameEnded",
             "RestaurantRuntimeClickDish1",
             "RestaurantRuntimeClickDish2",
             "RestaurantRuntimeClickDish3",
             "RestaurantRuntimeClickDish4",
             "RestaurantRuntimeClickDish5",
             "RestaurantRuntimeClickDish6"
-        ],
-        "on_error": [
-            "FailedNode"
         ]
     },
     "RestaurantRuntimeClickDish1": {
@@ -1470,7 +1434,7 @@
         "recognition": "And",
         "all_of": [
             "RestaurantRuntimeTargetKitchen",
-            "RestaurantRuntimeClickDishIcon"
+            "RestaurantRecipe1TargetIcon"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -1490,7 +1454,7 @@
         "recognition": "And",
         "all_of": [
             "RestaurantRuntimeTargetKitchen",
-            "RestaurantRuntimeClickDishIcon"
+            "RestaurantRecipe2TargetIcon"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -1510,7 +1474,7 @@
         "recognition": "And",
         "all_of": [
             "RestaurantRuntimeTargetKitchen",
-            "RestaurantRuntimeClickDishIcon"
+            "RestaurantRecipe3TargetIcon"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -1530,7 +1494,7 @@
         "recognition": "And",
         "all_of": [
             "RestaurantRuntimeTargetKitchen",
-            "RestaurantRuntimeClickDishIcon"
+            "RestaurantRecipe4TargetIcon"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -1550,7 +1514,7 @@
         "recognition": "And",
         "all_of": [
             "RestaurantRuntimeTargetKitchen",
-            "RestaurantRuntimeClickDishIcon"
+            "RestaurantRecipe5TargetIcon"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -1570,7 +1534,7 @@
         "recognition": "And",
         "all_of": [
             "RestaurantRuntimeTargetKitchen",
-            "RestaurantRuntimeClickDishIcon"
+            "RestaurantRecipe6TargetIcon"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -1598,7 +1562,12 @@
         "rate_limit": 0,
         "next": [
             "RestaurantGameEnded",
-            "RestaurantRuntimeKitchenReady"
+            "RestaurantRuntimeClickDish1",
+            "RestaurantRuntimeClickDish2",
+            "RestaurantRuntimeClickDish3",
+            "RestaurantRuntimeClickDish4",
+            "RestaurantRuntimeClickDish5",
+            "RestaurantRuntimeClickDish6"
         ]
     },
     "RestaurantRuntimeDispatched": {
