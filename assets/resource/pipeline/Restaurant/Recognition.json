@@ -959,41 +959,13 @@
             34
         ]
     },
-    "RestaurantTable1SinglePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            228,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable1SingleOrder": {
         "recognition": "And",
         "all_of": [
             "RestaurantTable1Ordinary",
             "RestaurantTable1SeparatorNotWhite",
             "RestaurantTable1SingleBorders",
-            "RestaurantTable1SinglePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable1SinglePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable1SinglePoint1Icon"
         ]
     },
     "RestaurantTable1DoublePoint1Icon": {
@@ -1013,27 +985,6 @@
             34
         ]
     },
-    "RestaurantTable1DoublePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            223,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable1DoublePoint2Icon": {
         "recognition": "Custom",
         "custom_recognition": "IconRecognition",
@@ -1051,27 +1002,6 @@
             34
         ]
     },
-    "RestaurantTable1DoublePoint2Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            234,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable1DoubleOrder": {
         "recognition": "And",
         "all_of": [
@@ -1079,21 +1009,7 @@
             "RestaurantTable1SeparatorNotWhite",
             "RestaurantTable1DoubleBorders",
             "RestaurantTable1DoublePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable1DoublePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            "RestaurantTable1DoublePoint2Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable1DoublePoint2Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable1DoublePoint2Icon"
         ]
     },
     "RestaurantTable1Dining": {
@@ -1113,119 +1029,13 @@
             "식사 중"
         ]
     },
-    "RestaurantTable1Inactive": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "Or",
-                "any_of": [
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            189,
-                            43,
-                            3,
-                            38
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 12
-                    },
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            272,
-                            43,
-                            3,
-                            20
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 7
-                    }
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable1Dining",
-                    "RestaurantObservationEmpty"
-                ]
-            }
-        ]
-    },
     "RestaurantTable1Observation": {
         "recognition": "Or",
         "any_of": [
+            "RestaurantTable1Gourmand",
             "RestaurantTable1SingleOrder",
             "RestaurantTable1DoubleOrder",
-            "RestaurantTable1Inactive",
+            "RestaurantTable1Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -1482,41 +1292,13 @@
             34
         ]
     },
-    "RestaurantTable2SinglePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            322,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable2SingleOrder": {
         "recognition": "And",
         "all_of": [
             "RestaurantTable2Ordinary",
             "RestaurantTable2SeparatorNotWhite",
             "RestaurantTable2SingleBorders",
-            "RestaurantTable2SinglePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable2SinglePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable2SinglePoint1Icon"
         ]
     },
     "RestaurantTable2DoublePoint1Icon": {
@@ -1536,27 +1318,6 @@
             34
         ]
     },
-    "RestaurantTable2DoublePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            317,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable2DoublePoint2Icon": {
         "recognition": "Custom",
         "custom_recognition": "IconRecognition",
@@ -1574,27 +1335,6 @@
             34
         ]
     },
-    "RestaurantTable2DoublePoint2Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            328,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable2DoubleOrder": {
         "recognition": "And",
         "all_of": [
@@ -1602,21 +1342,7 @@
             "RestaurantTable2SeparatorNotWhite",
             "RestaurantTable2DoubleBorders",
             "RestaurantTable2DoublePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable2DoublePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            "RestaurantTable2DoublePoint2Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable2DoublePoint2Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable2DoublePoint2Icon"
         ]
     },
     "RestaurantTable2Dining": {
@@ -1636,119 +1362,13 @@
             "식사 중"
         ]
     },
-    "RestaurantTable2Inactive": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "Or",
-                "any_of": [
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            283,
-                            43,
-                            3,
-                            38
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 12
-                    },
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            366,
-                            43,
-                            3,
-                            20
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 7
-                    }
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable2Dining",
-                    "RestaurantObservationEmpty"
-                ]
-            }
-        ]
-    },
     "RestaurantTable2Observation": {
         "recognition": "Or",
         "any_of": [
+            "RestaurantTable2Gourmand",
             "RestaurantTable2SingleOrder",
             "RestaurantTable2DoubleOrder",
-            "RestaurantTable2Inactive",
+            "RestaurantTable2Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -2005,41 +1625,13 @@
             34
         ]
     },
-    "RestaurantTable3SinglePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            417,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable3SingleOrder": {
         "recognition": "And",
         "all_of": [
             "RestaurantTable3Ordinary",
             "RestaurantTable3SeparatorNotWhite",
             "RestaurantTable3SingleBorders",
-            "RestaurantTable3SinglePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable3SinglePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable3SinglePoint1Icon"
         ]
     },
     "RestaurantTable3DoublePoint1Icon": {
@@ -2059,27 +1651,6 @@
             34
         ]
     },
-    "RestaurantTable3DoublePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            412,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable3DoublePoint2Icon": {
         "recognition": "Custom",
         "custom_recognition": "IconRecognition",
@@ -2097,27 +1668,6 @@
             34
         ]
     },
-    "RestaurantTable3DoublePoint2Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            423,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable3DoubleOrder": {
         "recognition": "And",
         "all_of": [
@@ -2125,21 +1675,7 @@
             "RestaurantTable3SeparatorNotWhite",
             "RestaurantTable3DoubleBorders",
             "RestaurantTable3DoublePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable3DoublePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            "RestaurantTable3DoublePoint2Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable3DoublePoint2Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable3DoublePoint2Icon"
         ]
     },
     "RestaurantTable3Dining": {
@@ -2159,119 +1695,13 @@
             "식사 중"
         ]
     },
-    "RestaurantTable3Inactive": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "Or",
-                "any_of": [
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            378,
-                            43,
-                            3,
-                            38
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 12
-                    },
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            461,
-                            43,
-                            3,
-                            20
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 7
-                    }
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable3Dining",
-                    "RestaurantObservationEmpty"
-                ]
-            }
-        ]
-    },
     "RestaurantTable3Observation": {
         "recognition": "Or",
         "any_of": [
+            "RestaurantTable3Gourmand",
             "RestaurantTable3SingleOrder",
             "RestaurantTable3DoubleOrder",
-            "RestaurantTable3Inactive",
+            "RestaurantTable3Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -2528,41 +1958,13 @@
             34
         ]
     },
-    "RestaurantTable4SinglePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            511,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable4SingleOrder": {
         "recognition": "And",
         "all_of": [
             "RestaurantTable4Ordinary",
             "RestaurantTable4SeparatorNotWhite",
             "RestaurantTable4SingleBorders",
-            "RestaurantTable4SinglePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable4SinglePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable4SinglePoint1Icon"
         ]
     },
     "RestaurantTable4DoublePoint1Icon": {
@@ -2582,27 +1984,6 @@
             34
         ]
     },
-    "RestaurantTable4DoublePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            506,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable4DoublePoint2Icon": {
         "recognition": "Custom",
         "custom_recognition": "IconRecognition",
@@ -2620,27 +2001,6 @@
             34
         ]
     },
-    "RestaurantTable4DoublePoint2Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            517,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable4DoubleOrder": {
         "recognition": "And",
         "all_of": [
@@ -2648,21 +2008,7 @@
             "RestaurantTable4SeparatorNotWhite",
             "RestaurantTable4DoubleBorders",
             "RestaurantTable4DoublePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable4DoublePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            "RestaurantTable4DoublePoint2Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable4DoublePoint2Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable4DoublePoint2Icon"
         ]
     },
     "RestaurantTable4Dining": {
@@ -2682,119 +2028,13 @@
             "식사 중"
         ]
     },
-    "RestaurantTable4Inactive": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "Or",
-                "any_of": [
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            472,
-                            43,
-                            3,
-                            38
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 12
-                    },
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            555,
-                            43,
-                            3,
-                            20
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 7
-                    }
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable4Dining",
-                    "RestaurantObservationEmpty"
-                ]
-            }
-        ]
-    },
     "RestaurantTable4Observation": {
         "recognition": "Or",
         "any_of": [
+            "RestaurantTable4Gourmand",
             "RestaurantTable4SingleOrder",
             "RestaurantTable4DoubleOrder",
-            "RestaurantTable4Inactive",
+            "RestaurantTable4Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -3051,41 +2291,13 @@
             34
         ]
     },
-    "RestaurantTable5SinglePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            606,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable5SingleOrder": {
         "recognition": "And",
         "all_of": [
             "RestaurantTable5Ordinary",
             "RestaurantTable5SeparatorNotWhite",
             "RestaurantTable5SingleBorders",
-            "RestaurantTable5SinglePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable5SinglePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable5SinglePoint1Icon"
         ]
     },
     "RestaurantTable5DoublePoint1Icon": {
@@ -3105,27 +2317,6 @@
             34
         ]
     },
-    "RestaurantTable5DoublePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            601,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable5DoublePoint2Icon": {
         "recognition": "Custom",
         "custom_recognition": "IconRecognition",
@@ -3143,27 +2334,6 @@
             34
         ]
     },
-    "RestaurantTable5DoublePoint2Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            612,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable5DoubleOrder": {
         "recognition": "And",
         "all_of": [
@@ -3171,21 +2341,7 @@
             "RestaurantTable5SeparatorNotWhite",
             "RestaurantTable5DoubleBorders",
             "RestaurantTable5DoublePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable5DoublePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            "RestaurantTable5DoublePoint2Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable5DoublePoint2Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable5DoublePoint2Icon"
         ]
     },
     "RestaurantTable5Dining": {
@@ -3205,119 +2361,13 @@
             "식사 중"
         ]
     },
-    "RestaurantTable5Inactive": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "Or",
-                "any_of": [
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            567,
-                            43,
-                            3,
-                            38
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 12
-                    },
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            650,
-                            43,
-                            3,
-                            20
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 7
-                    }
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable5Dining",
-                    "RestaurantObservationEmpty"
-                ]
-            }
-        ]
-    },
     "RestaurantTable5Observation": {
         "recognition": "Or",
         "any_of": [
+            "RestaurantTable5Gourmand",
             "RestaurantTable5SingleOrder",
             "RestaurantTable5DoubleOrder",
-            "RestaurantTable5Inactive",
+            "RestaurantTable5Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -3574,41 +2624,13 @@
             34
         ]
     },
-    "RestaurantTable6SinglePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            700,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable6SingleOrder": {
         "recognition": "And",
         "all_of": [
             "RestaurantTable6Ordinary",
             "RestaurantTable6SeparatorNotWhite",
             "RestaurantTable6SingleBorders",
-            "RestaurantTable6SinglePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable6SinglePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable6SinglePoint1Icon"
         ]
     },
     "RestaurantTable6DoublePoint1Icon": {
@@ -3628,27 +2650,6 @@
             34
         ]
     },
-    "RestaurantTable6DoublePoint1Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            695,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable6DoublePoint2Icon": {
         "recognition": "Custom",
         "custom_recognition": "IconRecognition",
@@ -3666,27 +2667,6 @@
             34
         ]
     },
-    "RestaurantTable6DoublePoint2Served": {
-        "recognition": "ColorMatch",
-        "roi": [
-            706,
-            33,
-            10,
-            3
-        ],
-        "method": 40,
-        "lower": [
-            30,
-            50,
-            151
-        ],
-        "upper": [
-            85,
-            255,
-            255
-        ],
-        "count": 5
-    },
     "RestaurantTable6DoubleOrder": {
         "recognition": "And",
         "all_of": [
@@ -3694,21 +2674,7 @@
             "RestaurantTable6SeparatorNotWhite",
             "RestaurantTable6DoubleBorders",
             "RestaurantTable6DoublePoint1Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable6DoublePoint1Served",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            "RestaurantTable6DoublePoint2Icon",
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable6DoublePoint2Served",
-                    "RestaurantObservationEmpty"
-                ]
-            }
+            "RestaurantTable6DoublePoint2Icon"
         ]
     },
     "RestaurantTable6Dining": {
@@ -3728,119 +2694,13 @@
             "식사 중"
         ]
     },
-    "RestaurantTable6Inactive": {
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "Or",
-                "any_of": [
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            661,
-                            43,
-                            3,
-                            38
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 12
-                    },
-                    {
-                        "recognition": "ColorMatch",
-                        "roi": [
-                            744,
-                            43,
-                            3,
-                            20
-                        ],
-                        "method": 4,
-                        "lower": [
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ],
-                            [
-                                0,
-                                0,
-                                0
-                            ]
-                        ],
-                        "upper": [
-                            [
-                                210,
-                                255,
-                                255
-                            ],
-                            [
-                                255,
-                                210,
-                                255
-                            ],
-                            [
-                                255,
-                                255,
-                                210
-                            ]
-                        ],
-                        "count": 7
-                    }
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantTable6Dining",
-                    "RestaurantObservationEmpty"
-                ]
-            }
-        ]
-    },
     "RestaurantTable6Observation": {
         "recognition": "Or",
         "any_of": [
+            "RestaurantTable6Gourmand",
             "RestaurantTable6SingleOrder",
             "RestaurantTable6DoubleOrder",
-            "RestaurantTable6Inactive",
+            "RestaurantTable6Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -4247,6 +3107,7 @@
     "RestaurantRuntimeFullFrame": {
         "recognition": "And",
         "all_of": [
+            "RestaurantKitchenPanelReady",
             "RestaurantRuntimeQueueCounts",
             "RestaurantTable1Observation",
             "RestaurantTable2Observation",
@@ -4298,69 +3159,223 @@
             }
         ]
     },
-    "RestaurantQueuePoint1Icon": {
-        "desc": "当前厨房队列第1道菜；队首在右，后续向左排列",
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
-            ]
-        },
-        "roi": [
-            370,
-            504,
-            64,
-            64
-        ]
-    },
-    "RestaurantQueuePoint2Icon": {
-        "desc": "当前厨房队列第2道菜；队首在右，后续向左排列",
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
-            ]
-        },
-        "roi": [
-            289,
-            523,
-            64,
-            64
-        ]
-    },
-    "RestaurantRuntimeQueueIcons": {
-        "desc": "入队时圆点增加即可确认；数量未增加时最多仍有两道菜，才核对这两个队列图标",
+    "RestaurantRuntimeQueueCounts": {
         "recognition": "And",
         "all_of": [
             {
                 "recognition": "Or",
                 "any_of": [
-                    "RestaurantQueuePoint1Icon",
+                    "RestaurantKitchen1QueueCount",
                     "RestaurantObservationEmpty"
                 ]
             },
             {
                 "recognition": "Or",
                 "any_of": [
-                    "RestaurantQueuePoint2Icon",
+                    "RestaurantKitchen2QueueCount",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
+                    "RestaurantKitchen3QueueCount",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
+                    "RestaurantRuntimeSelectedKitchen",
                     "RestaurantObservationEmpty"
                 ]
             }
         ]
     },
-    "RestaurantRuntimeQueueCounts": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantKitchen1QueueCount",
-            "RestaurantKitchen2QueueCount",
-            "RestaurantKitchen3QueueCount",
-            "RestaurantRuntimeSelectedKitchen"
+    "RestaurantTable1Gourmand": {
+        "recognition": "OCR",
+        "roi": [
+            188,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "老饕",
+            "Gourmand",
+            "食通",
+            "미식가"
+        ]
+    },
+    "RestaurantTable1Ordering": {
+        "recognition": "OCR",
+        "roi": [
+            188,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "点餐中",
+            "Ordering",
+            "オーダー中",
+            "주문 중",
+            "點餐中"
+        ]
+    },
+    "RestaurantTable2Gourmand": {
+        "recognition": "OCR",
+        "roi": [
+            282,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "老饕",
+            "Gourmand",
+            "食通",
+            "미식가"
+        ]
+    },
+    "RestaurantTable2Ordering": {
+        "recognition": "OCR",
+        "roi": [
+            282,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "点餐中",
+            "Ordering",
+            "オーダー中",
+            "주문 중",
+            "點餐中"
+        ]
+    },
+    "RestaurantTable3Gourmand": {
+        "recognition": "OCR",
+        "roi": [
+            377,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "老饕",
+            "Gourmand",
+            "食通",
+            "미식가"
+        ]
+    },
+    "RestaurantTable3Ordering": {
+        "recognition": "OCR",
+        "roi": [
+            377,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "点餐中",
+            "Ordering",
+            "オーダー中",
+            "주문 중",
+            "點餐中"
+        ]
+    },
+    "RestaurantTable4Gourmand": {
+        "recognition": "OCR",
+        "roi": [
+            471,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "老饕",
+            "Gourmand",
+            "食通",
+            "미식가"
+        ]
+    },
+    "RestaurantTable4Ordering": {
+        "recognition": "OCR",
+        "roi": [
+            471,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "点餐中",
+            "Ordering",
+            "オーダー中",
+            "주문 중",
+            "點餐中"
+        ]
+    },
+    "RestaurantTable5Gourmand": {
+        "recognition": "OCR",
+        "roi": [
+            566,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "老饕",
+            "Gourmand",
+            "食通",
+            "미식가"
+        ]
+    },
+    "RestaurantTable5Ordering": {
+        "recognition": "OCR",
+        "roi": [
+            566,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "点餐中",
+            "Ordering",
+            "オーダー中",
+            "주문 중",
+            "點餐中"
+        ]
+    },
+    "RestaurantTable6Gourmand": {
+        "recognition": "OCR",
+        "roi": [
+            660,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "老饕",
+            "Gourmand",
+            "食通",
+            "미식가"
+        ]
+    },
+    "RestaurantTable6Ordering": {
+        "recognition": "OCR",
+        "roi": [
+            660,
+            68,
+            94,
+            26
+        ],
+        "expected": [
+            "点餐中",
+            "Ordering",
+            "オーダー中",
+            "주문 중",
+            "點餐中"
         ]
     }
 }

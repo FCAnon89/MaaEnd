@@ -377,7 +377,7 @@
                                     "menu_confirm",
                                     "runtime",
                                     "dispatch",
-                                    "verify"
+                                    "dispatched"
                                 ]
                             },
                             "kind": {

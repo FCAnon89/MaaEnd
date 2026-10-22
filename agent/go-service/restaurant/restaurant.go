@@ -2,7 +2,6 @@ package restaurant
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"regexp"
 	"slices"
@@ -45,19 +44,20 @@ type menuState struct {
 }
 
 type runtimeState struct {
-	Ledger      Ledger `json:"ledger"`
-	PauseReason string `json:"pause_reason,omitempty"`
+	Cache     map[string]int `json:"cache"`
+	Tables    [6]tableOrder  `json:"tables"`
+	PendingID string         `json:"pending_id,omitempty"`
 }
 
-type kitchenQueueView struct {
-	Selected int
-	Counts   [KitchenCount]int
+type tableOrder struct {
+	Items    []string `json:"items,omitempty"`
+	Ordering bool     `json:"ordering,omitempty"`
+	Ignored  bool     `json:"ignored,omitempty"`
 }
 
 var (
-	errAmbiguousQueue           = errors.New("queue icons cannot distinguish the pending dish from a completed identical dish")
 	menuRoutes                  = []string{"RestaurantMenuDishesComplete", "RestaurantMenuDrinksComplete", "RestaurantMenuClickCard", "RestaurantMenuReadCard"}
-	runtimeRoutes               = []string{"RestaurantRuntimeSwitchKitchen1", "RestaurantRuntimeSwitchKitchen2", "RestaurantRuntimeSwitchKitchen3", "RestaurantRuntimeLocateDish", "RestaurantRuntimeClickDish1", "RestaurantRuntimeClickDish2", "RestaurantRuntimeClickDish3", "RestaurantRuntimeClickDish4", "RestaurantRuntimeClickDish5", "RestaurantRuntimeClickDish6", "RestaurantRuntimeWaitQueue", "RestaurantRuntimeReturn", "RestaurantRuntimeIdle"}
+	runtimeRoutes               = []string{"RestaurantRuntimeSwitchKitchen1", "RestaurantRuntimeSwitchKitchen2", "RestaurantRuntimeSwitchKitchen3", "RestaurantRuntimeNextKitchen", "RestaurantRuntimeLocateDish", "RestaurantRuntimeClickDish1", "RestaurantRuntimeClickDish2", "RestaurantRuntimeClickDish3", "RestaurantRuntimeClickDish4", "RestaurantRuntimeClickDish5", "RestaurantRuntimeClickDish6", "RestaurantRuntimeIdle"}
 	restaurantData              menuCatalog
 	restaurantDataOnce          sync.Once
 	restaurantDataErr           error
@@ -100,14 +100,14 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 	}
 	state := &node.Attach.State
 	patch := make(map[string]any)
-	observed := observationHits(arg.RecognitionDetail)
+	observed := indexObservations(arg.RecognitionDetail)
 	switch param.Step {
 	case "requirements":
-		err = prepareMenu(state, arg.RecognitionDetail)
+		err = prepareMenu(state, observed)
 	case "menu_page":
-		err = readMenuPage(state, param.Kind, arg.RecognitionDetail, patch)
+		err = readMenuPage(state, param.Kind, observed, patch)
 	case "menu_card":
-		err = chooseMenuCard(state, arg.RecognitionDetail, observed, patch)
+		err = chooseMenuCard(state, observed, patch)
 	case "menu_confirm":
 		if state.Menu.PendingID == "" {
 			return false
@@ -116,10 +116,18 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 		state.Menu.PendingID = ""
 		state.Menu.Index++
 		err = nextMenuCard(state, patch)
-	case "runtime", "verify":
-		err = decideRuntime(state, arg.RecognitionDetail, observed, param.Step == "verify", patch)
+	case "runtime":
+		err = decideRuntime(state, observed, patch)
 	case "dispatch":
-		err = prepareDispatch(state, arg.RecognitionDetail, observed, arg.Box, patch)
+		err = prepareDispatch(state, observed, arg.Box, patch)
+	case "dispatched":
+		if state.Runtime == nil || state.Runtime.PendingID == "" {
+			return false
+		}
+		current := state.Runtime
+		current.Cache[current.PendingID]++
+		log.Debug().Str("dish_id", current.PendingID).Int("cached", current.Cache[current.PendingID]).Msg("dispatched dish counted in cache")
+		current.PendingID = ""
 	default:
 		return false
 	}
@@ -145,30 +153,33 @@ func loadRestaurantData() (menuCatalog, error) {
 	return restaurantData, restaurantDataErr
 }
 
-// Recognition readers unwrap the current Action input, never a previous frame.
-func findDetail(detail *maa.RecognitionDetail, name string) *maa.RecognitionDetail {
-	if detail == nil {
-		return nil
-	}
-	if detail.Name == name {
-		return detail
-	}
-	for _, child := range detail.CombinedResult {
-		if result := findDetail(child, name); result != nil {
-			return result
+type observations map[string]*maa.RecognitionDetail
+
+// Index only this callback's results, preserving the previous depth-first lookup order.
+func indexObservations(detail *maa.RecognitionDetail) observations {
+	indexed := make(observations)
+	var visit func(*maa.RecognitionDetail)
+	visit = func(current *maa.RecognitionDetail) {
+		if current == nil {
+			return
+		}
+		if _, exists := indexed[current.Name]; !exists {
+			indexed[current.Name] = current
+		}
+		for _, child := range current.CombinedResult {
+			visit(child)
 		}
 	}
-	return nil
+	visit(detail)
+	return indexed
 }
 
 // CombinedResult children omit Hit in maa-framework-go beta.19. The restaurant
 // nodes queried here return nonempty boxes on a hit; failed matches have no box.
 // Read that result locally instead of fetching their Raw and Draws images again.
-func observationHits(detail *maa.RecognitionDetail) func(string) bool {
-	return func(name string) bool {
-		result := findDetail(detail, name)
-		return result != nil && result.Box[2] > 0 && result.Box[3] > 0
-	}
+func (o observations) hit(name string) bool {
+	result := o[name]
+	return result != nil && result.Box[2] > 0 && result.Box[3] > 0
 }
 
 type ocrText struct {
@@ -176,8 +187,8 @@ type ocrText struct {
 	Box  maa.Rect
 }
 
-func readOCR(detail *maa.RecognitionDetail, name string) []ocrText {
-	detail = findDetail(detail, name)
+func readOCR(observed observations, name string) []ocrText {
+	detail := observed[name]
 	if detail == nil || detail.Results == nil {
 		return nil
 	}
@@ -200,16 +211,16 @@ func readOCR(detail *maa.RecognitionDetail, name string) []ocrText {
 	return texts
 }
 
-func readText(detail *maa.RecognitionDetail, name string) string {
+func readText(observed observations, name string) string {
 	var text strings.Builder
-	for _, value := range readOCR(detail, name) {
+	for _, value := range readOCR(observed, name) {
 		text.WriteString(value.Text)
 	}
 	return text.String()
 }
 
-func readIcon(detail *maa.RecognitionDetail, name string) (string, error) {
-	result := findDetail(detail, name)
+func readIcon(observed observations, name string) (string, error) {
+	result := observed[name]
 	if result == nil {
 		return "", fmt.Errorf("missing icon observation %s", name)
 	}
@@ -241,8 +252,8 @@ func iconCandidates(patch map[string]any, name string, ids []string) {
 }
 
 // Menu decisions preserve UI order; Pipeline selects and confirms each card.
-func prepareMenu(state *session, detail *maa.RecognitionDetail) error {
-	text := strings.Join(strings.Fields(readText(detail, "RestaurantMenuRequirementOCR")), "")
+func prepareMenu(state *session, observed observations) error {
+	text := strings.Join(strings.Fields(readText(observed, "RestaurantMenuRequirementOCR")), "")
 	for _, pattern := range menuSizeRequirementPatterns {
 		sizes := pattern.FindStringSubmatch(text)
 		if len(sizes) != 3 {
@@ -250,7 +261,7 @@ func prepareMenu(state *session, detail *maa.RecognitionDetail) error {
 		}
 		dishes, _ := strconv.Atoi(sizes[1])
 		drinks, _ := strconv.Atoi(sizes[2])
-		if dishes <= 0 || dishes > PrestockTrayLimit {
+		if dishes <= 0 || dishes > 6 {
 			return fmt.Errorf("invalid menu quantities %q", text)
 		}
 		state.Menu = menuState{MinimumDishes: dishes, MinimumDrinks: drinks}
@@ -259,14 +270,14 @@ func prepareMenu(state *session, detail *maa.RecognitionDetail) error {
 	return fmt.Errorf("could not read menu quantities from %q", text)
 }
 
-func readMenuPage(state *session, kind string, detail *maa.RecognitionDetail, patch map[string]any) error {
+func readMenuPage(state *session, kind string, observed observations, patch map[string]any) error {
 	patterns, valid := menuQuantityPatterns[kind]
 	if !valid || state.Menu.PendingID != "" {
 		return fmt.Errorf("invalid menu page state")
 	}
 	cards := make([]maa.Rect, 0, 8)
 	complete := 0
-	for _, text := range readOCR(detail, "RestaurantMenuAvailabilityOCR") {
+	for _, text := range readOCR(observed, "RestaurantMenuAvailabilityOCR") {
 		normalized := strings.Join(strings.Fields(text.Text), "")
 		quantity := ""
 		for _, pattern := range patterns {
@@ -324,19 +335,19 @@ func rememberMenuItem(menu *menuState, id string) {
 	}
 }
 
-func chooseMenuCard(state *session, detail *maa.RecognitionDetail, observed func(string) bool, patch map[string]any) error {
+func chooseMenuCard(state *session, observed observations, patch map[string]any) error {
 	menu := &state.Menu
 	if menu.Index < 0 || menu.Index >= len(menu.Cards) || menu.PendingID != "" {
 		return fmt.Errorf("menu candidate state is missing")
 	}
-	id, err := readIcon(detail, "RestaurantMenuCardIcon")
+	id, err := readIcon(observed, "RestaurantMenuCardIcon")
 	if err != nil {
 		return err
 	}
 	if id == "" {
 		return fmt.Errorf("menu card icon is unrecognized")
 	}
-	if observed("RestaurantMenuCardSelected") {
+	if observed.hit("RestaurantMenuCardSelected") {
 		rememberMenuItem(menu, id)
 		menu.Index++
 		return nextMenuCard(state, patch)
@@ -358,16 +369,17 @@ func nextMenuCard(state *session, patch map[string]any) error {
 	}
 	if selected >= required {
 		if menu.Kind == "drink" {
-			state.Runtime = &runtimeState{Ledger: newLedger(menu.Dishes, menu.Drinks)}
+			state.Runtime = &runtimeState{Cache: make(map[string]int, len(menu.Dishes))}
+			for _, id := range menu.Dishes {
+				state.Runtime.Cache[id] = 0
+			}
 			dishes := append([]string(nil), menu.Dishes...)
 			all := append(append([]string(nil), dishes...), menu.Drinks...)
 			for table := 1; table <= 6; table++ {
+				setTableObservation(patch, table, tableOrder{})
 				for _, layout := range []string{"SinglePoint1", "DoublePoint1", "DoublePoint2"} {
 					iconCandidates(patch, fmt.Sprintf("RestaurantTable%d%sIcon", table, layout), all)
 				}
-			}
-			for point := 1; point < KitchenQueueSize; point++ {
-				iconCandidates(patch, fmt.Sprintf("RestaurantQueuePoint%dIcon", point), dishes)
 			}
 			for slot := 1; slot <= 6; slot++ {
 				iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dIcon", slot), dishes)
@@ -399,499 +411,189 @@ func nextMenuCard(state *session, patch map[string]any) error {
 	return nil
 }
 
-// Runtime facts are read by Pipeline from one screenshot, including all three queues.
-func readKitchenView(observed func(string) bool) (kitchenQueueView, error) {
-	view := kitchenQueueView{Counts: [KitchenCount]int{-1, -1, -1}}
-	for kitchen := 1; kitchen <= KitchenCount; kitchen++ {
-		if observed(fmt.Sprintf("RestaurantKitchen%dSelected", kitchen)) {
-			view.Selected = kitchen
-		}
-		for count := 0; count <= KitchenQueueSize; count++ {
-			if observed(fmt.Sprintf("RestaurantKitchen%dCount%d", kitchen, count)) {
-				view.Counts[kitchen-1] = count
-				break
-			}
-		}
-		if view.Counts[kitchen-1] < 0 {
-			return view, fmt.Errorf("kitchen %d queue dots are uncertain", kitchen)
-		}
-	}
-	if view.Selected == 0 {
-		return view, fmt.Errorf("selected kitchen is uncertain")
-	}
-	return view, nil
-}
-
-func readRuntimeFrame(detail *maa.RecognitionDetail, observed func(string) bool, state *runtimeState) (GameSnapshot, error) {
-	var snapshot GameSnapshot
-	for table := 1; table <= 6; table++ {
-		points, err := readTablePoints(detail, observed, table, state)
-		if err != nil {
-			return GameSnapshot{}, err
-		}
-		snapshot.Points = append(snapshot.Points, points...)
-	}
-	for slot := 1; slot <= 6; slot++ {
-		prefix := fmt.Sprintf("RestaurantRecipe%d", slot)
-		if !observed(prefix + "RestockMarker") {
-			continue
-		}
-		id, err := readIcon(detail, prefix+"Icon")
-		if err != nil || id == "" {
-			return GameSnapshot{}, fmt.Errorf("supplement marker has an unrecognized dish: %v", err)
-		}
-		snapshot.NeedsRestock = append(snapshot.NeedsRestock, id)
-	}
-	return snapshot, nil
-}
-
-func readTablePoints(detail *maa.RecognitionDetail, observed func(string) bool, table int, state *runtimeState) ([]OrderPoint, error) {
-	points := []OrderPoint{{Key: OrderPointKey{Table: table, Point: 1}}, {Key: OrderPointKey{Table: table, Point: 2}}}
-	prefix := fmt.Sprintf("RestaurantTable%d", table)
-	layout, count := "Single", 1
-	if observed(prefix + "DoubleOrder") {
-		layout, count = "Double", 2
-	} else if !observed(prefix + "SingleOrder") {
-		if !observed(prefix + "Inactive") {
-			return nil, fmt.Errorf("table %d layout or item is uncertain", table)
-		}
-		unserved := false
-		for _, point := range points {
-			previous := state.Ledger.Points[orderPointStorageKey(point.Key)]
-			if _, dish := state.Ledger.DishIDs[previous.ItemID]; dish && previous.Exists && !previous.Served {
-				unserved = true
-			}
-		}
-		if unserved {
-			if !observed(prefix + "Dining") {
-				return nil, fmt.Errorf("table %d is waiting for delivery or eating confirmation", table)
-			}
-			for index, point := range points {
-				if previous := state.Ledger.Points[orderPointStorageKey(point.Key)]; previous.Exists {
-					previous.Served = true
-					points[index] = previous
-				}
-			}
-		}
-		return points, nil
-	}
-	for point := 1; point <= count; point++ {
-		name := fmt.Sprintf("%s%sPoint%d", prefix, layout, point)
-		id, err := readIcon(detail, name+"Icon")
-		if err != nil {
-			return nil, err
-		}
-		if id == "" {
-			return nil, fmt.Errorf("table %d point %d item is unrecognized", table, point)
-		}
-		points[point-1].ItemID = id
-		points[point-1].Exists = true
-		points[point-1].Served = observed(name + "Served")
-	}
-	return points, nil
-}
-
-func decideRuntime(state *session, detail *maa.RecognitionDetail, observed func(string) bool, verify bool, patch map[string]any) error {
-	current := state.Runtime
-	if current == nil {
-		return fmt.Errorf("runtime ledger is missing")
-	}
-	ledger := &current.Ledger
-	view, err := readKitchenView(observed)
-	added := false
-	if err == nil {
-		added, err = ledger.observeQueues(view, detail, verify)
-	}
-	if observed("RestaurantRuntimeFullFrame") {
-		snapshot, frameErr := readRuntimeFrame(detail, observed, current)
-		if frameErr == nil {
-			frameErr = ledger.observeTables(snapshot)
-		}
-		if err == nil {
-			err = frameErr
-		}
-		if err == nil && !verify {
-			ledger.Pending = ledger.suggestDispatch(snapshot.NeedsRestock)
-		}
-	}
-	if err != nil {
-		if current.PauseReason != err.Error() {
-			log.Warn().Err(err).Msg("restaurant is waiting for consistent observations")
-		}
-		current.PauseReason = err.Error()
-		name := "RestaurantRuntimeIdle"
-		if verify {
-			name = "RestaurantRuntimeWaitQueue"
-			if ledger.Pending == nil {
-				name = "RestaurantRuntimeReturn"
-			}
-			patch["RestaurantRuntimeVerifyDispatch"] = map[string]any{"all_of": []string{"RestaurantRuntimeFullFrame", "RestaurantRuntimeQueueIcons"}}
-		}
-		route(patch, runtimeRoutes, name)
-		return nil
-	}
-	current.PauseReason = ""
-	if verify && added {
-		route(patch, runtimeRoutes, "RestaurantRuntimeReturn")
-		return nil
-	}
-	pending := ledger.Pending
-	if pending == nil {
-		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
-		return nil
-	}
-	// A confirmed failed click may be retried in the newly shortest kitchen.
-	next := ledger.makeDispatch(pending.DishID)
-	if next == nil {
-		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
-		return nil
-	}
-	ledger.Pending = next
-	setDispatchTarget(next, patch)
-	if view.Selected != next.Kitchen {
-		route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeSwitchKitchen%d", next.Kitchen))
-	} else {
-		route(patch, runtimeRoutes, "RestaurantRuntimeLocateDish")
-	}
-	return nil
-}
-
-func setDispatchTarget(dispatch *Dispatch, patch map[string]any) {
-	patch["RestaurantRuntimeTargetKitchen"] = map[string]any{"all_of": []string{fmt.Sprintf("RestaurantKitchen%dSelected", dispatch.Kitchen)}}
-	for slot := 1; slot <= 6; slot++ {
-		iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot), []string{dispatch.DishID})
-	}
-}
-
-func recipeClickSlot(observed func(string) bool) (int, error) {
-	for slot := 1; slot <= 6; slot++ {
-		if observed(fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot)) {
-			return slot, nil
-		}
-	}
-	return 0, fmt.Errorf("target dish slot is uncertain")
-}
-
-func prepareDispatch(state *session, detail *maa.RecognitionDetail, observed func(string) bool, box maa.Rect, patch map[string]any) error {
-	current := state.Runtime
-	if current == nil || current.Ledger.Pending == nil || box[2] <= 0 || box[3] <= 0 {
-		return fmt.Errorf("pending dispatch or recipe observation is missing")
-	}
-	// Refresh dot counts immediately before the click; completions must not be
-	// confused with the subsequent addition to the selected kitchen.
-	view, err := readKitchenView(observed)
-	if err != nil {
-		return err
-	}
-	if _, err := current.Ledger.observeQueues(view, detail, false); err != nil {
-		return err
-	}
-	pending := current.Ledger.Pending
-	pending = current.Ledger.makeDispatch(pending.DishID)
-	current.Ledger.Pending = pending
-	if pending == nil {
-		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
-		return nil
-	}
-	if pending.Kitchen != view.Selected {
-		setDispatchTarget(pending, patch)
-		route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeSwitchKitchen%d", pending.Kitchen))
-		return nil
-	}
-	iconCandidates(patch, "RestaurantRuntimeClickDishIcon", []string{pending.DishID})
-	patch["RestaurantRuntimeClickDishIcon"].(map[string]any)["roi"] = box
-	portions := current.Ledger.counterCount() + 1
-	for _, queue := range current.Ledger.Kitchens {
-		portions += len(queue)
-	}
-	frame := "RestaurantRuntimeQueueCounts"
-	if portions >= CounterTrayCount {
-		frame = "RestaurantRuntimeFullFrame"
-	}
-	clickSlot, err := recipeClickSlot(observed)
-	if err != nil {
-		return err
-	}
-	patch["RestaurantRuntimeVerifyDispatch"] = map[string]any{"all_of": []string{frame, "RestaurantRuntimeQueueIcons"}}
-	route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeClickDish%d", clickSlot))
-	return nil
-}
-
 // Only item IDs are required; cooks and cooking times are deliberately absent.
 type menuCatalog struct {
 	Dishes []string `json:"dishes"`
 	Drinks []string `json:"drinks"`
 }
 
-const (
-	// KitchenCount is the number of kitchens available during daily operation.
-	KitchenCount = 3
-	// KitchenQueueSize includes the cooking dish and the dishes waiting behind it.
-	KitchenQueueSize = 3
-	// CounterTrayCount is the maximum number of cooked dishes held at the counter.
-	CounterTrayCount = 8
-	// PrestockTrayLimit is the tray budget for one reserve portion per selected dish.
-	PrestockTrayLimit = 6
-)
-
-// OrderPointKey identifies one meal slot at a table.
-type OrderPointKey struct {
-	Table int `json:"table"`
-	Point int `json:"point"`
-}
-
-// OrderPoint records the observed item and delivery state of a table's meal slot.
-type OrderPoint struct {
-	Key    OrderPointKey `json:"key"`
-	ItemID string        `json:"item_id"`
-	Exists bool          `json:"exists"`
-	Served bool          `json:"served"`
-}
-
-// GameSnapshot contains observed table orders and dishes marked for restocking.
-type GameSnapshot struct {
-	Points       []OrderPoint `json:"points"`
-	NeedsRestock []string     `json:"needs_restock"`
-}
-
-// Dispatch records a dish assignment and whether its enqueue result is uncertain.
-type Dispatch struct {
-	DishID    string `json:"dish_id"`
-	Kitchen   int    `json:"kitchen"`
-	Uncertain bool   `json:"uncertain,omitempty"`
-}
-
-// Ledger tracks kitchen queues, counter stock, table orders, and the pending dispatch.
-type Ledger struct {
-	Kitchens [KitchenCount][]string
-	Counter  map[string]int
-	Dishes   []string
-	DishIDs  map[string]struct{}
-	DrinkIDs map[string]struct{}
-	Points   map[string]OrderPoint
-	Pending  *Dispatch
-}
-
-func newLedger(dishes, drinks []string) Ledger {
-	ledger := Ledger{
-		Counter:  make(map[string]int),
-		Dishes:   append([]string(nil), dishes...),
-		DishIDs:  make(map[string]struct{}, len(dishes)),
-		DrinkIDs: make(map[string]struct{}, len(drinks)),
-		Points:   make(map[string]OrderPoint),
-	}
-	for _, dishID := range dishes {
-		ledger.DishIDs[dishID] = struct{}{}
-	}
-	for _, drinkID := range drinks {
-		ledger.DrinkIDs[drinkID] = struct{}{}
-	}
-	return ledger
-}
-
-// A queue may lose only a known FIFO prefix, and a verified click may add one
-// dish. Compare every visible slot only when dot counts alone are insufficient.
-func queueProgress(queue []string, count int, visible []string, pending string) (int, bool, error) {
-	without := len(queue) - count
-	with := len(queue) + 1 - count
-	withoutMatches := without >= 0 && without <= len(queue) && slices.Equal(queue[without:], visible)
-	withMatches := count > 0 && with >= 0 && with <= len(queue) && slices.Equal(append(append([]string(nil), queue[with:]...), pending), visible)
-	if withoutMatches && withMatches {
-		return 0, false, errAmbiguousQueue
-	}
-	if withMatches {
-		return with, true, nil
-	}
-	if withoutMatches {
-		return without, false, nil
-	}
-	return 0, false, fmt.Errorf("visible queue %v does not match recorded FIFO %v or pending dish %q", visible, queue, pending)
-}
-
-func (l *Ledger) observeQueues(view kitchenQueueView, detail *maa.RecognitionDetail, verify bool) (bool, error) {
-	removed := [KitchenCount]int{}
-	added := false
-	var queueErr error
-queues:
-	for kitchen, count := range view.Counts {
-		queue := l.Kitchens[kitchen]
-		removed[kitchen] = len(queue) - count
-		if verify && l.Pending != nil && l.Pending.Kitchen == kitchen+1 {
-			if view.Selected != kitchen+1 {
-				return false, fmt.Errorf("pending kitchen is not selected during verification")
+// Zero means the dots are unreadable. A full set of three queues waits instead
+// of using the E-key route reserved for recognition failures.
+func chooseKitchen(observed observations) (kitchen int, full bool) {
+	minimum := 3
+	for number := 1; number <= 3; number++ {
+		count := -1
+		for value := 0; value <= 3; value++ {
+			if observed.hit(fmt.Sprintf("RestaurantKitchen%dCount%d", number, value)) {
+				count = value
+				break
 			}
-			if count > len(queue)+1 {
-				return false, fmt.Errorf("kitchen %d gained more than the pending dish", kitchen+1)
+		}
+		if count < 0 {
+			return 0, false
+		}
+		if kitchen == 0 || count < minimum {
+			kitchen, minimum = number, count
+		}
+	}
+	return kitchen, minimum == 3
+}
+
+// Filed tables run only Dining OCR; ignored gourmands run no recognition.
+func setTableObservation(patch map[string]any, table int, order tableOrder) {
+	prefix := fmt.Sprintf("RestaurantTable%d", table)
+	nodes := []string{"RestaurantObservationEmpty"}
+	if !order.Ignored {
+		if len(order.Items) > 0 {
+			nodes = []string{prefix + "Dining", "RestaurantObservationEmpty"}
+		} else {
+			nodes = []string{prefix + "Gourmand", prefix + "SingleOrder", prefix + "DoubleOrder"}
+			if !order.Ordering {
+				nodes = append(nodes, prefix+"Ordering")
 			}
-			if count == len(queue)+1 {
-				removed[kitchen], added = 0, true
-				continue
-			}
-			visible := make([]string, 0, count)
-			for point := 1; point <= count; point++ {
-				id, err := readIcon(detail, fmt.Sprintf("RestaurantQueuePoint%dIcon", point))
-				if err != nil || id == "" {
-					l.Pending.Uncertain = true
-					queueErr = fmt.Errorf("queue point %d is unrecognized: %v", point, err)
-					continue queues
+			nodes = append(nodes, "RestaurantObservationEmpty")
+		}
+	}
+	patch[prefix+"Observation"] = map[string]any{"any_of": nodes}
+}
+
+func readTableOrder(observed observations, table int) ([]string, error) {
+	prefix := fmt.Sprintf("RestaurantTable%d", table)
+	layout, count := "Single", 1
+	if observed.hit(prefix + "DoubleOrder") {
+		layout, count = "Double", 2
+	} else if !observed.hit(prefix + "SingleOrder") {
+		return nil, nil
+	}
+	items := make([]string, 0, count)
+	for point := 1; point <= count; point++ {
+		id, err := readIcon(observed, fmt.Sprintf("%s%sPoint%dIcon", prefix, layout, point))
+		if err != nil {
+			return nil, err
+		}
+		if id == "" {
+			return nil, nil
+		}
+		items = append(items, id)
+	}
+	return items, nil
+}
+
+func observeTables(current *runtimeState, observed observations, patch map[string]any) error {
+	for index := range current.Tables {
+		order := &current.Tables[index]
+		if order.Ignored {
+			continue
+		}
+		table := index + 1
+		prefix := fmt.Sprintf("RestaurantTable%d", table)
+		if len(order.Items) > 0 {
+			if observed.hit(prefix + "Dining") {
+				for _, id := range order.Items {
+					if cached, dish := current.Cache[id]; dish {
+						current.Cache[id] = cached - 1
+					}
 				}
-				visible = append(visible, id)
+				log.Debug().Int("table", table).Strs("items", order.Items).Msg("dining table cleared; order deducted from cache")
+				*order = tableOrder{}
+				setTableObservation(patch, table, *order)
 			}
-			completed, accepted, err := queueProgress(queue, count, visible, l.Pending.DishID)
-			if err != nil {
-				l.Pending.Uncertain = true
-				queueErr = err
-				continue
-			}
-			removed[kitchen], added = completed, accepted
-			if l.Pending.Uncertain && !added && count == 0 {
-				// Later empty slots do not prove that an earlier ambiguous click failed.
-				queueErr = errAmbiguousQueue
-			} else if !added {
-				// A nonempty old FIFO proves that the new tail was not added.
-				l.Pending.Uncertain = false
-			}
-		} else if count > len(queue) {
-			return false, fmt.Errorf("kitchen %d has unrecorded queue entries", kitchen+1)
-		}
-	}
-	for kitchen, count := range removed {
-		for _, dishID := range l.Kitchens[kitchen][:count] {
-			l.Counter[dishID]++
-			log.Debug().Int("kitchen", kitchen+1).Str("dish_id", dishID).Msg("queue dots decreased; dish moved to counter")
-		}
-		l.Kitchens[kitchen] = l.Kitchens[kitchen][count:]
-	}
-	if added {
-		pending := l.Pending
-		l.Kitchens[pending.Kitchen-1] = append(l.Kitchens[pending.Kitchen-1], pending.DishID)
-		l.Pending = nil
-	}
-	return added, queueErr
-}
-
-func (l *Ledger) observeTables(snapshot GameSnapshot) error {
-	current := make(map[string]OrderPoint, len(snapshot.Points))
-	for _, point := range snapshot.Points {
-		if point.Exists {
-			if _, dish := l.DishIDs[point.ItemID]; !dish {
-				if _, drink := l.DrinkIDs[point.ItemID]; !drink {
-					return fmt.Errorf("table point %d/%d has unselected item %q", point.Key.Table, point.Key.Point, point.ItemID)
-				}
-			}
-		}
-		current[orderPointStorageKey(point.Key)] = point
-	}
-	for _, dishID := range snapshot.NeedsRestock {
-		if _, selected := l.DishIDs[dishID]; !selected {
-			return fmt.Errorf("supplement marker belongs to unselected dish %q", dishID)
-		}
-	}
-	consumed := make(map[string]int)
-	for key, previous := range l.Points {
-		next, exists := current[key]
-		if !exists || !next.Exists || next.ItemID != previous.ItemID {
-			if previous.Exists && !previous.Served {
-				if _, isDrink := l.DrinkIDs[previous.ItemID]; !isDrink {
-					return fmt.Errorf("dish point %d/%d changed before its served marker was observed", previous.Key.Table, previous.Key.Point)
-				}
-			}
-		}
-	}
-	for key, next := range current {
-		previous := l.Points[key]
-		if !next.Exists || !next.Served || (previous.Exists && previous.ItemID == next.ItemID && previous.Served) {
 			continue
 		}
-		if _, isDrink := l.DrinkIDs[next.ItemID]; !isDrink {
-			consumed[next.ItemID]++
-		}
-	}
-	for dishID, quantity := range consumed {
-		if l.Counter[dishID] < quantity {
-			return fmt.Errorf("served dish %q needs %d portions but counter ledger holds %d", dishID, quantity, l.Counter[dishID])
-		}
-	}
-	for dishID, quantity := range consumed {
-		l.Counter[dishID] -= quantity
-	}
-	l.Points = current
-	return nil
-}
-
-func orderPointStorageKey(key OrderPointKey) string {
-	return fmt.Sprintf("%d/%d", key.Table, key.Point)
-}
-
-func (l *Ledger) suggestDispatch(needsRestock []string) *Dispatch {
-	marked := make(map[string]struct{}, len(needsRestock))
-	for _, dishID := range needsRestock {
-		marked[dishID] = struct{}{}
-	}
-	for _, dishID := range l.Dishes {
-		if _, needs := marked[dishID]; !needs {
+		if observed.hit(prefix + "Gourmand") {
+			*order = tableOrder{Ignored: true}
+			setTableObservation(patch, table, *order)
+			log.Debug().Int("table", table).Msg("gourmand table ignored for the rest of this run")
 			continue
 		}
-		return l.makeDispatch(dishID)
-	}
-	for _, dishID := range l.Dishes {
-		if l.Counter[dishID]+l.inFlight(dishID) >= l.unservedDemand(dishID) {
-			continue
+		items, err := readTableOrder(observed, table)
+		if err != nil {
+			return err
 		}
-		return l.makeDispatch(dishID)
-	}
-	for _, dishID := range l.Dishes {
-		if l.Counter[dishID]+l.inFlight(dishID) > 0 {
-			continue
+		if len(items) > 0 {
+			*order = tableOrder{Items: items}
+			setTableObservation(patch, table, *order)
+			log.Debug().Int("table", table).Strs("items", items).Msg("table order filed")
+		} else if !order.Ordering && observed.hit(prefix+"Ordering") {
+			order.Ordering = true
+			setTableObservation(patch, table, *order)
 		}
-		return l.makeDispatch(dishID)
 	}
 	return nil
 }
 
-// Stable iteration implements kitchen 1 > 2 > 3 when queue lengths tie.
-func (l *Ledger) makeDispatch(dishID string) *Dispatch {
-	if l.counterCount() >= CounterTrayCount {
+// A waving marker takes precedence over every cache quantity. Without one,
+// replenish the selected dishes to two portions in menu order.
+func chooseDish(state *session, observed observations) (string, error) {
+	for slot := 1; slot <= 6; slot++ {
+		prefix := fmt.Sprintf("RestaurantRecipe%d", slot)
+		if !observed.hit(prefix + "Restock") {
+			continue
+		}
+		id, err := readIcon(observed, prefix+"Icon")
+		if err != nil {
+			return "", err
+		}
+		if id != "" {
+			return id, nil
+		}
+	}
+	for _, id := range state.Menu.Dishes {
+		if state.Runtime.Cache[id] < 2 {
+			return id, nil
+		}
+	}
+	return "", nil
+}
+
+func decideRuntime(state *session, observed observations, patch map[string]any) error {
+	current := state.Runtime
+	if current == nil {
+		return fmt.Errorf("runtime cache is missing")
+	}
+	if err := observeTables(current, observed, patch); err != nil {
+		return err
+	}
+	id, err := chooseDish(state, observed)
+	if err != nil {
+		return err
+	}
+	kitchen, full := chooseKitchen(observed)
+	if id == "" || full {
+		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
 		return nil
 	}
-	selected := -1
-	for kitchen, queue := range l.Kitchens {
-		if len(queue) < KitchenQueueSize && (selected < 0 || len(queue) < len(l.Kitchens[selected])) {
-			selected = kitchen
+	current.PendingID = id
+	for slot := 1; slot <= 6; slot++ {
+		iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot), []string{id})
+	}
+	target := "RestaurantKitchenPanelReady"
+	name := "RestaurantRuntimeNextKitchen"
+	if kitchen != 0 {
+		target = fmt.Sprintf("RestaurantKitchen%dSelected", kitchen)
+		name = "RestaurantRuntimeLocateDish"
+		if !observed.hit(target) {
+			name = fmt.Sprintf("RestaurantRuntimeSwitchKitchen%d", kitchen)
 		}
 	}
-	if selected < 0 {
+	patch["RestaurantRuntimeTargetKitchen"] = map[string]any{"all_of": []string{target}}
+	route(patch, runtimeRoutes, name)
+	return nil
+}
+
+func prepareDispatch(state *session, observed observations, box maa.Rect, patch map[string]any) error {
+	current := state.Runtime
+	if current == nil || current.PendingID == "" || box[2] <= 0 || box[3] <= 0 {
+		return fmt.Errorf("pending dispatch or recipe observation is missing")
+	}
+	for slot := 1; slot <= 6; slot++ {
+		if !observed.hit(fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot)) {
+			continue
+		}
+		iconCandidates(patch, "RestaurantRuntimeClickDishIcon", []string{current.PendingID})
+		patch["RestaurantRuntimeClickDishIcon"].(map[string]any)["roi"] = box
+		route(patch, runtimeRoutes, fmt.Sprintf("RestaurantRuntimeClickDish%d", slot))
 		return nil
 	}
-	return &Dispatch{DishID: dishID, Kitchen: selected + 1}
-}
-
-func (l *Ledger) counterCount() int {
-	count := 0
-	for _, quantity := range l.Counter {
-		count += quantity
-	}
-	return count
-}
-
-func (l *Ledger) inFlight(dishID string) int {
-	count := 0
-	for _, queue := range l.Kitchens {
-		for _, job := range queue {
-			if job == dishID {
-				count++
-			}
-		}
-	}
-	return count
-}
-
-func (l *Ledger) unservedDemand(dishID string) int {
-	count := 0
-	for _, point := range l.Points {
-		if point.Exists && !point.Served && point.ItemID == dishID {
-			count++
-		}
-	}
-	return count
+	return fmt.Errorf("target dish slot is uncertain")
 }
