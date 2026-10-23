@@ -1,4 +1,47 @@
 {
+    "RestaurantInitialize": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RestaurantDecisionAction",
+        "custom_action_param": {
+            "step": "initialize",
+            "max_rounds": 0
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantResetRoundCount"
+        ]
+    },
+    "RestaurantResetRoundCount": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "ClearHitCount",
+        "custom_action_param": {
+            "nodes": [
+                "RestaurantRoundGate"
+            ],
+            "strict": true
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantRoundGate",
+            "StopNode"
+        ]
+    },
+    "RestaurantRoundGate": {
+        "max_hit": 0,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuInitialize"
+        ]
+    },
     "RestaurantMenuInitialize": {
         "recognition": "DirectHit",
         "pre_delay": 0,
@@ -61,6 +104,91 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantOpenCounter",
+            "NavigateSisPaintingYuanyuanManorStart"
+        ]
+    },
+    "NavigateSisPaintingYuanyuanManorStart": {
+        "desc": "先返回大世界",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "SubTask",
+        "custom_action_param": {
+            "sub": [
+                "SceneAnyEnterWorld"
+            ]
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "NavigateSisPaintingYuanyuanManorTeleport"
+        ]
+    },
+    "NavigateSisPaintingYuanyuanManorTeleport": {
+        "desc": "传送到武陵-祀的画-缘缘庄",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "SubTask",
+        "custom_action_param": {
+            "sub": [
+                "SceneEnterWorldWulingSisPaintingYuanyuanManor"
+            ]
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "NavigateSisPaintingYuanyuanManorTarget"
+        ]
+    },
+    "NavigateSisPaintingYuanyuanManorTarget": {
+        "desc": "导航至目标点",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "MapNavigateAction",
+        "custom_action_param": {
+            "path": [
+                {
+                    "action": "NAVMESH",
+                    "target": [
+                        142.6,
+                        138.01
+                    ],
+                    "target_tier": "Wuling_L10_468"
+                }
+            ]
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantOpenCounter"
+        ]
+    },
+    "RestaurantOpenCounter": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            833,
+            409,
+            210,
+            62
+        ],
+        "template": "Restaurant/StartBusiness.png",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "custom_action": "AutoAltClickAction",
+            "wait_node": "RestaurantOpenCounter"
+        },
+        "target": true,
+        "target_offset": [
+            11,
+            11,
+            -21,
+            -21
+        ],
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RestaurantOpenDailyTheme"
         ]
     },
@@ -83,7 +211,78 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantPatronageAvailable",
+            "RestaurantPatronageInsufficient"
+        ]
+    },
+    "RestaurantPatronageOCR": {
+        "recognition": "OCR",
+        "roi": [
+            1083,
+            15,
+            111,
+            29
+        ],
+        // 完整数值格式为当前客源/客源上限，例如 310/1000。
+        "expected": [
+            // @i18n-skip
+            "^\\s*[0-9]+\\s*/\\s*[0-9]+\\s*$"
+        ],
+        "only_rec": true
+    },
+    "RestaurantPatronageAvailable": {
+        "recognition": "Custom",
+        "custom_recognition": "ExpressionRecognition",
+        "custom_recognition_param": {
+            "expression": "{RestaurantPatronageOCR}>=60"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RestaurantFormalStart"
+        ]
+    },
+    "RestaurantPatronageInsufficient": {
+        "recognition": "Custom",
+        "custom_recognition": "ExpressionRecognition",
+        "custom_recognition_param": {
+            "expression": "{RestaurantPatronageOCR}<60"
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantCloseTheme"
+        ]
+    },
+    "RestaurantCloseTheme": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            1196,
+            3,
+            81,
+            62
+        ],
+        "template": "Restaurant/CloseTheme.png",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "RestaurantCloseTheme"
+        },
+        "target": true,
+        "target_offset": [
+            13,
+            13,
+            -26,
+            -26
+        ],
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "StopNode"
         ]
     },
     "RestaurantFormalStart": {
@@ -1199,6 +1398,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantRoundGate",
             "StopNode"
         ]
     },

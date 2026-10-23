@@ -23,8 +23,9 @@ type DecisionAction struct{}
 var _ maa.CustomActionRunner = &DecisionAction{}
 
 type decisionParam struct {
-	Step string `json:"step"`
-	Kind string `json:"kind"`
+	Step      string `json:"step"`
+	Kind      string `json:"kind"`
+	MaxRounds int    `json:"max_rounds"`
 }
 
 type session struct {
@@ -102,6 +103,12 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 	patch := make(map[string]any)
 	observed := indexObservations(arg.RecognitionDetail)
 	switch param.Step {
+	case "initialize":
+		if param.MaxRounds < 0 || param.MaxRounds > 1000 {
+			err = fmt.Errorf("maximum restaurant rounds must be between 0 and 1000")
+			break
+		}
+		patch["RestaurantRoundGate"] = map[string]any{"max_hit": param.MaxRounds}
 	case "requirements":
 		err = prepareMenu(state, observed)
 	case "menu_page":

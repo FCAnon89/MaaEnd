@@ -371,6 +371,7 @@
                         "properties": {
                             "step": {
                                 "enum": [
+                                    "initialize",
                                     "requirements",
                                     "menu_page",
                                     "menu_card",
@@ -384,6 +385,11 @@
                                     "dish",
                                     "drink"
                                 ]
+                            },
+                            "max_rounds": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1000
                             }
                         }
                     }
