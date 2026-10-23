@@ -2584,7 +2584,7 @@
     "task.ResourceRecycleStation.focus.ValleyIVStart": "開始收取四號谷地資源回收站",
     "task.ResourceRecycleStation.focus.WulingStart": "開始收取武陵資源回收站",
     "task.ResourceRecycleStation.label": "🦉資源回收站",
-    "task.RestaurantDaily.description": "從客棧櫃台前的大世界開始任務：自動配置廚房和菜單，並根據桌位訂單與補充標記，持續將菜品加入廚房佇列。忽略老饕訂單。",
+    "task.RestaurantDaily.description": "自動配置廚房和菜單，並根據桌位訂單與補充標記，自動選擇要加入廚房佇列的菜品。忽略老饕訂單。",
     "task.RestaurantDaily.label": "🍽️緣緣莊客棧經營",
     "task.RestaurantDaily.option.MaxRounds.label": "設定最大循環次數",
     "task.RestaurantDaily.option.MaxRounds.pattern_msg": "請填入1-1000的整數。",

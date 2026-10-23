@@ -2584,7 +2584,7 @@
     "task.ResourceRecycleStation.focus.ValleyIVStart": "Collecting Valley IV Resource Recycle Station",
     "task.ResourceRecycleStation.focus.WulingStart": "Collecting Wuling Resource Recycle Station",
     "task.ResourceRecycleStation.label": "🦉Resource Recycle Station",
-    "task.RestaurantDaily.description": "Start in the open world at the inn counter. Automatically configure the kitchens and menu, then queue dishes based on table orders and restock markers. Gourmand orders are ignored.",
+    "task.RestaurantDaily.description": "Automatically configure the kitchens and menu, then select dishes to queue based on table orders and restock markers. Gourmand orders are ignored.",
     "task.RestaurantDaily.label": "🍽️Yuanyuan Manor Innkeeping",
     "task.RestaurantDaily.option.MaxRounds.label": "Set maximum rounds",
     "task.RestaurantDaily.option.MaxRounds.pattern_msg": "Please enter an integer from 1 to 1000.",

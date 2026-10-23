@@ -2584,7 +2584,7 @@
     "task.ResourceRecycleStation.focus.ValleyIVStart": "4호 계곡 자원 재활용 스테이션 수집 중",
     "task.ResourceRecycleStation.focus.WulingStart": "무릉 자원 재활용 스테이션 수집 중",
     "task.ResourceRecycleStation.label": "🦉자원 재활용 스테이션",
-    "task.RestaurantDaily.description": "객잔 카운터 앞의 오픈 월드에서 시작합니다. 주방과 메뉴를 자동으로 설정한 뒤, 테이블 주문과 보충 표시를 기준으로 요리를 주방에 추가합니다. 미식가 손님의 주문은 무시합니다.",
+    "task.RestaurantDaily.description": "주방과 메뉴를 자동으로 설정한 뒤, 테이블 주문과 보충 표시를 기준으로 주방에 추가할 요리를 자동으로 선택합니다. 미식가 손님의 주문은 무시합니다.",
     "task.RestaurantDaily.label": "🍽️인연 마을 객잔 운영",
     "task.RestaurantDaily.option.MaxRounds.label": "최대 반복 횟수 설정",
     "task.RestaurantDaily.option.MaxRounds.pattern_msg": "1~1000의 정수를 입력해 주세요.",
