@@ -1561,12 +1561,20 @@
             "RestaurantKitchenPanelReady"
         ],
         "pre_delay": 0,
-        "action": "LongPress",
-        "target": [
-            269,
-            161
-        ],
-        "duration": 100,
+        "action": "Custom",
+        "custom_action": "RepeatUntilFoundAction",
+        "custom_action_param": {
+            "custom_action": "SubTask",
+            "custom_action_param": {
+                "sub": [
+                    "RestaurantRuntimeSwitchKitchen1Click"
+                ]
+            },
+            "wait_nodes": [
+                "RestaurantKitchen1Selected",
+                "RestaurantGameEnded"
+            ]
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
@@ -1578,6 +1586,18 @@
             "RestaurantRuntimeClickDish5",
             "RestaurantRuntimeClickDish6"
         ]
+    },
+    "RestaurantRuntimeSwitchKitchen1Click": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "LongPress",
+        "target": [
+            269,
+            161
+        ],
+        "duration": 100,
+        "post_delay": 0,
+        "rate_limit": 0
     },
     "RestaurantRuntimeSwitchKitchen2": {
         "enabled": false,
@@ -1586,12 +1606,20 @@
             "RestaurantKitchenPanelReady"
         ],
         "pre_delay": 0,
-        "action": "LongPress",
-        "target": [
-            495,
-            161
-        ],
-        "duration": 100,
+        "action": "Custom",
+        "custom_action": "RepeatUntilFoundAction",
+        "custom_action_param": {
+            "custom_action": "SubTask",
+            "custom_action_param": {
+                "sub": [
+                    "RestaurantRuntimeSwitchKitchen2Click"
+                ]
+            },
+            "wait_nodes": [
+                "RestaurantKitchen2Selected",
+                "RestaurantGameEnded"
+            ]
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
@@ -1604,6 +1632,18 @@
             "RestaurantRuntimeClickDish6"
         ]
     },
+    "RestaurantRuntimeSwitchKitchen2Click": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "LongPress",
+        "target": [
+            495,
+            161
+        ],
+        "duration": 100,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
     "RestaurantRuntimeSwitchKitchen3": {
         "enabled": false,
         "recognition": "And",
@@ -1611,12 +1651,20 @@
             "RestaurantKitchenPanelReady"
         ],
         "pre_delay": 0,
-        "action": "LongPress",
-        "target": [
-            714,
-            161
-        ],
-        "duration": 100,
+        "action": "Custom",
+        "custom_action": "RepeatUntilFoundAction",
+        "custom_action_param": {
+            "custom_action": "SubTask",
+            "custom_action_param": {
+                "sub": [
+                    "RestaurantRuntimeSwitchKitchen3Click"
+                ]
+            },
+            "wait_nodes": [
+                "RestaurantKitchen3Selected",
+                "RestaurantGameEnded"
+            ]
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
@@ -1628,6 +1676,18 @@
             "RestaurantRuntimeClickDish5",
             "RestaurantRuntimeClickDish6"
         ]
+    },
+    "RestaurantRuntimeSwitchKitchen3Click": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "LongPress",
+        "target": [
+            714,
+            161
+        ],
+        "duration": 100,
+        "post_delay": 0,
+        "rate_limit": 0
     },
     "RestaurantRuntimeClickDish1": {
         "enabled": false,
