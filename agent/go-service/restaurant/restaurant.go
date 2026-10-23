@@ -251,7 +251,7 @@ func route(patch map[string]any, routes []string, selected string) {
 func iconCandidates(patch map[string]any, name string, ids []string) {
 	patch[name] = map[string]any{"custom_recognition_param": iconrecognition.NewParams(
 		iconrecognition.WithGridType(iconrecognition.GridTypeSingleROI),
-		iconrecognition.WithItemFilters(iconrecognition.ItemFilter("Restaurant:*"), iconrecognition.StorageFilter().Normal.Usable),
+		iconrecognition.WithItemFilters(iconrecognition.ItemFilter("Restaurant:*")),
 		iconrecognition.WithItemIDs(ids...),
 	)}
 }
@@ -501,7 +501,7 @@ func observeTables(current *runtimeState, observed observations, patch map[strin
 			if observed.hit(prefix + "Dining") {
 				for _, id := range order.Items {
 					if cached, dish := current.Cache[id]; dish {
-						current.Cache[id] = cached - 1
+						current.Cache[id] = max(cached-1, 0)
 					}
 				}
 				log.Debug().Int("table", table).Strs("items", order.Items).Msg("dining table cleared; order deducted from cache")
@@ -537,16 +537,18 @@ func observeTables(current *runtimeState, observed observations, patch map[strin
 func chooseDish(state *session, observed observations) (string, error) {
 	for slot := 1; slot <= 6; slot++ {
 		prefix := fmt.Sprintf("RestaurantRecipe%d", slot)
-		if !observed.hit(prefix + "Restock") {
+		if !observed.hit(prefix + "RestockMarker") {
 			continue
 		}
-		id, err := readIcon(observed, prefix+"Icon")
+		iconName := prefix + "Icon"
+		if observed[iconName] == nil {
+			return "", nil
+		}
+		id, err := readIcon(observed, iconName)
 		if err != nil {
 			return "", err
 		}
-		if id != "" {
-			return id, nil
-		}
+		return id, nil
 	}
 	for _, id := range state.Menu.Dishes {
 		if state.Runtime.Cache[id] < 2 {

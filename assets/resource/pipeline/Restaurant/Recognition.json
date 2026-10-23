@@ -47,8 +47,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": "RestaurantMenuCardAnchor",
@@ -65,8 +64,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": "RestaurantMenuCardAnchor",
@@ -944,8 +942,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -970,8 +967,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -987,8 +983,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1016,10 +1011,8 @@
             94,
             26
         ],
-        // 完整原文：用餐中。实际截图的 OCR 有时漏读末字“中”。
         "expected": [
-            // @i18n-skip
-            "^用餐(中)?$",
+            "用餐中",
             "Dining",
             "食事中",
             "식사 중"
@@ -1277,8 +1270,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1303,8 +1295,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1320,8 +1311,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1349,10 +1339,8 @@
             94,
             26
         ],
-        // 完整原文：用餐中。实际截图的 OCR 有时漏读末字“中”。
         "expected": [
-            // @i18n-skip
-            "^用餐(中)?$",
+            "用餐中",
             "Dining",
             "食事中",
             "식사 중"
@@ -1610,8 +1598,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1636,8 +1623,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1653,8 +1639,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1682,10 +1667,8 @@
             94,
             26
         ],
-        // 完整原文：用餐中。实际截图的 OCR 有时漏读末字“中”。
         "expected": [
-            // @i18n-skip
-            "^用餐(中)?$",
+            "用餐中",
             "Dining",
             "食事中",
             "식사 중"
@@ -1943,8 +1926,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1969,8 +1951,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -1986,8 +1967,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2015,10 +1995,8 @@
             94,
             26
         ],
-        // 完整原文：用餐中。实际截图的 OCR 有时漏读末字“中”。
         "expected": [
-            // @i18n-skip
-            "^用餐(中)?$",
+            "用餐中",
             "Dining",
             "食事中",
             "식사 중"
@@ -2276,8 +2254,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2302,8 +2279,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2319,8 +2295,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2348,10 +2323,8 @@
             94,
             26
         ],
-        // 完整原文：用餐中。实际截图的 OCR 有时漏读末字“中”。
         "expected": [
-            // @i18n-skip
-            "^用餐(中)?$",
+            "用餐中",
             "Dining",
             "食事中",
             "식사 중"
@@ -2609,8 +2582,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2635,8 +2607,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2652,8 +2623,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2681,10 +2651,8 @@
             94,
             26
         ],
-        // 完整原文：用餐中。实际截图的 OCR 有时漏读末字“中”。
         "expected": [
-            // @i18n-skip
-            "^用餐(中)?$",
+            "用餐中",
             "Dining",
             "食事中",
             "식사 중"
@@ -2727,8 +2695,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2751,8 +2718,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2789,8 +2755,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2813,8 +2778,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2851,8 +2815,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2875,8 +2838,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2913,8 +2875,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2937,8 +2898,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2975,8 +2935,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -2999,8 +2958,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -3037,8 +2995,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -3061,8 +3018,7 @@
         "custom_recognition_param": {
             "grid_type": "single_roi",
             "item_filters": [
-                "Restaurant:*",
-                "Normal:Usable"
+                "Restaurant:*"
             ]
         },
         "roi": [
@@ -3086,7 +3042,21 @@
             {
                 "recognition": "Or",
                 "any_of": [
+                    "RestaurantRecipe1RestockMarker",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
                     "RestaurantRecipe1Restock",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
+                    "RestaurantRecipe2RestockMarker",
                     "RestaurantObservationEmpty"
                 ]
             },
@@ -3100,7 +3070,21 @@
             {
                 "recognition": "Or",
                 "any_of": [
+                    "RestaurantRecipe3RestockMarker",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
                     "RestaurantRecipe3Restock",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
+                    "RestaurantRecipe4RestockMarker",
                     "RestaurantObservationEmpty"
                 ]
             },
@@ -3114,7 +3098,21 @@
             {
                 "recognition": "Or",
                 "any_of": [
+                    "RestaurantRecipe5RestockMarker",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
                     "RestaurantRecipe5Restock",
+                    "RestaurantObservationEmpty"
+                ]
+            },
+            {
+                "recognition": "Or",
+                "any_of": [
+                    "RestaurantRecipe6RestockMarker",
                     "RestaurantObservationEmpty"
                 ]
             },
