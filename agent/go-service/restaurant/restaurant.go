@@ -404,7 +404,12 @@ func nextMenuCard(state *session, patch map[string]any) error {
 		ids = data.Drinks
 	}
 	iconCandidates(patch, "RestaurantMenuCardIcon", ids)
-	patch["RestaurantMenuCardAnchor"] = map[string]any{"roi": menu.Cards[menu.Index]}
+	patch["RestaurantMenuCardAnchor"] = map[string]any{
+		"recognition": map[string]any{
+			"type":  "DirectHit",
+			"param": map[string]any{"roi": menu.Cards[menu.Index]},
+		},
+	}
 	route(patch, menuRoutes, "RestaurantMenuReadCard")
 	return nil
 }

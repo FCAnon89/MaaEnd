@@ -29,13 +29,17 @@
         "order_by": "Vertical"
     },
     "RestaurantMenuCardAnchor": {
-        "recognition": "DirectHit",
-        "roi": [
-            552,
-            134,
-            307,
-            93
-        ]
+        "recognition": {
+            "type": "DirectHit",
+            "param": {
+                "roi": [
+                    552,
+                    134,
+                    307,
+                    93
+                ]
+            }
+        }
     },
     "RestaurantMenuCardIcon": {
         "recognition": "Custom",
