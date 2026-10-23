@@ -43,7 +43,7 @@ MaaEnd 的几个任务要读游戏里的物品名、商店货架、采集点、�
    `11262943-8`）。本地从兄弟仓库的提交标题里读 `Data:` 那段（合并 / revert 会盖住它，必要时用 `--version`
    指定）；发布端那边没有仓库，就从数据目录路径里的 `initial_…_main_…` 读；都读不到就警告「这次生成出来
    没有版本字段」。
-3. **生成原始形态。** 12 份数据各自从表格里取数，结果写进 `data/raw/`（只有世界坐标），同时算好 `sha256`。
+3. **生成原始形态。** 11 份数据各自从表格里取数，结果写进 `data/raw/`（只有世界坐标），同时算好 `sha256`。
    顺手写一份 `manifest.json`，说明这次发的是哪几份、每份的内容指纹 —— 就是 `fetch` 第 1 步看的那份。
 4. **入库。** 和 `fetch` 第 5 步完全一样。
 
@@ -110,7 +110,7 @@ uv run zmdmap generate --list                      # 列出有哪些数据、各
 | `generate.py` | `generate` 子命令：生成原始形态、写版本与清单，再入库 |
 | `fetch.py` | `fetch` 子命令：读清单、下载、核对内容，再入库 |
 | `materialize.py` | 入库：带坐标的投影，其余原样复制 |
-| `datasets/` | 12 份数据，一个模块一份；`base.py` 是它们的基类 |
+| `datasets/` | 11 份数据，一个模块一份；`base.py` 是它们的基类 |
 | `utils/` | 共用件，见下表 |
 | `data/raw/` | 原始形态，本地缓存（不进 git），删掉不影响判断 |
 | `data/` | 入库后的数据，任务读的就是这里，进 git |
@@ -132,7 +132,7 @@ uv run zmdmap generate --list                      # 列出有哪些数据、各
 | `errors.py` | `LocalDataError`：本地数据缺失或形状不对 |
 | `shapes.py` | 少数「必须原样保留未知字段」的地方用的收窄助手 |
 
-## 有哪 12 份数据
+## 有哪 11 份数据
 
 | 数据 | 内容 | 入库方式 |
 | --- | --- | --- |
@@ -144,7 +144,6 @@ uv run zmdmap generate --list                      # 列出有哪些数据、各
 | `environment_monitoring.json` | 环境监测的终端与观察点 | 复制 |
 | `item_mini_table.json` | 背包物品 → 图标、分类、五语名字 | 复制 |
 | `operator_growth.json` | 干员培养到目标状态要的素材 | 复制 |
-| `restaurant.json` | 缘缘庄菜单图标识别的菜品、饮品候选 ID | 复制 |
 | `sell_product.json` | 据点售卖物品与匹配干员 | 复制 |
 | `stock_staple.json` | 地区商店会周期补货的物资 | 复制 |
 | `weapons.json` | 武器（含还没上线的前瞻武器） | 复制 |

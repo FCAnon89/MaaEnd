@@ -15,7 +15,6 @@
 | ``environment_monitoring`` | ``environment_monitoring.json`` | 复制 |
 | ``item_mini_table`` | ``item_mini_table.json`` | 复制 |
 | ``operator_growth`` | ``operator_growth.json`` | 复制 |
-| ``restaurant`` | ``restaurant.json`` | 复制 |
 | ``sell_product`` | ``sell_product.json`` | 复制 |
 | ``stock_staple`` | ``stock_staple.json`` | 复制 |
 | ``weapons`` | ``weapons.json`` | 复制 |
