@@ -157,7 +157,7 @@
         "action": "Custom",
         "custom_action": "RepeatUntilNotFoundAction",
         "custom_action_param": {
-            "custom_action": "AutoCtrlClickAction",
+            "custom_action": "AutoAltClickAction",
             "wait_node": "ProtocolSpaceBattleConsumableStockTransferMenuClick",
             "repeat_count": 5,
             "interval_ms": 500

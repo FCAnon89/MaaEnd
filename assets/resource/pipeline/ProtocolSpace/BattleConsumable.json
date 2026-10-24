@@ -77,9 +77,17 @@
         ]
     },
     "ProtocolSpaceBattleConsumableStockWulingTransferItem": {
-        "desc": "将仓库中的一组已选消耗品转入背包",
-        "action": "Custom",
-        "custom_action": "AutoCtrlClickAction",
+        "desc": "按住 Shift 准备将所选消耗品转入背包",
+        "action": "KeyDown",
+        "auto_up": true,
+        "key": 16,
+        "next": [
+            "ProtocolSpaceBattleConsumableStockWulingTransferClick"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableStockWulingTransferClick": {
+        "desc": "按住 Shift 点击所选消耗品",
+        "action": "Click",
         "target": "ProtocolSpaceBattleConsumableStockWulingFindItem",
         "target_offset": [
             26,
@@ -87,6 +95,14 @@
             -52,
             -50
         ],
+        "next": [
+            "ProtocolSpaceBattleConsumableStockWulingTransferKeyUp"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableStockWulingTransferKeyUp": {
+        "desc": "释放 Shift，完成消耗品转入背包",
+        "action": "KeyUp",
+        "key": 16,
         "next": [
             "[Anchor]ItemTransferAfterRepoTransfer"
         ]
@@ -148,9 +164,17 @@
         ]
     },
     "ProtocolSpaceBattleConsumableStockValleyIVTransferItem": {
-        "desc": "将仓库中的一组已选消耗品转入背包",
-        "action": "Custom",
-        "custom_action": "AutoCtrlClickAction",
+        "desc": "按住 Shift 准备将所选消耗品转入背包",
+        "action": "KeyDown",
+        "auto_up": true,
+        "key": 16,
+        "next": [
+            "ProtocolSpaceBattleConsumableStockValleyIVTransferClick"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableStockValleyIVTransferClick": {
+        "desc": "按住 Shift 点击所选消耗品",
+        "action": "Click",
         "target": "ProtocolSpaceBattleConsumableStockValleyIVFindItem",
         "target_offset": [
             26,
@@ -158,6 +182,14 @@
             -52,
             -50
         ],
+        "next": [
+            "ProtocolSpaceBattleConsumableStockValleyIVTransferKeyUp"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableStockValleyIVTransferKeyUp": {
+        "desc": "释放 Shift，完成消耗品转入背包",
+        "action": "KeyUp",
+        "key": 16,
         "next": [
             "[Anchor]ItemTransferAfterRepoTransfer"
         ]
@@ -415,8 +447,9 @@
             536,
             496
         ],
-        "template": "ProtocolSpace/ConsumableUseMark.png",
+        "template": "ProtocolSpace/ItemIntroMark.png",
         "green_mask": true,
+        "method": 5,
         "threshold": 0.8
     },
     "ProtocolSpaceBattleConsumableUseText": {
