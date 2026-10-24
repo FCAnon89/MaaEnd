@@ -453,7 +453,7 @@
         "threshold": 0.8
     },
     "ProtocolSpaceBattleConsumableUseText": {
-        "desc": "在书签图标下方限定区域识别当前语言的使用按钮",
+        "desc": "在书签图标下方限定区域识别使用按钮",
         "recognition": "OCR",
         "roi": "ProtocolSpaceBattleConsumableUseMark",
         "roi_offset": [
@@ -461,6 +461,19 @@
             416,
             111,
             11
+        ],
+        "expected": [
+            "Usar",
+            "使用",
+            "Verwenden",
+            "Use",
+            "Utiliser",
+            "Gunakan",
+            "Usa",
+            "사용",
+            "Использовать",
+            "ใช้",
+            "Dùng"
         ]
     },
     "ProtocolSpaceBattleConsumableUseClickUseButton": {
