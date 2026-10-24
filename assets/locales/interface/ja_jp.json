@@ -1722,7 +1722,6 @@
     "option.PromotionsRewardsSetOption.cases.Protodisk.label": "B.協約ディスク",
     "option.PromotionsRewardsSetOption.cases.Protoset.label": "A.協約ディスクセット",
     "option.ProtocolSpaceBattleConsumable.label": "戦闘で消耗品を使用",
-    "option.ProtocolSpaceBattleConsumableItem.cases.SelectConsumable.label": "消耗品を選択",
     "option.ProtocolSpaceBattleConsumableItem.label": "使用する消耗品",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot1.label": "1番目の枠",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot2.label": "2番目の枠",

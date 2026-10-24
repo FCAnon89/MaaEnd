@@ -1722,7 +1722,6 @@
     "option.PromotionsRewardsSetOption.cases.Protodisk.label": "B.协议圆盘",
     "option.PromotionsRewardsSetOption.cases.Protoset.label": "A.协议圆盘组",
     "option.ProtocolSpaceBattleConsumable.label": "战斗使用消耗品",
-    "option.ProtocolSpaceBattleConsumableItem.cases.SelectConsumable.label": "请选择消耗品",
     "option.ProtocolSpaceBattleConsumableItem.label": "选择使用的消耗品",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot1.label": "一号位",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot2.label": "二号位",

@@ -1722,7 +1722,6 @@
     "option.PromotionsRewardsSetOption.cases.Protodisk.label": "B. Protodisk",
     "option.PromotionsRewardsSetOption.cases.Protoset.label": "A. Protoset",
     "option.ProtocolSpaceBattleConsumable.label": "Use Consumables in Combat",
-    "option.ProtocolSpaceBattleConsumableItem.cases.SelectConsumable.label": "Select a consumable",
     "option.ProtocolSpaceBattleConsumableItem.label": "Consumable to Use",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot1.label": "Slot 1",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot2.label": "Slot 2",

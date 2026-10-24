@@ -142,12 +142,7 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
     if not isinstance(items, dict):
         raise click.ClickException(f"{source_path} 的 items 必须是对象")
 
-    cases = [
-        {
-            "name": "SelectConsumable",
-            "label": "$option.ProtocolSpaceBattleConsumableItem.cases.SelectConsumable.label",
-        }
-    ]
+    cases: list[dict[str, Any]] = []
     for item_id, item in sorted(items.items()):
         if not isinstance(item, dict):
             raise click.ClickException(f"{source_path} 中 {item_id} 的记录必须是对象")
@@ -182,6 +177,9 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
             }
         )
 
+    if not cases:
+        raise click.ClickException(f"{source_path} 中没有可供选择的主动可用道具")
+
     option = re.search(r'"ProtocolSpaceBattleConsumableItem"\s*:\s*\{', task_text)
     cases_match = re.search(r'"cases"\s*:\s*\[', task_text[option.end() :]) if option else None
     if option is None or cases_match is None:
@@ -215,6 +213,7 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
     if array_end < 0:
         raise click.ClickException(f"{task_path} 中可用道具 cases 数组没有闭合")
 
+    original_task_text = task_text
     current_cases = task_text[array_start : array_end + 1]
     try:
         parsed_cases = json.loads(current_cases)
@@ -227,11 +226,31 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
         replacement = formatted_cases[0] + "\n" + "\n".join(
             property_indent + line for line in formatted_cases[1:]
         )
-        task_path.write_text(
-            task_text[:array_start] + replacement + task_text[array_end + 1 :],
-            encoding="utf-8",
-            newline="\n",
+        task_text = task_text[:array_start] + replacement + task_text[array_end + 1 :]
+        default_case_search_start = array_start + len(replacement)
+    else:
+        default_case_search_start = array_end + 1
+
+    default_case = cases[0]["name"]
+    default_case_match = re.search(
+        r'\s*,\s*"default_case"\s*:\s*"([^"]*)"',
+        task_text[default_case_search_start:],
+    )
+    if default_case_match is None:
+        raise click.ClickException(
+            f"{task_path} 缺少 ProtocolSpaceBattleConsumableItem.default_case"
         )
+    if default_case_match.group(1) != default_case:
+        default_case_start = default_case_search_start + default_case_match.start(1)
+        default_case_end = default_case_search_start + default_case_match.end(1)
+        task_text = (
+            task_text[:default_case_start]
+            + json.dumps(default_case, ensure_ascii=False)[1:-1]
+            + task_text[default_case_end:]
+        )
+
+    if task_text != original_task_text:
+        task_path.write_text(task_text, encoding="utf-8", newline="\n")
 
     if source_path.resolve() != data_path.resolve():
         data_path.parent.mkdir(parents=True, exist_ok=True)

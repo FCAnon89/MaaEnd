@@ -177,10 +177,6 @@
             "label": "$option.ProtocolSpaceBattleConsumableItem.label",
             "cases": [
                 {
-                    "name": "SelectConsumable",
-                    "label": "$option.ProtocolSpaceBattleConsumableItem.cases.SelectConsumable.label"
-                },
-                {
                     "name": "item_agmelee_1_sp_2_slimeml_1_1",
                     "label": "$iconRecognition.name.item_agmelee_1_sp_2_slimeml_1_1",
                     "pipeline_override": {
@@ -2233,7 +2229,7 @@
                     }
                 }
             ],
-            "default_case": "SelectConsumable"
+            "default_case": "item_agmelee_1_sp_2_slimeml_1_1"
         },
         "ProtocolSpaceBattleConsumableOperators": {
             "type": "checkbox",

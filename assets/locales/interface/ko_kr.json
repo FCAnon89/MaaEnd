@@ -1722,7 +1722,6 @@
     "option.PromotionsRewardsSetOption.cases.Protodisk.label": "B. 프로토콜 디스크",
     "option.PromotionsRewardsSetOption.cases.Protoset.label": "A. 프로토콜 디스크 세트",
     "option.ProtocolSpaceBattleConsumable.label": "전투에서 소모품 사용",
-    "option.ProtocolSpaceBattleConsumableItem.cases.SelectConsumable.label": "소모품 선택",
     "option.ProtocolSpaceBattleConsumableItem.label": "사용할 소모품",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot1.label": "1번 슬롯",
     "option.ProtocolSpaceBattleConsumableOperators.cases.OperatorSlot2.label": "2번 슬롯",
