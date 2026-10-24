@@ -168,11 +168,20 @@
             "ProtocolSpaceBattleConsumableStockTransferTouchUp"
         ],
         "on_error": [
-            "ProtocolSpaceBattleConsumableStockTransferTouchUp"
+            "ProtocolSpaceBattleConsumableStockTransferTouchUpOnError"
         ]
     },
     "ProtocolSpaceBattleConsumableStockTransferTouchUp": {
         "desc": "转移菜单图标消失后松开物品触点",
+        "recognition": "DirectHit",
+        "action": "TouchUp",
+        "contact": 4,
+        "next": [
+            "ProtocolSpaceBattleConsumableStockFinish"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableStockTransferTouchUpOnError": {
+        "desc": "转移操作失败时释放物品触点",
         "recognition": "DirectHit",
         "action": "TouchUp",
         "contact": 4,
