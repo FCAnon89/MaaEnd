@@ -39,6 +39,23 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantResetThemeScrollHitCount"
+        ]
+    },
+    "RestaurantResetThemeScrollHitCount": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "ClearHitCount",
+        "custom_action_param": {
+            "nodes": [
+                "RestaurantThemeListUnchangedOnce"
+            ],
+            "strict": true
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RestaurantMenuInitialize"
         ]
     },
@@ -52,6 +69,11 @@
                 "RestaurantState": {
                     "attach": {
                         "state": null
+                    }
+                },
+                "RestaurantThemeListUnchanged": {
+                    "attach": {
+                        "ready": false
                     }
                 },
                 "RestaurantMenuDishesComplete": {
@@ -104,7 +126,94 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantThemeSettings",
             "RestaurantOpenCounter",
+            "RestaurantCancelMissionTracking"
+        ]
+    },
+    "RestaurantThemeSettings": {
+        "recognition": "OCR",
+        "roi": [
+            27,
+            7,
+            101,
+            46
+        ],
+        "expected": [
+            "主题设定",
+            "Theme Settings",
+            "テーマ設定",
+            "테마 설정",
+            "主題設定"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantThemeListScan"
+        ]
+    },
+    "RestaurantCancelMissionTracking": {
+        "desc": "寻路前进入任务界面并停止当前任务追踪",
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "SubTask",
+        "custom_action_param": {
+            "sub": [
+                "SceneEnterMenuMission"
+            ],
+            "continue": false,
+            "strict": true
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantCancelCurrentMissionTracking",
+            "NavigateSisPaintingYuanyuanManorStart"
+        ]
+    },
+    "RestaurantCancelCurrentMissionTracking": {
+        "recognition": "And",
+        "all_of": [
+            "InMenuMission",
+            "AlreadyTrackedMissionButton"
+        ],
+        "box_index": 1,
+        "pre_wait_freezes": {
+            "time": 200,
+            "target": [
+                1021,
+                598,
+                251,
+                106
+            ]
+        },
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "RestaurantCancelCurrentMissionTracking"
+        },
+        "target": true,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMissionTrackingCancelled"
+        ]
+    },
+    "RestaurantMissionTrackingCancelled": {
+        "recognition": "And",
+        "all_of": [
+            "InMenuMission",
+            "TrackMissionButton"
+        ],
+        "box_index": 1,
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "NavigateSisPaintingYuanyuanManorStart"
         ]
     },
@@ -189,6 +298,182 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantThemeListScan"
+        ]
+    },
+    "RestaurantThemeListScan": {
+        "recognition": "DirectHit",
+        "pre_wait_freezes": {
+            "time": 200,
+            "target": [
+                70,
+                120,
+                430,
+                590
+            ],
+            "timeout": 3000
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantThemeListUnchangedOnce",
+            "RestaurantThemeScrollUp"
+        ]
+    },
+    "RestaurantThemeListUnchanged": {
+        "recognition": "Custom",
+        "custom_recognition": "ListCompleteRecognition",
+        "custom_recognition_param": {
+            "threshold": 0.98,
+            "state_node": "RestaurantThemeListUnchanged"
+        },
+        "roi": [
+            70,
+            120,
+            430,
+            590
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "attach": {
+            "ready": false
+        }
+    },
+    "RestaurantThemeListUnchangedOnce": {
+        "max_hit": 1,
+        "recognition": "And",
+        "all_of": [
+            "RestaurantThemeListUnchanged"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantThemeScrollUpAfterUnchanged"
+        ]
+    },
+    "RestaurantThemeListCheckUnchangedTwice": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantThemeListUnchangedTwice",
+            "RestaurantThemeListChangedReset"
+        ]
+    },
+    "RestaurantThemeListUnchangedTwice": {
+        "recognition": "And",
+        "all_of": [
+            "RestaurantThemeListUnchanged"
+        ],
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantSelectDailyTheme"
+        ]
+    },
+    "RestaurantThemeListChangedReset": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "ClearHitCount",
+        "custom_action_param": {
+            "nodes": [
+                "RestaurantThemeListUnchangedOnce"
+            ],
+            "strict": true
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantThemeScrollUp"
+        ]
+    },
+    "RestaurantThemeScrollUp": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Scroll",
+        "target": [
+            285,
+            350
+        ],
+        "dy": 180,
+        "post_wait_freezes": {
+            "time": 400,
+            "target": [
+                70,
+                120,
+                430,
+                590
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantThemeListScan"
+        ]
+    },
+    "RestaurantThemeScrollUpAfterUnchanged": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Scroll",
+        "target": [
+            285,
+            350
+        ],
+        "dy": 180,
+        "post_wait_freezes": {
+            "time": 400,
+            "target": [
+                70,
+                120,
+                430,
+                590
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantThemeListCheckUnchangedTwice"
+        ]
+    },
+    "RestaurantSelectDailyTheme": {
+        "recognition": "OCR",
+        "roi": [
+            158,
+            130,
+            231,
+            30
+        ],
+        "expected": [
+            "缘缘本色",
+            "Yuanyuan Style",
+            "縁縁の本質",
+            "인연 마을 스타일",
+            "緣緣本色"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "target": true,
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                525,
+                95,
+                650,
+                300
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RestaurantOpenDailyTheme"
         ]
     },
@@ -254,7 +539,10 @@
         "rate_limit": 0,
         "next": [
             "RestaurantCloseTheme"
-        ]
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "当前客源小于60，即将结束任务"
+        }
     },
     "RestaurantCloseTheme": {
         "recognition": "TemplateMatch",
@@ -1083,14 +1371,88 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantMenuFilterIcon"
+        ]
+    },
+    "RestaurantMenuFilterIcon": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            853,
+            544,
+            97,
+            55
+        ],
+        "template": "Restaurant/MenuFilter.png",
+        "method": 5,
+        "threshold": 0.9,
+        "pre_delay": 0,
+        "action": "Click",
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuFilterCookableQuantity"
+        ]
+    },
+    "RestaurantMenuFilterCookableQuantity": {
+        "recognition": "OCR",
+        "roi": [
+            219,
+            377,
+            302,
+            66
+        ],
+        "expected": [
+            "可烹饪数量",
+            "Cook QTY",
+            "調理できる数量",
+            "조리 가능 수량",
+            "可烹飪數量"
+        ],
+        "pre_delay": 0,
+        "action": "Click",
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantMenuFilterConfirm"
+        ]
+    },
+    "RestaurantMenuFilterConfirm": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            995,
+            516,
+            128,
+            71
+        ],
+        "template": [
+            "Common/Button/WhiteConfirmButtonType1.png",
+            "Common/Button/WhiteConfirmButtonType1Hover.png"
+        ],
+        "method": 5,
+        "threshold": 0.9,
+        "order_by": "Score",
+        "pre_delay": 0,
+        "action": "Click",
+        "post_wait_freezes": {
+            "time": 350,
+            "target": [
+                551,
+                133,
+                641,
+                403
+            ],
+            "timeout": 3000
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RestaurantMenuSelectDishLoop"
         ]
     },
     "RestaurantMenuSelectDishLoop": {
         "recognition": "And",
         "all_of": [
-            "RestaurantMenuDishesActive",
-            "RestaurantMenuAvailabilityOCR"
+            "RestaurantMenuDishesActive"
         ],
         "pre_delay": 0,
         "action": "Custom",
@@ -1151,8 +1513,7 @@
     "RestaurantMenuSelectDrinkLoop": {
         "recognition": "And",
         "all_of": [
-            "RestaurantMenuDrinksActive",
-            "RestaurantMenuAvailabilityOCR"
+            "RestaurantMenuDrinksActive"
         ],
         "pre_delay": 0,
         "action": "Custom",
@@ -1211,6 +1572,7 @@
             "FailedNode"
         ]
     },
+    // 720p 固定派单按钮坐标；重复点击由 wait_nodes 确认面板就绪或游戏结束。
     "RestaurantOpenKitchenPanel": {
         "recognition": "DirectHit",
         "pre_delay": 0,
@@ -1587,6 +1949,7 @@
             "RestaurantRuntimeClickDish6"
         ]
     },
+    // 720p 固定厨房标签坐标；点击后由父节点 wait_nodes 识别 Selected 状态。
     "RestaurantRuntimeSwitchKitchen1Click": {
         "recognition": "DirectHit",
         "pre_delay": 0,
@@ -1632,6 +1995,7 @@
             "RestaurantRuntimeClickDish6"
         ]
     },
+    // 720p 固定厨房标签坐标；点击后由父节点 wait_nodes 识别 Selected 状态。
     "RestaurantRuntimeSwitchKitchen2Click": {
         "recognition": "DirectHit",
         "pre_delay": 0,
@@ -1677,6 +2041,7 @@
             "RestaurantRuntimeClickDish6"
         ]
     },
+    // 720p 固定厨房标签坐标；点击后由父节点 wait_nodes 识别 Selected 状态。
     "RestaurantRuntimeSwitchKitchen3Click": {
         "recognition": "DirectHit",
         "pre_delay": 0,

@@ -26,7 +26,7 @@
                     "label": "$task.RestaurantDaily.option.MaxRounds.pattern_msg",
                     "default": "5",
                     "pipeline_type": "int",
-                    "verify": "^(?:0|[1-9][0-9]{0,2}|1000)?$(?![\\s\\S])",
+                    "verify": "^(?:[1-9][0-9]{0,2}|1000)$",
                     "pattern_msg": "$task.RestaurantDaily.option.MaxRounds.pattern_msg"
                 }
             ],

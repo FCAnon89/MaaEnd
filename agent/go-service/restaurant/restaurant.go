@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"regexp"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -69,10 +68,6 @@ var (
 		regexp.MustCompile(`최소(\d+)개의요리와최소(\d+)종의음료가필요합니다\.`),
 		regexp.MustCompile(`(\d+)道菜品和(\d+)種飲品`),
 	}
-	menuQuantityPatterns = map[string][]*regexp.Regexp{
-		"dish":  {regexp.MustCompile(`可烹饪(∞|\d+)`), regexp.MustCompile(`Preparable:(∞|\d+)`), regexp.MustCompile(`調理可能：(∞|\d+)`), regexp.MustCompile(`(∞|\d+)조리가능`), regexp.MustCompile(`可烹飪(∞|\d+)`)},
-		"drink": {regexp.MustCompile(`库存(∞|\d+)`), regexp.MustCompile(`Stock:(∞|\d+)`), regexp.MustCompile(`在庫(∞|\d+)`), regexp.MustCompile(`재고(∞|\d+)`), regexp.MustCompile(`庫存(∞|\d+)`)},
-	}
 )
 
 // Run applies one decision to the current task's attach state and preset routes.
@@ -104,8 +99,8 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 	observed := indexObservations(arg.RecognitionDetail)
 	switch param.Step {
 	case "initialize":
-		if param.MaxRounds < 0 || param.MaxRounds > 1000 {
-			err = fmt.Errorf("maximum restaurant rounds must be between 0 and 1000")
+		if param.MaxRounds < 1 || param.MaxRounds > 1000 {
+			err = fmt.Errorf("maximum restaurant rounds must be between 1 and 1000")
 			break
 		}
 		patch["RestaurantRoundGate"] = map[string]any{"max_hit": param.MaxRounds}
@@ -251,7 +246,10 @@ func route(patch map[string]any, routes []string, selected string) {
 func iconCandidates(patch map[string]any, name string, ids []string) {
 	patch[name] = map[string]any{"custom_recognition_param": iconrecognition.NewParams(
 		iconrecognition.WithGridType(iconrecognition.GridTypeSingleROI),
-		iconrecognition.WithItemFilters(iconrecognition.ItemFilter("Restaurant:*")),
+		iconrecognition.WithItemFilters(
+			iconrecognition.ItemFilter("Restaurant:*"),
+			iconrecognition.ItemFilter("Normal:Usable"),
+		),
 		iconrecognition.WithItemIDs(ids...),
 	)}
 }
@@ -275,56 +273,13 @@ func prepareMenu(state *session, observed observations) error {
 	return fmt.Errorf("could not read menu quantities from %q", text)
 }
 
-func readMenuPage(state *session, kind string, observed observations, patch map[string]any) error {
-	patterns, valid := menuQuantityPatterns[kind]
-	if !valid || state.Menu.PendingID != "" {
+func readMenuPage(state *session, kind string, _ observations, patch map[string]any) error {
+	if (kind != "dish" && kind != "drink") || state.Menu.PendingID != "" {
 		return fmt.Errorf("invalid menu page state")
 	}
 	cards := make([]maa.Rect, 0, 8)
-	complete := 0
-	for _, text := range readOCR(observed, "RestaurantMenuAvailabilityOCR") {
-		normalized := strings.Join(strings.Fields(text.Text), "")
-		quantity := ""
-		for _, pattern := range patterns {
-			if match := pattern.FindStringSubmatch(normalized); len(match) == 2 {
-				quantity = match[1]
-				break
-			}
-		}
-		if quantity == "" {
-			continue
-		}
-		// Map the variable OCR row to a card anchor; child ROI offsets live in Pipeline.
-		x := 552
-		if text.Box[0] >= 860 {
-			x = 870
-		}
-		y := text.Box[1] + text.Box[3]/2 - 78
-		if y+14 < 134 || y+78 > 536 {
-			continue
-		}
-		complete++
-		count, _ := strconv.Atoi(quantity)
-		if quantity == "∞" || count > 0 {
-			cards = append(cards, maa.Rect{x, y, 307, 93})
-		}
-	}
-	if complete == 0 {
-		return fmt.Errorf("no complete %s menu cards were recognized", kind)
-	}
-	sort.Slice(cards, func(i, j int) bool {
-		if cards[i][1] != cards[j][1] {
-			return cards[i][1] < cards[j][1]
-		}
-		return cards[i][0] < cards[j][0]
-	})
-	for first := 0; first < len(cards); {
-		last := first + 1
-		for last < len(cards) && cards[last][1]-cards[first][1] < 46 {
-			last++
-		}
-		sort.SliceStable(cards[first:last], func(i, j int) bool { return cards[first+i][0] < cards[first+j][0] })
-		first = last
+	for _, y := range []int{134, 239, 344, 450} {
+		cards = append(cards, maa.Rect{552, y, 307, 93}, maa.Rect{870, y, 307, 93})
 	}
 	state.Menu.Kind, state.Menu.Cards, state.Menu.Index = kind, cards, 0
 	return nextMenuCard(state, patch)
