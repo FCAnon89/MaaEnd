@@ -14,9 +14,200 @@
             "ProtocolSpaceBattleConsumableUseOperator4"
         ]
     },
+    "ProtocolSpaceBattleConsumableTaskStart": {
+        "desc": "确认已选择消耗品和至少一名干员",
+        "recognition": "And",
+        "all_of": [
+            "ProtocolSpaceBattleConsumableHasItem",
+            "ProtocolSpaceBattleConsumableHasSelectedOperators"
+        ],
+        "action": "DoNothing",
+        "next": [
+            "ProtocolSpaceBattleConsumableInitialWorldReady",
+            "[JumpBack]SceneAnyEnterWorld"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableInitialWorldReady": {
+        "desc": "确认已进入大世界，开始检查背包中的消耗品",
+        "recognition": "And",
+        "all_of": [
+            "InWorld"
+        ],
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckStart"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckStart": {
+        "recognition": "DirectHit",
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckBackpackAlreadyOpen",
+            "ProtocolSpaceBattleConsumablePrecheckOpenBagMenu"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckBackpackAlreadyOpen": {
+        "desc": "背包已打开，直接检查所选消耗品数量",
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckBagReady"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckOpenBagMenu": {
+        "desc": "Alt 点击背包菜单图标，直到菜单图标消失",
+        "recognition": "Or",
+        "any_of": [
+            "ProtocolSpaceBattleConsumableUseOpenBagMenuIcon1",
+            "ProtocolSpaceBattleConsumableUseOpenBagMenuIcon2",
+            "ProtocolSpaceBattleConsumableUseOpenBagMenuIcon3"
+        ],
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "custom_action": "AutoAltClickAction",
+            "wait_node": "ProtocolSpaceBattleConsumableUseOpenBagMenuIcon"
+        },
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckBagReady"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckBagReady": {
+        "desc": "确认背包已打开，开始遍历当前背包",
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "anchor": {
+            "MouseMoveResetAnchor": "MouseMoveReset",
+            "ItemTransferCurrentBagFind": "ProtocolSpaceBattleConsumablePrecheckFindItem",
+            "ItemTransferCurrentBagNotFound": "ProtocolSpaceBattleConsumablePrecheckItemNotFound",
+            "ItemTransferCurrentBagTransfer": "ProtocolSpaceBattleConsumablePrecheckCheckQuantity",
+            "ItemTransferAfterBagTransfer": "ProtocolSpaceBattleConsumablePrecheckCheckQuantity"
+        },
+        "next": [
+            "ItemTransferBagSearchCurrentPage"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+        "desc": "遍历背包查找所选消耗品",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    739,
+                    202,
+                    398,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "[Anchor]ItemTransferCurrentBagTransfer"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckCheckQuantity": {
+        "desc": "检查当前背包中所选消耗品数量是否足够",
+        "recognition": "DirectHit",
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckQuantityEnough",
+            "ProtocolSpaceBattleConsumablePrecheckQuantityInsufficient"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckQuantity": {
+        "desc": "读取背包中所选消耗品的数量",
+        "recognition": "OCR",
+        "roi": "ProtocolSpaceBattleConsumablePrecheckFindItem",
+        "roi_offset": [
+            0,
+            46,
+            0,
+            -46
+        ],
+        "expected": [
+            "^\\d+$"
+        ],
+        "only_rec": true
+    },
+    "ProtocolSpaceBattleConsumablePrecheckQuantityEnough": {
+        "desc": "背包中已有足够数量的消耗品",
+        "recognition": "Custom",
+        "custom_recognition": "ProtocolSpaceConsumableQuantityRecognition",
+        "custom_recognition_param": {
+            "quantity_node": "ProtocolSpaceBattleConsumablePrecheckQuantity",
+            "operator_nodes": [
+                "ProtocolSpaceBattleConsumableUseOperator1",
+                "ProtocolSpaceBattleConsumableUseOperator2",
+                "ProtocolSpaceBattleConsumableUseOperator3",
+                "ProtocolSpaceBattleConsumableUseOperator4"
+            ],
+            "match_when_sufficient": true
+        },
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckCloseBackpackToUse"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckQuantityInsufficient": {
+        "desc": "背包中所选消耗品数量不足",
+        "recognition": "Custom",
+        "custom_recognition": "ProtocolSpaceConsumableQuantityRecognition",
+        "custom_recognition_param": {
+            "quantity_node": "ProtocolSpaceBattleConsumablePrecheckQuantity",
+            "operator_nodes": [
+                "ProtocolSpaceBattleConsumableUseOperator1",
+                "ProtocolSpaceBattleConsumableUseOperator2",
+                "ProtocolSpaceBattleConsumableUseOperator3",
+                "ProtocolSpaceBattleConsumableUseOperator4"
+            ],
+            "match_when_sufficient": false
+        },
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckCloseBackpackToStock"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckItemNotFound": {
+        "desc": "遍历背包后未找到所选消耗品",
+        "recognition": "DirectHit",
+        "next": [
+            "ProtocolSpaceBattleConsumablePrecheckCloseBackpackToStock"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckCloseBackpackToUse": {
+        "desc": "关闭背包，传送至所选地区使用消耗品",
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "CloseButtonType1"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "ProtocolSpaceBattleConsumableUseTeleportStart"
+        ]
+    },
+    "ProtocolSpaceBattleConsumablePrecheckCloseBackpackToStock": {
+        "desc": "关闭背包，前往帝江号仓库补充所选消耗品",
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "CloseButtonType1"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "ProtocolSpaceBattleConsumableStockStart"
+        ]
+    },
     "ProtocolSpaceBattleConsumableStockStart": {
-        "desc": "战斗任务开始前准备所选消耗品",
-        "enabled": false,
+        "desc": "背包数量不足时从帝江号仓库补充所选消耗品",
         "max_hit": 1,
         "recognition": "And",
         "all_of": [
@@ -201,25 +392,71 @@
             "ProtocolSpaceBattleConsumableStockFinish"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "$task.ProtocolSpace.focus.usable_item_not_found"
+            "Node.Recognition.Succeeded": "$task.ProtocolSpaceUseConsumable.focus.usable_item_not_found"
         }
     },
     "ProtocolSpaceBattleConsumableStockFinish": {
-        "desc": "关闭仓库并继续协议空间任务",
+        "desc": "关闭仓库并继续消耗品使用流程",
         "recognition": "And",
         "all_of": [
             "InBackpack",
             "CloseButtonType1"
         ],
         "box_index": 1,
-        "action": "Click"
+        "action": "Click",
+        "next": [
+            "ProtocolSpaceBattleConsumableUseTeleportStart"
+        ]
     },
-    "ProtocolSpaceBattleConsumableUseStart": {
-        "desc": "战斗开始前检查并使用所选消耗品",
-        "enabled": false,
+    "ProtocolSpaceBattleConsumableUseTeleportStart": {
+        "desc": "传送前确认玩家处于大世界",
+        "recognition": "DirectHit",
+        "next": [
+            "ProtocolSpaceBattleConsumableUseTeleportWorldReady",
+            "[JumpBack]SceneAnyEnterWorld"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableUseTeleportWorldReady": {
         "recognition": "And",
         "all_of": [
-            "InProtocolSpace",
+            "InWorld"
+        ],
+        "next": [
+            "ProtocolSpaceBattleConsumableUseTeleportToRegion"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableUseTeleportToRegion": {
+        "desc": "传送到任务选定地区",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "SubTask",
+        "custom_action_param": {
+            "sub": [
+                "SceneEnterWorldValleyIVTheHubHubBase"
+            ],
+            "continue": false,
+            "strict": true
+        },
+        "next": [
+            "ProtocolSpaceBattleConsumableUseTeleportWorldReadyAgain"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableUseTeleportWorldReadyAgain": {
+        "desc": "传送后确认玩家仍处于大世界",
+        "recognition": "And",
+        "all_of": [
+            "InWorld"
+        ],
+        "next": [
+            "ProtocolSpaceBattleConsumableUseStart",
+            "[JumpBack]SceneAnyEnterWorld"
+        ]
+    },
+    "ProtocolSpaceBattleConsumableUseStart": {
+        "desc": "检查并使用所选消耗品",
+        "recognition": "And",
+        "all_of": [
+            "InWorld",
             "ProtocolSpaceBattleConsumableHasItem",
             "ProtocolSpaceBattleConsumableHasSelectedOperators"
         ],
@@ -645,16 +882,13 @@
         "threshold": 0.8
     },
     "ProtocolSpaceBattleConsumableUseCloseBackpack": {
-        "desc": "结束背包流程并返回战斗开始提示",
+        "desc": "结束消耗品使用流程并关闭背包",
         "recognition": "And",
         "all_of": [
             "InBackpack",
             "CloseButtonType1"
         ],
         "box_index": 1,
-        "action": "Click",
-        "next": [
-            "ProtocolSpaceTouchStartTouchAction"
-        ]
+        "action": "Click"
     }
 }

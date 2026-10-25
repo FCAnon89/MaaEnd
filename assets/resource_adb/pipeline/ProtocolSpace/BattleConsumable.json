@@ -35,6 +35,26 @@
             }
         }
     },
+    "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+        "recognition": {
+            "param": {
+                "roi": [
+                    800,
+                    178,
+                    430,
+                    344
+                ]
+            }
+        }
+    },
+    "ProtocolSpaceBattleConsumablePrecheckQuantity": {
+        "roi_offset": [
+            0,
+            58,
+            0,
+            -58
+        ]
+    },
     "ProtocolSpaceBattleConsumableUseQuantity": {
         "roi_offset": [
             0,

@@ -168,6 +168,7 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
                             }
                         }
                         for node in (
+                            "ProtocolSpaceBattleConsumablePrecheckFindItem",
                             "ProtocolSpaceBattleConsumableStockWulingFindItem",
                             "ProtocolSpaceBattleConsumableStockValleyIVFindItem",
                             "ProtocolSpaceBattleConsumableUseFindItem",

@@ -19,10 +19,32 @@
             ],
             "option": [
                 "ProtocolSpaceSchedule",
-                "ProtocolSpaceBattleConsumable",
                 "AutoFightSetting",
                 "ProtocolSpaceTeamChoose",
                 "ProtocolSpaceMode"
+            ]
+        },
+        {
+            "name": "ProtocolSpaceUseConsumable",
+            "label": "$task.ProtocolSpaceUseConsumable.label",
+            "entry": "ProtocolSpaceBattleConsumableTaskStart",
+            "description": "$task.ProtocolSpaceUseConsumable.description",
+            "group": [
+                "backpack"
+            ],
+            "controller": [
+                "ADB",
+                "CloudADB",
+                "PlayCover",
+                "Linux-Gamescope",
+                "Linux-ScreenCast",
+                "Linux-Wlroots",
+                "Win32-Front"
+            ],
+            "option": [
+                "ProtocolSpaceBattleConsumableItem",
+                "ProtocolSpaceBattleConsumableOperators",
+                "ProtocolSpaceBattleConsumableRegion"
             ]
         }
     ],
@@ -119,59 +141,6 @@
                 "ProtocolSpaceScheduleSunday"
             ]
         },
-        "ProtocolSpaceBattleConsumable": {
-            "type": "switch",
-            "label": "$option.ProtocolSpaceBattleConsumable.label",
-            "cases": [
-                {
-                    "name": "Yes",
-                    "option": [
-                        "ProtocolSpaceBattleConsumableTiming",
-                        "ProtocolSpaceBattleConsumableItem",
-                        "ProtocolSpaceBattleConsumableOperators"
-                    ],
-                    "pipeline_override": {
-                        "ProtocolSpaceBattleConsumableStockStart": {
-                            "enabled": true
-                        },
-                        "ProtocolSpaceBattleConsumableUseStart": {
-                            "enabled": true
-                        },
-                        "ProtocolSpaceEntry": {
-                            "next": [
-                                "[JumpBack]ProtocolSpaceBattleConsumableStockStart",
-                                "ProtocolSpaceOperationalManualOpen",
-                                "[JumpBack]SceneEnterMenuOperationalManual"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "No"
-                }
-            ],
-            "default_case": "No"
-        },
-        "ProtocolSpaceBattleConsumableTiming": {
-            "type": "select",
-            "label": "$option.ProtocolSpaceBattleConsumableTiming.label",
-            "cases": [
-                {
-                    "name": "FirstBattleOnly",
-                    "label": "$option.ProtocolSpaceBattleConsumableTiming.cases.FirstBattleOnly.label",
-                    "pipeline_override": {
-                        "ProtocolSpaceBattleConsumableUseStart": {
-                            "max_hit": 1
-                        }
-                    }
-                },
-                {
-                    "name": "EveryBattle",
-                    "label": "$option.ProtocolSpaceBattleConsumableTiming.cases.EveryBattle.label"
-                }
-            ],
-            "default_case": "FirstBattleOnly"
-        },
         "ProtocolSpaceBattleConsumableItem": {
             "type": "select",
             "label": "$option.ProtocolSpaceBattleConsumableItem.label",
@@ -182,6 +151,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agmelee_1_sp_2_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -240,6 +225,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_erhound_1_sp_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -296,6 +297,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_lbshamman_bottled_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -354,6 +371,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_moss_2_lbmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -410,6 +443,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -468,6 +517,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -524,6 +589,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_moss_1_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -582,6 +663,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -638,6 +735,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_grass1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -696,6 +809,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp4_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -752,6 +881,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_erhound_1_agmelee_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -810,6 +955,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_ethillu_1_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -866,6 +1027,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_firebat_1_agrange_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -924,6 +1101,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsfly_1_slimeml_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -980,6 +1173,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hshog_1_hsmob_1_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1038,6 +1247,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsmob_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1094,6 +1319,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inkkirin_1_hscrane_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1152,6 +1393,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1208,6 +1465,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_10"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1266,6 +1539,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1322,6 +1611,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_3"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1380,6 +1685,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_4"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1436,6 +1757,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_5"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1494,6 +1831,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_6"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1550,6 +1903,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_7"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1608,6 +1977,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_8"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1664,6 +2049,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_9"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1722,6 +2123,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_jzmonk_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1778,6 +2195,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klbuds_1_hsfly_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1836,6 +2269,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klcreatures_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -1892,6 +2341,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbmob_1_dog_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -1950,6 +2415,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbshield_1_slimeml_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -2006,6 +2487,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_mimicw_1_moss_1_moss_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -2064,6 +2561,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgshoal_1_grass_1_grass_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -2120,6 +2633,22 @@
                     "pipeline_override": {
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
+                        },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
                         },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
@@ -2178,6 +2707,22 @@
                         "ProtocolSpaceBattleConsumableHasItem": {
                             "enabled": true
                         },
+                        "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgthorns_1_hshog_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
                         "ProtocolSpaceBattleConsumableStockWulingFindItem": {
                             "recognition": {
                                 "param": {
@@ -2230,6 +2775,43 @@
                 }
             ],
             "default_case": "item_agmelee_1_sp_2_slimeml_1_1"
+        },
+        "ProtocolSpaceBattleConsumableRegion": {
+            "type": "select",
+            "label": "$option.ProtocolSpaceBattleConsumableRegion.label",
+            "cases": [
+                {
+                    "name": "ValleyIV",
+                    "label": "$option.ProtocolSpaceBattleConsumableRegion.cases.ValleyIV.label",
+                    "pipeline_override": {
+                        "ProtocolSpaceBattleConsumableUseTeleportToRegion": {
+                            "custom_action_param": {
+                                "sub": [
+                                    "SceneEnterWorldValleyIVTheHubHubBase"
+                                ],
+                                "continue": false,
+                                "strict": true
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Wuling",
+                    "label": "$option.ProtocolSpaceBattleConsumableRegion.cases.Wuling.label",
+                    "pipeline_override": {
+                        "ProtocolSpaceBattleConsumableUseTeleportToRegion": {
+                            "custom_action_param": {
+                                "sub": [
+                                    "SceneEnterWorldWulingWulingCityCore"
+                                ],
+                                "continue": false,
+                                "strict": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "default_case": "ValleyIV"
         },
         "ProtocolSpaceBattleConsumableOperators": {
             "type": "checkbox",
