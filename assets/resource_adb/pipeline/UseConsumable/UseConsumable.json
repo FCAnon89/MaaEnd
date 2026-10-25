@@ -1,5 +1,5 @@
 {
-    "ProtocolSpaceBattleConsumableStockWulingFindItem": {
+    "UseConsumableStockWulingFindItem": {
         "recognition": {
             "param": {
                 "roi": [
@@ -11,7 +11,7 @@
             }
         }
     },
-    "ProtocolSpaceBattleConsumableStockValleyIVFindItem": {
+    "UseConsumableStockValleyIVFindItem": {
         "recognition": {
             "param": {
                 "roi": [
@@ -23,7 +23,7 @@
             }
         }
     },
-    "ProtocolSpaceBattleConsumableUseFindItem": {
+    "UseConsumableUseFindItem": {
         "recognition": {
             "param": {
                 "roi": [
@@ -35,7 +35,7 @@
             }
         }
     },
-    "ProtocolSpaceBattleConsumablePrecheckFindItem": {
+    "UseConsumablePrecheckFindItem": {
         "recognition": {
             "param": {
                 "roi": [
@@ -47,7 +47,7 @@
             }
         }
     },
-    "ProtocolSpaceBattleConsumablePrecheckQuantity": {
+    "UseConsumablePrecheckQuantity": {
         "roi_offset": [
             0,
             58,
@@ -55,7 +55,7 @@
             -58
         ]
     },
-    "ProtocolSpaceBattleConsumableUseQuantity": {
+    "UseConsumableUseQuantity": {
         "roi_offset": [
             0,
             58,
@@ -63,17 +63,17 @@
             -58
         ]
     },
-    "ProtocolSpaceBattleConsumableUseMark": {
+    "UseConsumableUseMark": {
         "roi": [
             767,
             0,
             513,
             523
         ],
-        "template": "ProtocolSpace/ItemIntroMarkADB.png",
+        "template": "UseConsumable/ItemIntroMarkADB.png",
         "threshold": 0.65
     },
-    "ProtocolSpaceBattleConsumableUseText": {
+    "UseConsumableUseText": {
         "roi_offset": [
             -178,
             525,
@@ -81,36 +81,36 @@
             5
         ]
     },
-    "ProtocolSpaceBattleConsumableUseOperator1": {
+    "UseConsumableUseOperator1": {
         "target": [
             612,
             327
         ]
     },
-    "ProtocolSpaceBattleConsumableUseOperator2": {
+    "UseConsumableUseOperator2": {
         "target": [
             728,
             327
         ]
     },
-    "ProtocolSpaceBattleConsumableUseOperator3": {
+    "UseConsumableUseOperator3": {
         "target": [
             849,
             327
         ]
     },
-    "ProtocolSpaceBattleConsumableUseOperator4": {
+    "UseConsumableUseOperator4": {
         "target": [
             965,
             327
         ]
     },
-    "ProtocolSpaceBattleConsumableUseConfirmButton": {
+    "UseConsumableUseConfirmButton": {
         "any_of": [
-            "ProtocolSpaceBattleConsumableUseConfirmButtonNormal"
+            "UseConsumableUseConfirmButtonNormal"
         ]
     },
-    "ProtocolSpaceBattleConsumableUseConfirmButtonNormal": {
+    "UseConsumableUseConfirmButtonNormal": {
         "roi": [
             861,
             428,
@@ -118,12 +118,12 @@
             139
         ]
     },
-    "ProtocolSpaceBattleConsumableUseCancelButton": {
+    "UseConsumableUseCancelButton": {
         "any_of": [
-            "ProtocolSpaceBattleConsumableUseCancelButtonNormal"
+            "UseConsumableUseCancelButtonNormal"
         ]
     },
-    "ProtocolSpaceBattleConsumableUseCancelButtonNormal": {
+    "UseConsumableUseCancelButtonNormal": {
         "roi": [
             582,
             432,
@@ -131,10 +131,10 @@
             139
         ]
     },
-    "ProtocolSpaceBattleConsumableStockWulingTransferItem": {
+    "UseConsumableStockWulingTransferItem": {
         "desc": "触点 4 按住仓库中的物品一秒",
         "action": "TouchDown",
-        "target": "ProtocolSpaceBattleConsumableStockWulingFindItem",
+        "target": "UseConsumableStockWulingFindItem",
         "target_offset": [
             26,
             25,
@@ -145,13 +145,13 @@
         "auto_up": true,
         "post_delay": 1000,
         "next": [
-            "ProtocolSpaceBattleConsumableStockTransferMenuClick"
+            "UseConsumableStockTransferMenuClick"
         ]
     },
-    "ProtocolSpaceBattleConsumableStockValleyIVTransferItem": {
+    "UseConsumableStockValleyIVTransferItem": {
         "desc": "触点 4 按住仓库中的物品一秒",
         "action": "TouchDown",
-        "target": "ProtocolSpaceBattleConsumableStockValleyIVFindItem",
+        "target": "UseConsumableStockValleyIVFindItem",
         "target_offset": [
             26,
             25,
@@ -162,10 +162,10 @@
         "auto_up": true,
         "post_delay": 1000,
         "next": [
-            "ProtocolSpaceBattleConsumableStockTransferMenuClick"
+            "UseConsumableStockTransferMenuClick"
         ]
     },
-    "ProtocolSpaceBattleConsumableStockTransferMenuClick": {
+    "UseConsumableStockTransferMenuClick": {
         "desc": "按住物品时反复点击转移到背包图标，直到图标消失",
         "recognition": "TemplateMatch",
         "roi": [
@@ -174,41 +174,41 @@
             309,
             212
         ],
-        "template": "ProtocolSpace/TransferToBackpack.png",
+        "template": "UseConsumable/TransferToBackpack.png",
         "threshold": 0.8,
         "action": "Custom",
         "custom_action": "RepeatUntilNotFoundAction",
         "custom_action_param": {
             "custom_action": "AutoAltClickAction",
-            "wait_node": "ProtocolSpaceBattleConsumableStockTransferMenuClick",
+            "wait_node": "UseConsumableStockTransferMenuClick",
             "repeat_count": 5,
             "interval_ms": 500
         },
         "timeout": 3000,
         "rate_limit": 250,
         "next": [
-            "ProtocolSpaceBattleConsumableStockTransferTouchUp"
+            "UseConsumableStockTransferTouchUp"
         ],
         "on_error": [
-            "ProtocolSpaceBattleConsumableStockTransferTouchUpOnError"
+            "UseConsumableStockTransferTouchUpOnError"
         ]
     },
-    "ProtocolSpaceBattleConsumableStockTransferTouchUp": {
+    "UseConsumableStockTransferTouchUp": {
         "desc": "转移菜单图标消失后松开物品触点",
         "recognition": "DirectHit",
         "action": "TouchUp",
         "contact": 4,
         "next": [
-            "ProtocolSpaceBattleConsumableStockFinish"
+            "UseConsumableStockFinish"
         ]
     },
-    "ProtocolSpaceBattleConsumableStockTransferTouchUpOnError": {
+    "UseConsumableStockTransferTouchUpOnError": {
         "desc": "转移操作失败时释放物品触点",
         "recognition": "DirectHit",
         "action": "TouchUp",
         "contact": 4,
         "next": [
-            "ProtocolSpaceBattleConsumableStockFinish"
+            "UseConsumableStockFinish"
         ]
     }
 }

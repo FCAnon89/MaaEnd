@@ -1,4 +1,4 @@
-package protocolspace
+package useconsumable
 
 import (
 	"encoding/json"
@@ -27,24 +27,24 @@ func (r *ConsumableQuantityRecognition) Run(
 	arg *maa.CustomRecognitionArg,
 ) (*maa.CustomRecognitionResult, bool) {
 	if ctx == nil || arg == nil {
-		log.Error().Str("component", "ProtocolSpaceConsumableQuantityRecognition").Msg("received nil context or arg")
+		log.Error().Str("component", "UseConsumableQuantityRecognition").Msg("received nil context or arg")
 		return nil, false
 	}
 
 	var params consumableQuantityRecognitionParams
 	if err := json.Unmarshal([]byte(arg.CustomRecognitionParam), &params); err != nil {
-		log.Error().Err(err).Str("component", "ProtocolSpaceConsumableQuantityRecognition").Msg("failed to parse params")
+		log.Error().Err(err).Str("component", "UseConsumableQuantityRecognition").Msg("failed to parse params")
 		return nil, false
 	}
 	params.QuantityNode = strings.TrimSpace(params.QuantityNode)
 	if params.QuantityNode == "" || len(params.OperatorNodes) != 4 {
-		log.Error().Str("component", "ProtocolSpaceConsumableQuantityRecognition").Msg("quantity_node and four operator_nodes are required")
+		log.Error().Str("component", "UseConsumableQuantityRecognition").Msg("quantity_node and four operator_nodes are required")
 		return insufficientResult(arg, params.MatchWhenSufficient)
 	}
 
 	selectedCount, err := countEnabledOperatorNodes(ctx, params.OperatorNodes)
 	if err != nil {
-		log.Error().Err(err).Str("component", "ProtocolSpaceConsumableQuantityRecognition").Msg("failed to read selected operator slots")
+		log.Error().Err(err).Str("component", "UseConsumableQuantityRecognition").Msg("failed to read selected operator slots")
 		return insufficientResult(arg, params.MatchWhenSufficient)
 	}
 	if selectedCount == 0 {
@@ -60,7 +60,7 @@ func (r *ConsumableQuantityRecognition) Run(
 
 	sufficient := quantity >= selectedCount
 	log.Info().
-		Str("component", "ProtocolSpaceConsumableQuantityRecognition").
+		Str("component", "UseConsumableQuantityRecognition").
 		Int("quantity", quantity).
 		Int("selected_operators", selectedCount).
 		Bool("sufficient", sufficient).

@@ -267,7 +267,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Generate ProtocolSpace usable items
+      - name: Generate UseConsumable items
         run: |
           version="$(jq -r '.version' tools/zmdmap/data/item_mini_table.json)"
           uv run zmdmap generate --only usable_items --table-cfg-dir BeyondTableCfg/tableCfg --version "$version"
@@ -287,8 +287,8 @@ jobs:
           author: "maaendbotapp[bot] <305547419+maaendbotapp[bot]@users.noreply.github.com>"
           add-paths: |
             tools/zmdmap
-            assets/data/ProtocolSpace
-            assets/tasks/ProtocolSpace.json
+            assets/data/UseConsumable
+            assets/tasks/UseConsumable.json
             assets/data/IconRecognition
             assets/resource/image/IconRecognition
             assets/resource/image/UI/Item
@@ -299,12 +299,12 @@ jobs:
           body: |
             ## 摘要
 
-            本 PR 从最新的 BeyondTableCfg TableCfg 生成协议空间主动增幅道具表，并同步任务下拉选项；同时更新 IconRecognition 图标目录、物品图片和本地化名称。
+            本 PR 从最新的 BeyondTableCfg TableCfg 生成主动可用消耗品表，并同步任务下拉选项；同时更新 IconRecognition 图标目录、物品图片和本地化名称。
 
             **生成内容：**
 
-            - `assets/data/ProtocolSpace/usable_items.json`
-            - `assets/tasks/ProtocolSpace.json` 中的消耗品选项
+            - `assets/data/UseConsumable/usable_items.json`
+            - `assets/tasks/UseConsumable.json` 中的消耗品选项
             - `assets/data/IconRecognition/recognition_items.json`
             - `assets/resource/image/IconRecognition/` 与 `assets/resource/image/UI/Item/`
             - `assets/locales/interface/` 中的物品名称

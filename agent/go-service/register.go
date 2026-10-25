@@ -41,7 +41,6 @@ import (
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/itemtransfer"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/outposttrading"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/pkg/resource"
-	"github.com/MaaXYZ/MaaEnd/agent/go-service/protocolspace"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/pullcount"
 	puzzle "github.com/MaaXYZ/MaaEnd/agent/go-service/puzzle-solver"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/scenemanager"
@@ -52,6 +51,7 @@ import (
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/taskersink/processcheck"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/taskersink/taskfail"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/trialofswordmancy"
+	"github.com/MaaXYZ/MaaEnd/agent/go-service/useconsumable"
 	webevent202605 "github.com/MaaXYZ/MaaEnd/agent/go-service/webevent/202605"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/ziplineimport"
 	"github.com/rs/zerolog/log"
@@ -113,7 +113,7 @@ func registerAll() {
 	itemtransfer.Register()
 	outposttrading.Register()
 	creditshopping.Register()
-	protocolspace.Register()
+	useconsumable.Register()
 	webevent202605.Register()
 	ziplineimport.Register()
 	pullcount.Register()

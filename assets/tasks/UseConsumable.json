@@ -1,0 +1,2749 @@
+{
+    "task": [
+        {
+            "name": "UseConsumable",
+            "label": "$task.UseConsumable.label",
+            "entry": "UseConsumableTaskStart",
+            "description": "$task.UseConsumable.description",
+            "group": [
+                "backpack"
+            ],
+            "controller": [
+                "ADB",
+                "CloudADB",
+                "PlayCover",
+                "Linux-Gamescope",
+                "Linux-ScreenCast",
+                "Linux-Wlroots",
+                "Win32-Front"
+            ],
+            "option": [
+                "UseConsumableItem",
+                "UseConsumableOperators",
+                "UseConsumableRegion"
+            ]
+        }
+    ],
+    "option": {
+        "UseConsumableItem": {
+            "type": "select",
+            "label": "$option.UseConsumableItem.label",
+            "cases": [
+                {
+                    "name": "item_agmelee_1_sp_2_slimeml_1_1",
+                    "label": "$iconRecognition.name.item_agmelee_1_sp_2_slimeml_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agmelee_1_sp_2_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agmelee_1_sp_2_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agmelee_1_sp_2_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agmelee_1_sp_2_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_agrange_1_erhound_1_sp_1_1",
+                    "label": "$iconRecognition.name.item_agrange_1_erhound_1_sp_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_erhound_1_sp_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_erhound_1_sp_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_erhound_1_sp_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_erhound_1_sp_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_agrange_1_lbshamman_bottled_1",
+                    "label": "$iconRecognition.name.item_agrange_1_lbshamman_bottled_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_lbshamman_bottled_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_lbshamman_bottled_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_lbshamman_bottled_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_lbshamman_bottled_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_agrange_1_moss_2_lbmob_1_1",
+                    "label": "$iconRecognition.name.item_agrange_1_moss_2_lbmob_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_moss_2_lbmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_moss_2_lbmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_moss_2_lbmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_agrange_1_moss_2_lbmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_bottled_insec2_1",
+                    "label": "$iconRecognition.name.item_bottled_insec2_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_bottled_insec2_2",
+                    "label": "$iconRecognition.name.item_bottled_insec2_2",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_insec2_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_bottled_moss_1_2_1",
+                    "label": "$iconRecognition.name.item_bottled_moss_1_2_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_moss_1_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_moss_1_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_moss_1_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_bottled_moss_1_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_corp3_animal_1",
+                    "label": "$iconRecognition.name.item_corp3_animal_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_corp3_grass1_1",
+                    "label": "$iconRecognition.name.item_corp3_grass1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_grass1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_grass1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_grass1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp3_grass1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_corp4_animal_1",
+                    "label": "$iconRecognition.name.item_corp4_animal_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp4_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp4_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp4_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_corp4_animal_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_erhound_1_agmelee_1_moss_1_1",
+                    "label": "$iconRecognition.name.item_erhound_1_agmelee_1_moss_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_erhound_1_agmelee_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_erhound_1_agmelee_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_erhound_1_agmelee_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_erhound_1_agmelee_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_ethillu_1_wgslime_1_wgthorns_1_1",
+                    "label": "$iconRecognition.name.item_ethillu_1_wgslime_1_wgthorns_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_ethillu_1_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_ethillu_1_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_ethillu_1_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_ethillu_1_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_firebat_1_agrange_1_1",
+                    "label": "$iconRecognition.name.item_firebat_1_agrange_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_firebat_1_agrange_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_firebat_1_agrange_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_firebat_1_agrange_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_firebat_1_agrange_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_hsfly_1_slimeml_1_hsmob_1_1",
+                    "label": "$iconRecognition.name.item_hsfly_1_slimeml_1_hsmob_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsfly_1_slimeml_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsfly_1_slimeml_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsfly_1_slimeml_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsfly_1_slimeml_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_hshog_1_hsmob_1_slimeml_1_1",
+                    "label": "$iconRecognition.name.item_hshog_1_hsmob_1_slimeml_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hshog_1_hsmob_1_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hshog_1_hsmob_1_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hshog_1_hsmob_1_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hshog_1_hsmob_1_slimeml_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_hsmob_1_dog_1_1",
+                    "label": "$iconRecognition.name.item_hsmob_1_dog_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsmob_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsmob_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsmob_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_hsmob_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inkkirin_1_hscrane_1_1",
+                    "label": "$iconRecognition.name.item_inkkirin_1_hscrane_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inkkirin_1_hscrane_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inkkirin_1_hscrane_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inkkirin_1_hscrane_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inkkirin_1_hscrane_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_1",
+                    "label": "$iconRecognition.name.item_inn_drink_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_10",
+                    "label": "$iconRecognition.name.item_inn_drink_10",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_10"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_10"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_10"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_10"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_2",
+                    "label": "$iconRecognition.name.item_inn_drink_2",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_2"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_3",
+                    "label": "$iconRecognition.name.item_inn_drink_3",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_3"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_3"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_3"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_3"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_4",
+                    "label": "$iconRecognition.name.item_inn_drink_4",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_4"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_4"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_4"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_4"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_5",
+                    "label": "$iconRecognition.name.item_inn_drink_5",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_5"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_5"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_5"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_5"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_6",
+                    "label": "$iconRecognition.name.item_inn_drink_6",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_6"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_6"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_6"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_6"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_7",
+                    "label": "$iconRecognition.name.item_inn_drink_7",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_7"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_7"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_7"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_7"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_8",
+                    "label": "$iconRecognition.name.item_inn_drink_8",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_8"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_8"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_8"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_8"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_inn_drink_9",
+                    "label": "$iconRecognition.name.item_inn_drink_9",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_9"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_9"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_9"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_inn_drink_9"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_jzmonk_1_hsmob_1_1",
+                    "label": "$iconRecognition.name.item_jzmonk_1_hsmob_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_jzmonk_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_jzmonk_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_jzmonk_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_jzmonk_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_klbuds_1_hsfly_1_1",
+                    "label": "$iconRecognition.name.item_klbuds_1_hsfly_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klbuds_1_hsfly_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klbuds_1_hsfly_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klbuds_1_hsfly_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klbuds_1_hsfly_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_klcreatures_1_wgthorns_1_1",
+                    "label": "$iconRecognition.name.item_klcreatures_1_wgthorns_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klcreatures_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klcreatures_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klcreatures_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_klcreatures_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_lbmob_1_dog_1_moss_1_1",
+                    "label": "$iconRecognition.name.item_lbmob_1_dog_1_moss_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbmob_1_dog_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbmob_1_dog_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbmob_1_dog_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbmob_1_dog_1_moss_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_lbshield_1_slimeml_1_dog_1_1",
+                    "label": "$iconRecognition.name.item_lbshield_1_slimeml_1_dog_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbshield_1_slimeml_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbshield_1_slimeml_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbshield_1_slimeml_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_lbshield_1_slimeml_1_dog_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_mimicw_1_moss_1_moss_2_1",
+                    "label": "$iconRecognition.name.item_mimicw_1_moss_1_moss_2_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_mimicw_1_moss_1_moss_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_mimicw_1_moss_1_moss_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_mimicw_1_moss_1_moss_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_mimicw_1_moss_1_moss_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_wgshoal_1_grass_1_grass_2_1",
+                    "label": "$iconRecognition.name.item_wgshoal_1_grass_1_grass_2_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgshoal_1_grass_1_grass_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgshoal_1_grass_1_grass_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgshoal_1_grass_1_grass_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgshoal_1_grass_1_grass_2_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_wgslime_1_wgthorns_1_1",
+                    "label": "$iconRecognition.name.item_wgslime_1_wgthorns_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgslime_1_wgthorns_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "item_wgthorns_1_hshog_1_hsmob_1_1",
+                    "label": "$iconRecognition.name.item_wgthorns_1_hshog_1_hsmob_1_1",
+                    "pipeline_override": {
+                        "UseConsumableHasItem": {
+                            "enabled": true
+                        },
+                        "UseConsumablePrecheckFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgthorns_1_hshog_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockWulingFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgthorns_1_hshog_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableStockValleyIVFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgthorns_1_hshog_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        },
+                        "UseConsumableUseFindItem": {
+                            "recognition": {
+                                "param": {
+                                    "custom_recognition_param": {
+                                        "grid_type": "transfer",
+                                        "item_ids": [
+                                            "item_wgthorns_1_hshog_1_hsmob_1_1"
+                                        ],
+                                        "item_recheck_filters": [
+                                            "Normal:Usable"
+                                        ],
+                                        "deduplicate": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "default_case": "item_agmelee_1_sp_2_slimeml_1_1"
+        },
+        "UseConsumableRegion": {
+            "type": "select",
+            "label": "$option.UseConsumableRegion.label",
+            "cases": [
+                {
+                    "name": "ValleyIV",
+                    "label": "$option.UseConsumableRegion.cases.ValleyIV.label",
+                    "pipeline_override": {
+                        "UseConsumableUseTeleportToRegion": {
+                            "custom_action_param": {
+                                "sub": [
+                                    "SceneEnterWorldValleyIVTheHubHubBase"
+                                ],
+                                "continue": false,
+                                "strict": true
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Wuling",
+                    "label": "$option.UseConsumableRegion.cases.Wuling.label",
+                    "pipeline_override": {
+                        "UseConsumableUseTeleportToRegion": {
+                            "custom_action_param": {
+                                "sub": [
+                                    "SceneEnterWorldWulingWulingCityCore"
+                                ],
+                                "continue": false,
+                                "strict": true
+                            }
+                        }
+                    }
+                }
+            ],
+            "default_case": "ValleyIV"
+        },
+        "UseConsumableOperators": {
+            "type": "checkbox",
+            "label": "$option.UseConsumableOperators.label",
+            "cases": [
+                {
+                    "name": "OperatorSlot1",
+                    "label": "$option.UseConsumableOperators.cases.OperatorSlot1.label",
+                    "pipeline_override": {
+                        "UseConsumableUseOperator1": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "OperatorSlot2",
+                    "label": "$option.UseConsumableOperators.cases.OperatorSlot2.label",
+                    "pipeline_override": {
+                        "UseConsumableUseOperator2": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "OperatorSlot3",
+                    "label": "$option.UseConsumableOperators.cases.OperatorSlot3.label",
+                    "pipeline_override": {
+                        "UseConsumableUseOperator3": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "OperatorSlot4",
+                    "label": "$option.UseConsumableOperators.cases.OperatorSlot4.label",
+                    "pipeline_override": {
+                        "UseConsumableUseOperator4": {
+                            "enabled": true
+                        }
+                    }
+                }
+            ],
+            "default_case": [
+                "OperatorSlot1",
+                "OperatorSlot2",
+                "OperatorSlot3",
+                "OperatorSlot4"
+            ]
+        }
+    }
+}

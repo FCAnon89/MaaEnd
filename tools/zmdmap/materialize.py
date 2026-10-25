@@ -127,16 +127,16 @@ def _copy(raw_dir: Path, data_dir: Path, file_names: Sequence[str], *, force: bo
 
 
 def sync_usable_items_task_options(data_dir: Path) -> None:
-    """把生成的主动可用道具表放入资源目录并更新协议空间选项。"""
+    """把生成的主动可用道具表放入资源目录并更新消耗品任务选项。"""
     source_path = data_dir / "usable_items.json"
-    data_path = REPO_ROOT / "assets" / "data" / "ProtocolSpace" / "usable_items.json"
-    task_path = REPO_ROOT / "assets" / "tasks" / "ProtocolSpace.json"
+    data_path = REPO_ROOT / "assets" / "data" / "UseConsumable" / "usable_items.json"
+    task_path = REPO_ROOT / "assets" / "tasks" / "UseConsumable.json"
     try:
         data_text = source_path.read_text(encoding="utf-8")
         data = json.loads(data_text)
         task_text = task_path.read_text(encoding="utf-8")
     except (OSError, ValueError) as error:
-        raise click.ClickException(f"同步协议空间可用道具失败：{error}") from error
+        raise click.ClickException(f"同步消耗品任务数据失败：{error}") from error
 
     items = data.get("items") if isinstance(data, dict) else None
     if not isinstance(items, dict):
@@ -160,7 +160,7 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
                 "name": item_id,
                 "label": f"$iconRecognition.name.{item_id}",
                 "pipeline_override": {
-                    "ProtocolSpaceBattleConsumableHasItem": {"enabled": True},
+                    "UseConsumableHasItem": {"enabled": True},
                     **{
                         node: {
                             "recognition": {
@@ -168,10 +168,10 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
                             }
                         }
                         for node in (
-                            "ProtocolSpaceBattleConsumablePrecheckFindItem",
-                            "ProtocolSpaceBattleConsumableStockWulingFindItem",
-                            "ProtocolSpaceBattleConsumableStockValleyIVFindItem",
-                            "ProtocolSpaceBattleConsumableUseFindItem",
+                            "UseConsumablePrecheckFindItem",
+                            "UseConsumableStockWulingFindItem",
+                            "UseConsumableStockValleyIVFindItem",
+                            "UseConsumableUseFindItem",
                         )
                     }
                 },
@@ -181,10 +181,10 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
     if not cases:
         raise click.ClickException(f"{source_path} 中没有可供选择的主动可用道具")
 
-    option = re.search(r'"ProtocolSpaceBattleConsumableItem"\s*:\s*\{', task_text)
+    option = re.search(r'"UseConsumableItem"\s*:\s*\{', task_text)
     cases_match = re.search(r'"cases"\s*:\s*\[', task_text[option.end() :]) if option else None
     if option is None or cases_match is None:
-        raise click.ClickException(f"{task_path} 缺少 ProtocolSpaceBattleConsumableItem")
+        raise click.ClickException(f"{task_path} 缺少 UseConsumableItem")
     cases_start = option.end() + cases_match.start()
     array_start = task_text.index("[", cases_start)
 
@@ -239,7 +239,7 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
     )
     if default_case_match is None:
         raise click.ClickException(
-            f"{task_path} 缺少 ProtocolSpaceBattleConsumableItem.default_case"
+            f"{task_path} 缺少 UseConsumableItem.default_case"
         )
     if default_case_match.group(1) != default_case:
         default_case_start = default_case_search_start + default_case_match.start(1)

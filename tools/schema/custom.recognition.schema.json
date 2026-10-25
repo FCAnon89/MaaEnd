@@ -38,7 +38,7 @@
                 "OutpostTradingOperatorScanOutcome",
                 "OutpostTradingPriorityItem",
                 "OutpostTradingSelectBestOperator",
-                "ProtocolSpaceConsumableQuantityRecognition",
+                "UseConsumableQuantityRecognition",
                 "PuzzleRecognition",
                 "ReceptionRoomExchangeCountdownWithinThresholdRecognition",
                 "ReceptionRoomWaitExchangeKeepAliveDueRecognition",
@@ -254,7 +254,7 @@
             "if": {
                 "type": "object",
                 "required": [ "custom_recognition" ],
-                "properties": { "custom_recognition": { "const": "ProtocolSpaceConsumableQuantityRecognition" } }
+                "properties": { "custom_recognition": { "const": "UseConsumableQuantityRecognition" } }
             },
             "then": {
                 "type": "object",

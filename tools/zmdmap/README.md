@@ -152,7 +152,7 @@ uv run zmdmap generate --list                      # 列出有哪些数据、各
 
 `uv run zmdmap generate --list` 打印每个数据集的名字、产物文件名和入库方式。
 
-协议空间的 `usable_items.json` 由 `.github/workflows/sync-zmdmap.yml` 从 `555me/beyondGameData` 的 `tableCfg` 子目录生成；入库时也会同步独立运行时数据表与协议空间任务下拉选项。
+独立任务 `UseConsumable` 的 `usable_items.json` 由 `.github/workflows/sync-zmdmap.yml` 从 `555me/beyondGameData` 的 `tableCfg` 子目录生成；入库时也会同步独立运行时数据表与 `UseConsumable` 任务下拉选项。
 
 ## 想加一份新数据
 
