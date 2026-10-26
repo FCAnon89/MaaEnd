@@ -75,6 +75,7 @@ func (r *Recognition) Run(ctx *maa.Context, arg *maa.CustomRecognitionArg) (*maa
 			Msg("current task name is empty")
 		return nil, false
 	}
+
 	roi, err := resolveROI(arg.Img, arg.Roi)
 	if err != nil {
 		log.Error().
