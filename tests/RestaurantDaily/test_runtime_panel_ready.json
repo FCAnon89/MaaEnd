@@ -2,12 +2,13 @@
     "configs": {
         "name": "缘缘庄经营面板就绪识别",
         "resource": "官服",
-        "controller": "Win32"
+        "controller": "Win32",
+        "imageRoot": "RestaurantDaily"
     },
     "cases": [
         {
             "name": "经营面板已打开",
-            "image": "RestaurantDaily_RuntimeStates.png",
+            "image": "缘缘庄_经营中_桌位与厨房状态.png",
             "hits": [
                 {
                     "node": "RestaurantKitchenPanelReady",
@@ -22,7 +23,7 @@
         },
         {
             "name": "菜单页未打开经营面板",
-            "image": "RestaurantDaily_MenuReady.png",
+            "image": "缘缘庄_菜单_饮品页及可开始经营.png",
             "hits": []
         }
     ]
