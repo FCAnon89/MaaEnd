@@ -246,10 +246,7 @@ func route(patch map[string]any, routes []string, selected string) {
 func iconCandidates(patch map[string]any, name string, ids []string) {
 	patch[name] = map[string]any{"custom_recognition_param": iconrecognition.NewParams(
 		iconrecognition.WithGridType(iconrecognition.GridTypeSingleROI),
-		iconrecognition.WithItemFilters(
-			iconrecognition.ItemFilter("Restaurant:*"),
-			iconrecognition.ItemFilter("Normal:Usable"),
-		),
+		iconrecognition.WithItemFilters(iconrecognition.ItemFilter("Restaurant:*"), iconrecognition.StorageFilter().Normal.Usable),
 		iconrecognition.WithItemIDs(ids...),
 	)}
 }
@@ -339,9 +336,6 @@ func nextMenuCard(state *session, patch map[string]any) error {
 				for _, layout := range []string{"SinglePoint1", "DoublePoint1", "DoublePoint2"} {
 					iconCandidates(patch, fmt.Sprintf("RestaurantTable%d%sIcon", table, layout), all)
 				}
-			}
-			for slot := 1; slot <= 6; slot++ {
-				iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dIcon", slot), menu.Dishes)
 			}
 			menu.Cards = nil
 		}
@@ -487,30 +481,25 @@ func observeTables(current *runtimeState, observed observations, patch map[strin
 	return nil
 }
 
-// A waving marker takes precedence over every cache quantity. Without one,
-// replenish the selected dishes to two portions in menu order.
-func chooseDish(state *session, observed observations) (string, error) {
+// A waving marker takes precedence over the two-portion pre-stock limit.
+// Otherwise, choose the first under-stocked dish in selected menu order.
+func chooseDish(state *session, observed observations) (string, int) {
 	for slot := 1; slot <= 6; slot++ {
 		prefix := fmt.Sprintf("RestaurantRecipe%d", slot)
 		if !observed.hit(prefix + "RestockMarker") {
 			continue
 		}
-		iconName := prefix + "Icon"
-		if observed[iconName] == nil {
-			return "", nil
+		if slot > len(state.Menu.Dishes) {
+			return "", 0
 		}
-		id, err := readIcon(observed, iconName)
-		if err != nil {
-			return "", err
-		}
-		return id, nil
+		return state.Menu.Dishes[slot-1], slot
 	}
-	for _, id := range state.Menu.Dishes {
+	for index, id := range state.Menu.Dishes {
 		if state.Runtime.Cache[id] < 2 {
-			return id, nil
+			return id, index + 1
 		}
 	}
-	return "", nil
+	return "", 0
 }
 
 func decideRuntime(state *session, observed observations, patch map[string]any) error {
@@ -521,10 +510,7 @@ func decideRuntime(state *session, observed observations, patch map[string]any) 
 	if err := observeTables(current, observed, patch); err != nil {
 		return err
 	}
-	id, err := chooseDish(state, observed)
-	if err != nil {
-		return err
-	}
+	id, slot := chooseDish(state, observed)
 	kitchen, full := chooseKitchen(observed)
 	if id == "" || full {
 		route(patch, runtimeRoutes, "RestaurantRuntimeIdle")
@@ -542,10 +528,9 @@ func decideRuntime(state *session, observed observations, patch map[string]any) 
 	}
 	patch["RestaurantRuntimeTargetKitchen"] = map[string]any{"all_of": []string{target}}
 	route(patch, runtimeRoutes, name)
-	// Pipeline matches the requested dish's slot; switching routes take priority.
-	for slot := 1; slot <= 6; slot++ {
-		iconCandidates(patch, fmt.Sprintf("RestaurantRecipe%dTargetIcon", slot), []string{id})
-		patch[fmt.Sprintf("RestaurantRuntimeClickDish%d", slot)] = map[string]any{"enabled": true}
+	// The runtime recipe card order matches the selected menu order; enable its fixed slot click.
+	for cardSlot := 1; cardSlot <= 6; cardSlot++ {
+		patch[fmt.Sprintf("RestaurantRuntimeClickDish%d", cardSlot)] = map[string]any{"enabled": cardSlot == slot}
 	}
 	return nil
 }

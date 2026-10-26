@@ -41,8 +41,6 @@ type Recognition struct{}
 type params struct {
 	// Threshold 为模板匹配阈值，默认 0.9；命中（>= 阈值）视为列表到底并返回 true。
 	Threshold float64 `json:"threshold"`
-	// StateNode 指定共享列表状态保存在哪个 Pipeline 节点；为空时使用当前节点。
-	StateNode string `json:"state_node"`
 }
 
 // nodeStore 抽象 attach 读写，便于单测用 fake 跨多次调用保留状态。
@@ -77,10 +75,6 @@ func (r *Recognition) Run(ctx *maa.Context, arg *maa.CustomRecognitionArg) (*maa
 			Msg("current task name is empty")
 		return nil, false
 	}
-	if stateNode := strings.TrimSpace(p.StateNode); stateNode != "" {
-		currentNode = stateNode
-	}
-
 	roi, err := resolveROI(arg.Img, arg.Roi)
 	if err != nil {
 		log.Error().

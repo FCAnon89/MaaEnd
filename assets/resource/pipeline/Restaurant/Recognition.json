@@ -2679,45 +2679,6 @@
         ],
         "count": 20
     },
-    "RestaurantRecipe1Icon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            519,
-            220,
-            66,
-            66
-        ]
-    },
-    "RestaurantRecipe1Restock": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRecipe1RestockMarker",
-            "RestaurantRecipe1Icon"
-        ]
-    },
-    "RestaurantRecipe1TargetIcon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            519,
-            220,
-            66,
-            66
-        ]
-    },
     "RestaurantRecipe2RestockMarker": {
         "recognition": "ColorMatch",
         "roi": [
@@ -2738,45 +2699,6 @@
             255
         ],
         "count": 20
-    },
-    "RestaurantRecipe2Icon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            828,
-            220,
-            66,
-            66
-        ]
-    },
-    "RestaurantRecipe2Restock": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRecipe2RestockMarker",
-            "RestaurantRecipe2Icon"
-        ]
-    },
-    "RestaurantRecipe2TargetIcon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            828,
-            220,
-            66,
-            66
-        ]
     },
     "RestaurantRecipe3RestockMarker": {
         "recognition": "ColorMatch",
@@ -2799,45 +2721,6 @@
         ],
         "count": 20
     },
-    "RestaurantRecipe3Icon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            519,
-            315,
-            66,
-            66
-        ]
-    },
-    "RestaurantRecipe3Restock": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRecipe3RestockMarker",
-            "RestaurantRecipe3Icon"
-        ]
-    },
-    "RestaurantRecipe3TargetIcon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            519,
-            315,
-            66,
-            66
-        ]
-    },
     "RestaurantRecipe4RestockMarker": {
         "recognition": "ColorMatch",
         "roi": [
@@ -2858,45 +2741,6 @@
             255
         ],
         "count": 20
-    },
-    "RestaurantRecipe4Icon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            828,
-            315,
-            66,
-            66
-        ]
-    },
-    "RestaurantRecipe4Restock": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRecipe4RestockMarker",
-            "RestaurantRecipe4Icon"
-        ]
-    },
-    "RestaurantRecipe4TargetIcon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            828,
-            315,
-            66,
-            66
-        ]
     },
     "RestaurantRecipe5RestockMarker": {
         "recognition": "ColorMatch",
@@ -2919,45 +2763,6 @@
         ],
         "count": 20
     },
-    "RestaurantRecipe5Icon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            519,
-            405,
-            66,
-            66
-        ]
-    },
-    "RestaurantRecipe5Restock": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRecipe5RestockMarker",
-            "RestaurantRecipe5Icon"
-        ]
-    },
-    "RestaurantRecipe5TargetIcon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            519,
-            405,
-            66,
-            66
-        ]
-    },
     "RestaurantRecipe6RestockMarker": {
         "recognition": "ColorMatch",
         "roi": [
@@ -2978,45 +2783,6 @@
             255
         ],
         "count": 20
-    },
-    "RestaurantRecipe6Icon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            828,
-            405,
-            66,
-            66
-        ]
-    },
-    "RestaurantRecipe6Restock": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantRecipe6RestockMarker",
-            "RestaurantRecipe6Icon"
-        ]
-    },
-    "RestaurantRecipe6TargetIcon": {
-        "recognition": "Custom",
-        "custom_recognition": "IconRecognition",
-        "custom_recognition_param": {
-            "grid_type": "single_roi",
-            "item_filters": [
-                "Restaurant:*"
-            ]
-        },
-        "roi": [
-            828,
-            405,
-            66,
-            66
-        ]
     },
     "RestaurantRuntimeFullFrame": {
         "recognition": "And",
@@ -3039,21 +2805,7 @@
             {
                 "recognition": "Or",
                 "any_of": [
-                    "RestaurantRecipe1Restock",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
                     "RestaurantRecipe2RestockMarker",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantRecipe2Restock",
                     "RestaurantObservationEmpty"
                 ]
             },
@@ -3067,21 +2819,7 @@
             {
                 "recognition": "Or",
                 "any_of": [
-                    "RestaurantRecipe3Restock",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
                     "RestaurantRecipe4RestockMarker",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantRecipe4Restock",
                     "RestaurantObservationEmpty"
                 ]
             },
@@ -3095,21 +2833,7 @@
             {
                 "recognition": "Or",
                 "any_of": [
-                    "RestaurantRecipe5Restock",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
                     "RestaurantRecipe6RestockMarker",
-                    "RestaurantObservationEmpty"
-                ]
-            },
-            {
-                "recognition": "Or",
-                "any_of": [
-                    "RestaurantRecipe6Restock",
                     "RestaurantObservationEmpty"
                 ]
             }

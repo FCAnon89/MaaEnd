@@ -1,0 +1,32 @@
+{
+    "configs": {
+        "name": "缘缘庄入口、主题与客源识别",
+        "resource": "官服",
+        "controller": "Win32"
+    },
+    "cases": [
+        {
+            "name": "大世界柜台交互点",
+            "image": "RestaurantDaily_WorldEntry.png",
+            "hits": [
+                "RestaurantOpenCounter"
+            ]
+        },
+        {
+            "name": "主题设定及客源充足",
+            "image": "RestaurantDaily_ThemeSettings.png",
+            "hits": [
+                "RestaurantThemeSettings",
+                "RestaurantPatronageOCR"
+            ]
+        },
+        {
+            "name": "主题设定及客源不足",
+            "image": "RestaurantDaily_PatronageInsufficient.png",
+            "hits": [
+                "RestaurantThemeSettings",
+                "RestaurantPatronageOCR"
+            ]
+        }
+    ]
+}

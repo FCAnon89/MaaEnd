@@ -1,0 +1,23 @@
+{
+    "configs": {
+        "name": "缘缘庄桌位状态识别",
+        "resource": "官服",
+        "controller": "Win32"
+    },
+    "cases": [
+        {
+            "name": "老饕、用餐中与点餐中并存",
+            "image": "RestaurantDaily_RuntimeStates.png",
+            "hits": [
+                "RestaurantTable2Gourmand",
+                "RestaurantTable3Dining",
+                "RestaurantTable4Ordering"
+            ]
+        },
+        {
+            "name": "单点位画面无桌位状态词",
+            "image": "RestaurantDaily_RuntimeOnePoint.png",
+            "hits": []
+        }
+    ]
+}

@@ -325,8 +325,7 @@
         "recognition": "Custom",
         "custom_recognition": "ListCompleteRecognition",
         "custom_recognition_param": {
-            "threshold": 0.98,
-            "state_node": "RestaurantThemeListUnchanged"
+            "threshold": 0.98
         },
         "roi": [
             70,
@@ -2058,8 +2057,7 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeTargetKitchen",
-            "RestaurantRecipe1TargetIcon"
+            "RestaurantRuntimeTargetKitchen"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -2078,8 +2076,7 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeTargetKitchen",
-            "RestaurantRecipe2TargetIcon"
+            "RestaurantRuntimeTargetKitchen"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -2098,8 +2095,7 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeTargetKitchen",
-            "RestaurantRecipe3TargetIcon"
+            "RestaurantRuntimeTargetKitchen"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -2118,8 +2114,7 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeTargetKitchen",
-            "RestaurantRecipe4TargetIcon"
+            "RestaurantRuntimeTargetKitchen"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -2138,8 +2133,7 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeTargetKitchen",
-            "RestaurantRecipe5TargetIcon"
+            "RestaurantRuntimeTargetKitchen"
         ],
         "pre_delay": 0,
         "action": "LongPress",
@@ -2158,8 +2152,7 @@
         "enabled": false,
         "recognition": "And",
         "all_of": [
-            "RestaurantRuntimeTargetKitchen",
-            "RestaurantRecipe6TargetIcon"
+            "RestaurantRuntimeTargetKitchen"
         ],
         "pre_delay": 0,
         "action": "LongPress",

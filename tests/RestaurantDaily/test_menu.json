@@ -1,0 +1,49 @@
+{
+    "configs": {
+        "name": "缘缘庄菜单界面识别",
+        "resource": "官服",
+        "controller": "Win32"
+    },
+    "cases": [
+        {
+            "name": "菜单要求及菜品页",
+            "image": "RestaurantDaily_MenuRequirements.png",
+            "hits": [
+                "RestaurantMenuScreenReady",
+                "RestaurantMenuRequirementOCR",
+                "RestaurantMenuDishesActive",
+                "RestaurantMenuFilterIcon"
+            ]
+        },
+        {
+            "name": "饮品页及可开始经营",
+            "image": "RestaurantDaily_MenuReady.png",
+            "hits": [
+                "RestaurantMenuScreenReady",
+                "RestaurantMenuDrinksActive",
+                "RestaurantMenuStartBusiness"
+            ]
+        },
+        {
+            "name": "筛选窗口",
+            "image": "RestaurantDaily_MenuFilterDialog.png",
+            "hits": [
+                "RestaurantMenuFilterCookableQuantity",
+                "RestaurantMenuFilterConfirm"
+            ]
+        },
+        {
+            "name": "已选可烹饪数量",
+            "image": "RestaurantDaily_MenuFilterCookableSelected.png",
+            "hits": [
+                "RestaurantMenuFilterCookableQuantity",
+                "RestaurantMenuFilterConfirm"
+            ]
+        },
+        {
+            "name": "主题设置不是菜单页",
+            "image": "RestaurantDaily_ThemeSettings.png",
+            "hits": []
+        }
+    ]
+}
