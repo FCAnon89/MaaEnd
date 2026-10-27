@@ -10,7 +10,7 @@
             "image": "武陵_拍照模式_画面设置.png",
             "hits": [
                 {
-                    "node": "__ScenePrivateCloudExitPhoto",
+                    "node": "__ScenePrivateExitPhoto",
                     "box": [
                         1100,
                         10,
@@ -25,7 +25,7 @@
             "image": "武陵_拍照模式_隐藏全部.png",
             "hits": [
                 {
-                    "node": "__ScenePrivateCloudExitPhoto",
+                    "node": "__ScenePrivateExitPhoto",
                     "box": [
                         1100,
                         10,
