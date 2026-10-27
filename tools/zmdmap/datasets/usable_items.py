@@ -1,11 +1,10 @@
 """主动可用道具表（``usable_items.json``）。"""
 
-from pathlib import Path
 from typing import Any
 
 import msgspec
 
-from ..utils.tables import load_table
+from ..utils.inputs import TableCfg
 from .base import Dataset, DatasetError
 
 
@@ -36,9 +35,9 @@ class UsableItems(Dataset):
     """只包含可主动使用的持续增幅道具，不收被动回复与其他消耗品。"""
 
     @classmethod
-    def build(cls, table_cfg_dir: Path, json_data_dir: Path) -> dict[str, Any]:
-        use_items = load_table(table_cfg_dir, "UseItemTable", UseItemRow)
-        items = load_table(table_cfg_dir, "ItemTable", ItemDisplayRow)
+    def build(cls, table_cfg: TableCfg) -> dict[str, Any]:
+        use_items = table_cfg.table("UseItemTable", UseItemRow)
+        items = table_cfg.table("ItemTable", ItemDisplayRow)
 
         output: dict[str, dict[str, Any]] = {}
         for item_id, use_item in sorted(use_items.items()):

@@ -1,412 +1,136 @@
 {
-    "UseConsumableHasItem": {
-        "desc": "任务选项是否选择了可用消耗品",
-        "enabled": false,
-        "recognition": "DirectHit"
-    },
-    "UseConsumableHasSelectedOperators": {
-        "desc": "是否至少选择一个干员",
-        "recognition": "Or",
-        "any_of": [
-            "UseConsumableUseOperator1",
-            "UseConsumableUseOperator2",
-            "UseConsumableUseOperator3",
-            "UseConsumableUseOperator4"
-        ]
-    },
-    "UseConsumableTaskStart": {
-        "desc": "确认已选择消耗品和至少一名干员",
-        "recognition": "And",
-        "all_of": [
-            "UseConsumableHasItem",
-            "UseConsumableHasSelectedOperators"
-        ],
-        "action": "DoNothing",
-        "next": [
-            "UseConsumableInitialWorldReady",
-            "[JumpBack]SceneAnyEnterWorld"
-        ]
-    },
-    "UseConsumableInitialWorldReady": {
-        "desc": "确认已进入大世界，开始检查背包中的消耗品",
-        "recognition": "And",
-        "all_of": [
-            "InWorld"
-        ],
-        "next": [
-            "UseConsumablePrecheckStart"
-        ]
-    },
-    "UseConsumablePrecheckStart": {
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumablePrecheckBackpackAlreadyOpen",
-            "UseConsumablePrecheckOpenBagMenu"
-        ]
-    },
-    "UseConsumablePrecheckBackpackAlreadyOpen": {
-        "desc": "背包已打开，直接检查所选消耗品数量",
-        "recognition": "And",
-        "all_of": [
-            "InBackpack"
-        ],
-        "next": [
-            "UseConsumablePrecheckBagReady"
-        ]
-    },
-    "UseConsumablePrecheckOpenBagMenu": {
-        "desc": "Alt 点击背包菜单图标，直到菜单图标消失",
+    "UseConsumableUseOpenBagMenuIcon": {
         "recognition": "Or",
         "any_of": [
             "UseConsumableUseOpenBagMenuIcon1",
             "UseConsumableUseOpenBagMenuIcon2",
             "UseConsumableUseOpenBagMenuIcon3"
+        ]
+    },
+    "UseConsumableUseOpenBagMenuIcon1": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            -600,
+            0,
+            600,
+            100
         ],
-        "action": "Custom",
-        "custom_action": "RepeatUntilNotFoundAction",
-        "custom_action_param": {
-            "custom_action": "AutoAltClickAction",
-            "wait_node": "UseConsumableUseOpenBagMenuIcon"
-        },
-        "next": [
-            "UseConsumablePrecheckBagReady"
-        ]
+        "template": "SceneManager/WordMenuBackpack.png",
+        "green_mask": true,
+        "threshold": 0.8
     },
-    "UseConsumablePrecheckBagReady": {
-        "desc": "确认背包已打开，开始遍历当前背包",
-        "recognition": "And",
-        "all_of": [
-            "InBackpack"
+    "UseConsumableUseOpenBagMenuIcon2": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            -600,
+            0,
+            600,
+            100
         ],
-        "anchor": {
-            "MouseMoveResetAnchor": "MouseMoveReset",
-            "ItemTransferCurrentBagFind": "UseConsumablePrecheckFindItem",
-            "ItemTransferCurrentBagNotFound": "UseConsumablePrecheckItemNotFound",
-            "ItemTransferCurrentBagTransfer": "UseConsumablePrecheckCheckQuantity",
-            "ItemTransferAfterBagTransfer": "UseConsumablePrecheckCheckQuantity"
-        },
-        "next": [
-            "ItemTransferBagSearchCurrentPage"
-        ]
+        "template": "SceneManager/WordMenuBackpack2.png",
+        "green_mask": true,
+        "threshold": 0.8
     },
-    "UseConsumablePrecheckFindItem": {
-        "desc": "遍历背包查找所选消耗品",
-        "recognition": {
-            "type": "Custom",
-            "param": {
-                "custom_recognition": "IconRecognition",
-                "custom_recognition_param": {
-                    "grid_type": "transfer",
-                    "item_recheck_filters": [
-                        "Normal:Usable"
-                    ],
-                    "deduplicate": true
-                },
-                "roi": [
-                    739,
-                    202,
-                    398,
-                    291
-                ]
-            }
-        },
-        "next": [
-            "[Anchor]ItemTransferCurrentBagTransfer"
-        ]
+    "UseConsumableUseOpenBagMenuIcon3": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            -600,
+            0,
+            600,
+            100
+        ],
+        "template": "SceneManager/Backpack.png",
+        "green_mask": true,
+        "threshold": 0.8
     },
-    "UseConsumablePrecheckCheckQuantity": {
-        "desc": "检查当前背包中所选消耗品数量是否足够",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumablePrecheckQuantityEnough",
-            "UseConsumablePrecheckQuantityInsufficient"
-        ]
+    "UseConsumableUseMark": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            674,
+            118,
+            606,
+            601
+        ],
+        "template": "UseConsumable/ItemIntroMark.png",
+        "method": 5,
+        "threshold": 0.85
     },
-    "UseConsumablePrecheckQuantity": {
-        "desc": "读取背包中所选消耗品的数量",
+    "UseConsumableUseText": {
+        "desc": "在书签图标下方限定区域识别使用按钮",
         "recognition": "OCR",
-        "roi": "UseConsumablePrecheckFindItem",
+        "roi": "UseConsumableUseMark",
         "roi_offset": [
-            0,
-            46,
-            0,
-            -46
+            120,
+            42,
+            111,
+            18
         ],
         "expected": [
-            "^\\d+$"
+            "Usar",
+            "使用",
+            "Verwenden",
+            "Use",
+            "Utiliser",
+            "Gunakan",
+            "Usa",
+            "사용",
+            "Использовать",
+            "ใช้",
+            "Dùng"
+        ]
+    },
+    "UseConsumableUseConfirmButtonNormal": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            813,
+            403,
+            230,
+            136
         ],
-        "only_rec": true
+        "template": "Common/Button/YellowConfirmButtonType2.png",
+        "threshold": 0.8
     },
-    "UseConsumablePrecheckQuantityEnough": {
-        "desc": "背包中已有足够数量的消耗品",
-        "recognition": "Custom",
-        "custom_recognition": "UseConsumableQuantityRecognition",
-        "custom_recognition_param": {
-            "quantity_node": "UseConsumablePrecheckQuantity",
-            "operator_nodes": [
-                "UseConsumableUseOperator1",
-                "UseConsumableUseOperator2",
-                "UseConsumableUseOperator3",
-                "UseConsumableUseOperator4"
-            ],
-            "match_when_sufficient": true
-        },
-        "next": [
-            "UseConsumablePrecheckCloseBackpackToUse"
-        ]
-    },
-    "UseConsumablePrecheckQuantityInsufficient": {
-        "desc": "背包中所选消耗品数量不足",
-        "recognition": "Custom",
-        "custom_recognition": "UseConsumableQuantityRecognition",
-        "custom_recognition_param": {
-            "quantity_node": "UseConsumablePrecheckQuantity",
-            "operator_nodes": [
-                "UseConsumableUseOperator1",
-                "UseConsumableUseOperator2",
-                "UseConsumableUseOperator3",
-                "UseConsumableUseOperator4"
-            ],
-            "match_when_sufficient": false
-        },
-        "next": [
-            "UseConsumablePrecheckCloseBackpackToStock"
-        ]
-    },
-    "UseConsumablePrecheckItemNotFound": {
-        "desc": "遍历背包后未找到所选消耗品",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumablePrecheckCloseBackpackToStock"
-        ]
-    },
-    "UseConsumablePrecheckCloseBackpackToUse": {
-        "desc": "关闭背包，传送至所选地区使用消耗品",
-        "recognition": "And",
-        "all_of": [
-            "InBackpack",
-            "CloseButtonType1"
+    "UseConsumableUseConfirmButtonHover": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            813,
+            403,
+            230,
+            136
         ],
-        "box_index": 1,
-        "action": "Click",
-        "next": [
-            "UseConsumableUseTeleportStart"
-        ]
+        "template": "Common/Button/YellowConfirmButtonType2Hover.png",
+        "threshold": 0.8
     },
-    "UseConsumablePrecheckCloseBackpackToStock": {
-        "desc": "关闭背包，前往帝江号仓库补充所选消耗品",
-        "recognition": "And",
-        "all_of": [
-            "InBackpack",
-            "CloseButtonType1"
+    "UseConsumableUseCancelButtonNormal": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            601,
+            404,
+            230,
+            136
         ],
-        "box_index": 1,
-        "action": "Click",
-        "next": [
-            "UseConsumableStockStart"
-        ]
+        "template": "Common/Button/CancelButtonType2.png",
+        "threshold": 0.8
     },
-    "UseConsumableStockStart": {
-        "desc": "背包数量不足时从帝江号仓库补充所选消耗品",
-        "max_hit": 1,
-        "recognition": "And",
-        "all_of": [
-            "UseConsumableHasItem",
-            "UseConsumableHasSelectedOperators"
+    "UseConsumableUseCancelButtonHover": {
+        "recognition": "TemplateMatch",
+        "roi": [
+            601,
+            404,
+            230,
+            136
         ],
-        "next": [
-            "UseConsumableStockWulingEnter"
-        ]
+        "template": "Common/Button/CancelButtonType2Hover.png",
+        "threshold": 0.8
     },
-    "UseConsumableStockWulingEnter": {
-        "desc": "进入武陵可用道具仓库",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumableStockWulingDepotReady",
-            "[JumpBack]SceneEnterMenuBackpackWithDepotWulingUsable"
-        ]
-    },
-    "UseConsumableStockWulingDepotReady": {
-        "recognition": "And",
-        "all_of": [
-            "InDijiangDepotWulingUsable"
+    "UseConsumableUseCancelButtonGone": {
+        "desc": "确认干员选择弹窗已关闭",
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseCancelButtonNormal",
+            "UseConsumableUseCancelButtonHover"
         ],
-        "anchor": {
-            "MouseMoveResetAnchor": "MouseMoveReset",
-            "ItemTransferCurrentRepoFind": "UseConsumableStockWulingFindItem",
-            "ItemTransferCurrentRepoNotFound": "UseConsumableStockWulingNotFound",
-            "ItemTransferCurrentRepoTransfer": "UseConsumableStockWulingTransferItem",
-            "ItemTransferAfterRepoTransfer": "UseConsumableStockFinish"
-        },
-        "next": [
-            "ItemTransferRepoSearchCurrentPage"
-        ]
-    },
-    "UseConsumableStockWulingFindItem": {
-        "desc": "在帝江号仓库当前页查找已选消耗品",
-        "recognition": {
-            "type": "Custom",
-            "param": {
-                "custom_recognition": "IconRecognition",
-                "custom_recognition_param": {
-                    "grid_type": "transfer",
-                    "item_recheck_filters": [
-                        "Normal:Usable"
-                    ],
-                    "deduplicate": true
-                },
-                "roi": [
-                    154,
-                    202,
-                    585,
-                    291
-                ]
-            }
-        },
-        "next": [
-            "[Anchor]ItemTransferCurrentRepoTransfer"
-        ]
-    },
-    "UseConsumableStockWulingTransferItem": {
-        "desc": "按住 Shift 准备将所选消耗品转入背包",
-        "action": "KeyDown",
-        "auto_up": true,
-        "key": 16,
-        "next": [
-            "UseConsumableStockWulingTransferClick"
-        ]
-    },
-    "UseConsumableStockWulingTransferClick": {
-        "desc": "按住 Shift 点击所选消耗品",
-        "action": "Click",
-        "target": "UseConsumableStockWulingFindItem",
-        "target_offset": [
-            26,
-            25,
-            -52,
-            -50
-        ],
-        "next": [
-            "UseConsumableStockWulingTransferKeyUp"
-        ]
-    },
-    "UseConsumableStockWulingTransferKeyUp": {
-        "desc": "释放 Shift，完成消耗品转入背包",
-        "action": "KeyUp",
-        "key": 16,
-        "next": [
-            "[Anchor]ItemTransferAfterRepoTransfer"
-        ]
-    },
-    "UseConsumableStockWulingNotFound": {
-        "desc": "武陵可用道具仓库未找到所选消耗品",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumableStockValleyIVEnter"
-        ]
-    },
-    "UseConsumableStockValleyIVEnter": {
-        "desc": "进入四号谷地可用道具仓库",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumableStockValleyIVDepotReady",
-            "[JumpBack]SceneEnterMenuBackpackWithDepotValleyIVUsable"
-        ]
-    },
-    "UseConsumableStockValleyIVDepotReady": {
-        "recognition": "And",
-        "all_of": [
-            "InDijiangDepotValleyIVUsable"
-        ],
-        "anchor": {
-            "MouseMoveResetAnchor": "MouseMoveReset",
-            "ItemTransferCurrentRepoFind": "UseConsumableStockValleyIVFindItem",
-            "ItemTransferCurrentRepoNotFound": "UseConsumableStockValleyIVNotFound",
-            "ItemTransferCurrentRepoTransfer": "UseConsumableStockValleyIVTransferItem",
-            "ItemTransferAfterRepoTransfer": "UseConsumableStockFinish"
-        },
-        "next": [
-            "ItemTransferRepoSearchCurrentPage"
-        ]
-    },
-    "UseConsumableStockValleyIVFindItem": {
-        "desc": "在帝江号仓库当前页查找已选消耗品",
-        "recognition": {
-            "type": "Custom",
-            "param": {
-                "custom_recognition": "IconRecognition",
-                "custom_recognition_param": {
-                    "grid_type": "transfer",
-                    "item_recheck_filters": [
-                        "Normal:Usable"
-                    ],
-                    "deduplicate": true
-                },
-                "roi": [
-                    154,
-                    202,
-                    585,
-                    291
-                ]
-            }
-        },
-        "next": [
-            "[Anchor]ItemTransferCurrentRepoTransfer"
-        ]
-    },
-    "UseConsumableStockValleyIVTransferItem": {
-        "desc": "按住 Shift 准备将所选消耗品转入背包",
-        "action": "KeyDown",
-        "auto_up": true,
-        "key": 16,
-        "next": [
-            "UseConsumableStockValleyIVTransferClick"
-        ]
-    },
-    "UseConsumableStockValleyIVTransferClick": {
-        "desc": "按住 Shift 点击所选消耗品",
-        "action": "Click",
-        "target": "UseConsumableStockValleyIVFindItem",
-        "target_offset": [
-            26,
-            25,
-            -52,
-            -50
-        ],
-        "next": [
-            "UseConsumableStockValleyIVTransferKeyUp"
-        ]
-    },
-    "UseConsumableStockValleyIVTransferKeyUp": {
-        "desc": "释放 Shift，完成消耗品转入背包",
-        "action": "KeyUp",
-        "key": 16,
-        "next": [
-            "[Anchor]ItemTransferAfterRepoTransfer"
-        ]
-    },
-    "UseConsumableStockValleyIVNotFound": {
-        "desc": "武陵和四号谷地均未找到所选消耗品",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumableStockFinish"
-        ],
-        "focus": {
-            "Node.Recognition.Succeeded": "$task.UseConsumable.focus.usable_item_not_found"
-        }
-    },
-    "UseConsumableStockFinish": {
-        "desc": "关闭仓库并继续消耗品使用流程",
-        "recognition": "And",
-        "all_of": [
-            "InBackpack",
-            "CloseButtonType1"
-        ],
-        "box_index": 1,
-        "action": "Click",
-        "next": [
-            "UseConsumableUseTeleportStart"
-        ]
+        "inverse": true
     },
     "UseConsumableUseTeleportStart": {
         "desc": "传送前确认玩家处于大世界",
@@ -452,43 +176,161 @@
             "[JumpBack]SceneAnyEnterWorld"
         ]
     },
-    "UseConsumableUseStart": {
-        "desc": "检查并使用所选消耗品",
-        "recognition": "And",
-        "all_of": [
-            "InWorld",
-            "UseConsumableHasItem",
-            "UseConsumableHasSelectedOperators"
-        ],
-        "action": "Custom",
-        "custom_action": "ClearHitCount",
-        "custom_action_param": {
-            "nodes": [
-                "UseConsumableUseOperator1",
-                "UseConsumableUseOperator2",
-                "UseConsumableUseOperator3",
-                "UseConsumableUseOperator4",
-                "ItemTransferScrollUpwardBag",
-                "ItemTransferScrollDownwardBag"
-            ]
-        },
+    "UseConsumableNeedValleyIV": {
+        "enabled": false,
+        "recognition": "DirectHit",
         "next": [
-            "UseConsumableUseBackpackAlreadyOpen",
-            "UseConsumableUseOpenBagMenu"
+            "UseConsumableStockValleyIVEnter"
         ]
     },
-    "UseConsumableUseBackpackAlreadyOpen": {
-        "desc": "背包已打开，直接查找消耗品",
+    "UseConsumableNeedStockSlot1": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumablePrecheckCloseBackpackToStock"
+        ]
+    },
+    "UseConsumableNeedValleyIVSlot1": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableStockValleyIVMarkMissingSlot1"
+        ]
+    },
+    "UseConsumableSlot1Enabled": {
+        "enabled": true,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableTaskHasSelectedSlot"
+        ]
+    },
+    "UseConsumableSlot1Disabled": {
+        "enabled": false,
+        "recognition": "DirectHit"
+    },
+    "UseConsumableNeedStockSlot2": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumablePrecheckCloseBackpackToStock"
+        ]
+    },
+    "UseConsumableNeedValleyIVSlot2": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableStockValleyIVMarkMissingSlot2"
+        ]
+    },
+    "UseConsumableSlot2Enabled": {
+        "enabled": true,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableTaskHasSelectedSlot"
+        ]
+    },
+    "UseConsumableSlot2Disabled": {
+        "enabled": false,
+        "recognition": "DirectHit"
+    },
+    "UseConsumableNeedStockSlot3": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumablePrecheckCloseBackpackToStock"
+        ]
+    },
+    "UseConsumableNeedValleyIVSlot3": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableStockValleyIVMarkMissingSlot3"
+        ]
+    },
+    "UseConsumableSlot3Enabled": {
+        "enabled": true,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableTaskHasSelectedSlot"
+        ]
+    },
+    "UseConsumableSlot3Disabled": {
+        "enabled": false,
+        "recognition": "DirectHit"
+    },
+    "UseConsumableNeedStockSlot4": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumablePrecheckCloseBackpackToStock"
+        ]
+    },
+    "UseConsumableNeedValleyIVSlot4": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableStockValleyIVMarkMissingSlot4"
+        ]
+    },
+    "UseConsumableSlot4Enabled": {
+        "enabled": true,
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableTaskHasSelectedSlot"
+        ]
+    },
+    "UseConsumableSlot4Disabled": {
+        "enabled": false,
+        "recognition": "DirectHit"
+    },
+    "UseConsumableTaskStart": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableSlot1Enabled",
+            "UseConsumableSlot2Enabled",
+            "UseConsumableSlot3Enabled",
+            "UseConsumableSlot4Enabled",
+            "UseConsumableTaskNoSelectedSlot"
+        ]
+    },
+    "UseConsumableTaskHasSelectedSlot": {
+        "desc": "至少选择了一个使用槽位，开始消耗品流程",
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableInitialWorldReady",
+            "[JumpBack]SceneAnyEnterWorld"
+        ]
+    },
+    "UseConsumableTaskNoSelectedSlot": {
+        "desc": "没有选择使用槽位，跳过消耗品流程",
+        "recognition": "DirectHit"
+    },
+    "UseConsumableInitialWorldReady": {
+        "recognition": "And",
+        "all_of": [
+            "InWorld"
+        ],
+        "next": [
+            "UseConsumablePrecheckStart"
+        ]
+    },
+    "UseConsumablePrecheckStart": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumablePrecheckBackpackAlreadyOpen",
+            "UseConsumablePrecheckOpenBagMenu"
+        ]
+    },
+    "UseConsumablePrecheckBackpackAlreadyOpen": {
         "recognition": "And",
         "all_of": [
             "InBackpack"
         ],
         "next": [
-            "UseConsumableUseBagReady"
+            "UseConsumablePrecheckStartScan"
         ]
     },
-    "UseConsumableUseOpenBagMenu": {
-        "desc": "Alt 点击背包菜单图标，直到菜单图标消失",
+    "UseConsumablePrecheckOpenBagMenu": {
         "recognition": "Or",
         "any_of": [
             "UseConsumableUseOpenBagMenuIcon1",
@@ -502,72 +344,40 @@
             "wait_node": "UseConsumableUseOpenBagMenuIcon"
         },
         "next": [
-            "UseConsumableUseBagReady"
+            "UseConsumablePrecheckStartScan"
         ]
     },
-    "UseConsumableUseOpenBagMenuIcon": {
-        "recognition": "Or",
-        "any_of": [
-            "UseConsumableUseOpenBagMenuIcon1",
-            "UseConsumableUseOpenBagMenuIcon2",
-            "UseConsumableUseOpenBagMenuIcon3"
-        ]
-    },
-    "UseConsumableUseOpenBagMenuIcon1": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            -600,
-            0,
-            600,
-            100
-        ],
-        "template": "SceneManager/WordMenuBackpack.png",
-        "green_mask": true,
-        "threshold": 0.8
-    },
-    "UseConsumableUseOpenBagMenuIcon2": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            -600,
-            0,
-            600,
-            100
-        ],
-        "template": "SceneManager/WordMenuBackpack2.png",
-        "green_mask": true,
-        "threshold": 0.8
-    },
-    "UseConsumableUseOpenBagMenuIcon3": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            -600,
-            0,
-            600,
-            100
-        ],
-        "template": "SceneManager/Backpack.png",
-        "green_mask": true,
-        "threshold": 0.8
-    },
-    "UseConsumableUseBagReady": {
-        "desc": "确认背包已打开",
+    "UseConsumablePrecheckBagReady": {
         "recognition": "And",
         "all_of": [
             "InBackpack"
         ],
         "anchor": {
-            "MouseMoveResetAnchor": "MouseMoveReset",
-            "ItemTransferCurrentBagFind": "UseConsumableUseFindItem",
-            "ItemTransferCurrentBagNotFound": "UseConsumableUseItemNotFound",
-            "ItemTransferCurrentBagTransfer": "UseConsumableUseCheckQuantity",
-            "ItemTransferAfterBagTransfer": "UseConsumableUseSelectItem"
+            "MouseMoveResetAnchor": "MouseMoveReset"
         },
         "next": [
-            "ItemTransferBagSearchCurrentPage"
+            "[JumpBack][Anchor]MouseMoveResetAnchor",
+            "UseConsumablePrecheckStartSlot1",
+            "UseConsumablePrecheckStartSlot2",
+            "UseConsumablePrecheckStartSlot3",
+            "UseConsumablePrecheckStartSlot4",
+            "ItemTransferBagBottomReached",
+            "[JumpBack]ItemTransferScrollDownwardBag",
+            "ItemTransferStop"
         ]
     },
-    "UseConsumableUseFindItem": {
-        "desc": "遍历背包查找所选消耗品",
+    "UseConsumablePrecheckStartSlot1": {
+        "enabled": true,
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableFindItemSlot1"
+        ],
+        "next": [
+            "UseConsumablePrecheckFoundSlot1"
+        ]
+    },
+    "UseConsumableFindItemSlot1": {
         "recognition": {
             "type": "Custom",
             "param": {
@@ -591,130 +401,607 @@
             "[Anchor]ItemTransferCurrentBagTransfer"
         ]
     },
-    "UseConsumableUseCheckQuantity": {
-        "desc": "比较消耗品数量与已选择干员数量",
+    "UseConsumablePrecheckFoundSlot1": {
         "recognition": "DirectHit",
-        "next": [
-            "UseConsumableUseQuantityEnough",
-            "UseConsumableUseQuantityInsufficient"
-        ]
-    },
-    "UseConsumableUseQuantity": {
-        "desc": "读取背包内所选消耗品的数量",
-        "recognition": "OCR",
-        "roi": "UseConsumableUseFindItem",
-        "roi_offset": [
-            0,
-            46,
-            0,
-            -46
-        ],
-        "expected": [
-            "^\\d+$"
-        ],
-        "only_rec": true
-    },
-    "UseConsumableUseQuantityEnough": {
-        "recognition": {
-            "type": "Custom",
-            "param": {
-                "custom_recognition": "UseConsumableQuantityRecognition",
-                "custom_recognition_param": {
-                    "quantity_node": "UseConsumableUseQuantity",
-                    "operator_nodes": [
-                        "UseConsumableUseOperator1",
-                        "UseConsumableUseOperator2",
-                        "UseConsumableUseOperator3",
-                        "UseConsumableUseOperator4"
-                    ],
-                    "match_when_sufficient": true
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot1": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot1": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot1": {
+                    "enabled": false
                 }
             }
         },
         "next": [
-            "UseConsumableUseSelectItem"
+            "UseConsumablePrecheckBagReady"
         ]
     },
-    "UseConsumableUseQuantityInsufficient": {
-        "recognition": {
-            "type": "Custom",
-            "param": {
-                "custom_recognition": "UseConsumableQuantityRecognition",
-                "custom_recognition_param": {
-                    "quantity_node": "UseConsumableUseQuantity",
-                    "operator_nodes": [
-                        "UseConsumableUseOperator1",
-                        "UseConsumableUseOperator2",
-                        "UseConsumableUseOperator3",
-                        "UseConsumableUseOperator4"
-                    ],
-                    "match_when_sufficient": false
-                }
-            }
-        },
-        "next": [
-            "UseConsumableUseCloseBackpack"
-        ]
-    },
-    "UseConsumableUseItemNotFound": {
-        "desc": "背包遍历完仍未找到所选消耗品",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumableUseCloseBackpack"
-        ]
-    },
-    "UseConsumableUseSelectItem": {
-        "desc": "点击已找到且数量足够的消耗品",
+    "UseConsumablePrecheckStartSlot2": {
+        "enabled": true,
         "recognition": "And",
         "all_of": [
             "InBackpack",
-            "UseConsumableUseFindItem"
+            "UseConsumableFindItemSlot2"
+        ],
+        "next": [
+            "UseConsumablePrecheckFoundSlot2"
+        ]
+    },
+    "UseConsumableFindItemSlot2": {
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    739,
+                    202,
+                    398,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "[Anchor]ItemTransferCurrentBagTransfer"
+        ]
+    },
+    "UseConsumablePrecheckFoundSlot2": {
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot2": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot2": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot2": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumablePrecheckBagReady"
+        ]
+    },
+    "UseConsumablePrecheckStartSlot3": {
+        "enabled": true,
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableFindItemSlot3"
+        ],
+        "next": [
+            "UseConsumablePrecheckFoundSlot3"
+        ]
+    },
+    "UseConsumableFindItemSlot3": {
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    739,
+                    202,
+                    398,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "[Anchor]ItemTransferCurrentBagTransfer"
+        ]
+    },
+    "UseConsumablePrecheckFoundSlot3": {
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot3": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot3": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot3": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumablePrecheckBagReady"
+        ]
+    },
+    "UseConsumablePrecheckStartSlot4": {
+        "enabled": true,
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableFindItemSlot4"
+        ],
+        "next": [
+            "UseConsumablePrecheckFoundSlot4"
+        ]
+    },
+    "UseConsumableFindItemSlot4": {
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    739,
+                    202,
+                    398,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "[Anchor]ItemTransferCurrentBagTransfer"
+        ]
+    },
+    "UseConsumablePrecheckFoundSlot4": {
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot4": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot4": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot4": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumablePrecheckBagReady"
+        ]
+    },
+    "UseConsumablePrecheckFinish": {
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "UseConsumablePrecheckBagReady": {
+                    "enabled": false
+                },
+                "ItemTransferBagTopReached": {
+                    "next": [
+                        "ItemTransferBagScanFromTop"
+                    ]
+                },
+                "ItemTransferBagBottomReached": {
+                    "next": [
+                        "[Anchor]ItemTransferCurrentBagNotFound"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "UseConsumableNeedStockSlot1",
+            "UseConsumableNeedStockSlot2",
+            "UseConsumableNeedStockSlot3",
+            "UseConsumableNeedStockSlot4",
+            "UseConsumablePrecheckNoStock"
+        ]
+    },
+    "UseConsumablePrecheckNoStock": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumablePrecheckCloseBackpackToUse"
+        ]
+    },
+    "UseConsumablePrecheckCloseBackpackToStock": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "CloseButtonType1"
         ],
         "box_index": 1,
         "action": "Click",
         "next": [
-            "UseConsumableUseClickUseButton"
+            "UseConsumableStockWulingEnter"
         ]
     },
-    "UseConsumableUseMark": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            744,
-            0,
-            536,
-            496
+    "UseConsumablePrecheckCloseBackpackToUse": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "CloseButtonType1"
         ],
-        "template": "UseConsumable/ItemIntroMark.png",
-        "green_mask": true,
-        "method": 5,
-        "threshold": 0.8
-    },
-    "UseConsumableUseText": {
-        "desc": "在书签图标下方限定区域识别使用按钮",
-        "recognition": "OCR",
-        "roi": "UseConsumableUseMark",
-        "roi_offset": [
-            -144,
-            416,
-            111,
-            11
-        ],
-        "expected": [
-            "Usar",
-            "使用",
-            "Verwenden",
-            "Use",
-            "Utiliser",
-            "Gunakan",
-            "Usa",
-            "사용",
-            "Использовать",
-            "ใช้",
-            "Dùng"
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseTeleportStart"
         ]
     },
-    "UseConsumableUseClickUseButton": {
-        "desc": "点击消耗品详情中的使用按钮",
+    "UseConsumableStockWulingEnter": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableStockWulingDepotReady",
+            "[JumpBack]SceneEnterMenuBackpackWithDepotWulingUsable"
+        ]
+    },
+    "UseConsumableStockWulingDepotReady": {
+        "recognition": "And",
+        "all_of": [
+            "InDijiangDepotWulingUsable"
+        ],
+        "next": [
+            "UseConsumableStockWulingScanStart"
+        ]
+    },
+    "UseConsumableStockFindItemSlot1": {
+        "enabled": true,
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    154,
+                    202,
+                    585,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "UseConsumableStockTransferBeginSlot1"
+        ]
+    },
+    "UseConsumableStockTransferBeginSlot1": {
+        "action": "KeyDown",
+        "auto_up": true,
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferClickSlot1"
+        ]
+    },
+    "UseConsumableStockTransferClickSlot1": {
+        "action": "Click",
+        "target": "UseConsumableStockFindItemSlot1",
+        "target_offset": [
+            26,
+            25,
+            -52,
+            -50
+        ],
+        "next": [
+            "UseConsumableStockTransferReleaseSlot1"
+        ]
+    },
+    "UseConsumableStockTransferReleaseSlot1": {
+        "action": "KeyUp",
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferMoveMouseAwaySlot1"
+        ]
+    },
+    "UseConsumableStockFindItemSlot2": {
+        "enabled": true,
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    154,
+                    202,
+                    585,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "UseConsumableStockTransferBeginSlot2"
+        ]
+    },
+    "UseConsumableStockTransferBeginSlot2": {
+        "action": "KeyDown",
+        "auto_up": true,
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferClickSlot2"
+        ]
+    },
+    "UseConsumableStockTransferClickSlot2": {
+        "action": "Click",
+        "target": "UseConsumableStockFindItemSlot2",
+        "target_offset": [
+            26,
+            25,
+            -52,
+            -50
+        ],
+        "next": [
+            "UseConsumableStockTransferReleaseSlot2"
+        ]
+    },
+    "UseConsumableStockTransferReleaseSlot2": {
+        "action": "KeyUp",
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferMoveMouseAwaySlot2"
+        ]
+    },
+    "UseConsumableStockFindItemSlot3": {
+        "enabled": true,
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    154,
+                    202,
+                    585,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "UseConsumableStockTransferBeginSlot3"
+        ]
+    },
+    "UseConsumableStockTransferBeginSlot3": {
+        "action": "KeyDown",
+        "auto_up": true,
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferClickSlot3"
+        ]
+    },
+    "UseConsumableStockTransferClickSlot3": {
+        "action": "Click",
+        "target": "UseConsumableStockFindItemSlot3",
+        "target_offset": [
+            26,
+            25,
+            -52,
+            -50
+        ],
+        "next": [
+            "UseConsumableStockTransferReleaseSlot3"
+        ]
+    },
+    "UseConsumableStockTransferReleaseSlot3": {
+        "action": "KeyUp",
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferMoveMouseAwaySlot3"
+        ]
+    },
+    "UseConsumableStockFindItemSlot4": {
+        "enabled": true,
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "IconRecognition",
+                "custom_recognition_param": {
+                    "grid_type": "transfer",
+                    "item_recheck_filters": [
+                        "Normal:Usable"
+                    ],
+                    "deduplicate": true
+                },
+                "roi": [
+                    154,
+                    202,
+                    585,
+                    291
+                ]
+            }
+        },
+        "next": [
+            "UseConsumableStockTransferBeginSlot4"
+        ]
+    },
+    "UseConsumableStockTransferBeginSlot4": {
+        "action": "KeyDown",
+        "auto_up": true,
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferClickSlot4"
+        ]
+    },
+    "UseConsumableStockTransferClickSlot4": {
+        "action": "Click",
+        "target": "UseConsumableStockFindItemSlot4",
+        "target_offset": [
+            26,
+            25,
+            -52,
+            -50
+        ],
+        "next": [
+            "UseConsumableStockTransferReleaseSlot4"
+        ]
+    },
+    "UseConsumableStockTransferReleaseSlot4": {
+        "action": "KeyUp",
+        "key": 16,
+        "next": [
+            "UseConsumableStockTransferMoveMouseAwaySlot4"
+        ]
+    },
+    "UseConsumableStockValleyIVEnter": {
+        "recognition": "And",
+        "all_of": [
+            "InDijiangDepotWulingUsable"
+        ],
+        "next": [
+            "UseConsumableStockValleyIVDepotReady",
+            "[JumpBack]SceneEnterMenuBackpackWithDepotValleyIVUsable"
+        ]
+    },
+    "UseConsumableStockValleyIVDepotReady": {
+        "recognition": "And",
+        "all_of": [
+            "InDijiangDepotValleyIVUsable"
+        ],
+        "next": [
+            "UseConsumableStockValleyIVScanStart"
+        ]
+    },
+    "UseConsumableStockFinish": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "CloseButtonType1"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseTeleportStart"
+        ]
+    },
+    "UseConsumableUseStart": {
+        "recognition": "And",
+        "all_of": [
+            "InWorld"
+        ],
+        "next": [
+            "UseConsumableUseBackpackAlreadyOpen",
+            "UseConsumableUseOpenBagMenu"
+        ]
+    },
+    "UseConsumableUseBackpackAlreadyOpen": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "next": [
+            "UseConsumableUseBagReady"
+        ]
+    },
+    "UseConsumableUseOpenBagMenu": {
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseOpenBagMenuIcon1",
+            "UseConsumableUseOpenBagMenuIcon2",
+            "UseConsumableUseOpenBagMenuIcon3"
+        ],
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "custom_action": "AutoAltClickAction",
+            "wait_node": "UseConsumableUseOpenBagMenuIcon"
+        },
+        "next": [
+            "UseConsumableUseBagReady"
+        ]
+    },
+    "UseConsumableUseBagReady": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "next": [
+            "UseConsumableUseStartSlot1",
+            "UseConsumableUseSkipSlot1"
+        ]
+    },
+    "UseConsumableUseStartSlot1": {
+        "enabled": true,
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "anchor": {
+            "MouseMoveResetAnchor": "MouseMoveReset",
+            "ItemTransferCurrentBagFind": "UseConsumableFindItemSlot1",
+            "ItemTransferCurrentBagNotFound": "UseConsumableUseNotFoundSlot1",
+            "ItemTransferCurrentBagTransfer": "UseConsumableUseSelectItemSlot1"
+        },
+        "next": [
+            "ItemTransferBagSearchCurrentPage"
+        ]
+    },
+    "UseConsumableUseSkipSlot1": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableSlot1Disabled"
+        ],
+        "next": [
+            "UseConsumableUseStartSlot2",
+            "UseConsumableUseSkipSlot2"
+        ]
+    },
+    "UseConsumableUseNotFoundSlot1": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableUseStartSlot2",
+            "UseConsumableUseSkipSlot2"
+        ]
+    },
+    "UseConsumableUseSelectItemSlot1": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableFindItemSlot1"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseClickUseButtonSlot1"
+        ]
+    },
+    "UseConsumableUseClickUseButtonSlot1": {
         "recognition": "And",
         "all_of": [
             "UseConsumableUseMark",
@@ -723,11 +1010,10 @@
         "box_index": 1,
         "action": "Click",
         "next": [
-            "UseConsumableUseOperatorDialogReady"
+            "UseConsumableUseOperatorDialogReadySlot1"
         ]
     },
-    "UseConsumableUseOperatorDialogReady": {
-        "desc": "确认干员选择弹窗已打开",
+    "UseConsumableUseOperatorDialogReadySlot1": {
         "recognition": "OCR",
         "roi": [
             340,
@@ -743,23 +1029,10 @@
             "請選擇使用戰術物品的幹員"
         ],
         "next": [
-            "UseConsumableUseSelectNextOperator"
-        ]
-    },
-    "UseConsumableUseSelectNextOperator": {
-        "desc": "依次点击所选干员并确认使用",
-        "recognition": "DirectHit",
-        "next": [
-            "UseConsumableUseOperator1",
-            "UseConsumableUseOperator2",
-            "UseConsumableUseOperator3",
-            "UseConsumableUseOperator4",
-            "UseConsumableUseCancelButton"
+            "UseConsumableUseOperator1"
         ]
     },
     "UseConsumableUseOperator1": {
-        "enabled": false,
-        "max_hit": 1,
         "recognition": "DirectHit",
         "action": "Click",
         "target": [
@@ -767,54 +1040,10 @@
             327
         ],
         "next": [
-            "UseConsumableUseConfirmButton",
-            "UseConsumableUseCancelButton"
+            "UseConsumableUseConfirmButtonSlot1"
         ]
     },
-    "UseConsumableUseOperator2": {
-        "enabled": false,
-        "max_hit": 1,
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            717,
-            327
-        ],
-        "next": [
-            "UseConsumableUseConfirmButton",
-            "UseConsumableUseCancelButton"
-        ]
-    },
-    "UseConsumableUseOperator3": {
-        "enabled": false,
-        "max_hit": 1,
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            804,
-            327
-        ],
-        "next": [
-            "UseConsumableUseConfirmButton",
-            "UseConsumableUseCancelButton"
-        ]
-    },
-    "UseConsumableUseOperator4": {
-        "enabled": false,
-        "max_hit": 1,
-        "recognition": "DirectHit",
-        "action": "Click",
-        "target": [
-            897,
-            327
-        ],
-        "next": [
-            "UseConsumableUseConfirmButton",
-            "UseConsumableUseCancelButton"
-        ]
-    },
-    "UseConsumableUseConfirmButton": {
-        "desc": "确认给当前干员使用消耗品",
+    "UseConsumableUseConfirmButtonSlot1": {
         "recognition": "Or",
         "any_of": [
             "UseConsumableUseConfirmButtonNormal",
@@ -822,33 +1051,10 @@
         ],
         "action": "Click",
         "next": [
-            "UseConsumableUseSelectNextOperator"
+            "UseConsumableUseCancelButtonSlot1"
         ]
     },
-    "UseConsumableUseConfirmButtonNormal": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            813,
-            403,
-            230,
-            136
-        ],
-        "template": "Common/Button/YellowConfirmButtonType2.png",
-        "threshold": 0.8
-    },
-    "UseConsumableUseConfirmButtonHover": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            813,
-            403,
-            230,
-            136
-        ],
-        "template": "Common/Button/YellowConfirmButtonType2Hover.png",
-        "threshold": 0.8
-    },
-    "UseConsumableUseCancelButton": {
-        "desc": "结束逐个使用并关闭干员选择弹窗",
+    "UseConsumableUseCancelButtonSlot1": {
         "recognition": "Or",
         "any_of": [
             "UseConsumableUseCancelButtonNormal",
@@ -856,39 +1062,1323 @@
         ],
         "action": "Click",
         "next": [
+            "UseConsumableUseBackpackGridAfterCancelSlot1"
+        ]
+    },
+    "UseConsumableUseBackpackGridAfterCancelSlot1": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableUseCancelButtonGone"
+        ],
+        "next": [
+            "UseConsumableUseStartSlot2",
+            "UseConsumableUseSkipSlot2"
+        ]
+    },
+    "UseConsumableUseStartSlot2": {
+        "enabled": true,
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "anchor": {
+            "MouseMoveResetAnchor": "MouseMoveReset",
+            "ItemTransferCurrentBagFind": "UseConsumableFindItemSlot2",
+            "ItemTransferCurrentBagNotFound": "UseConsumableUseNotFoundSlot2",
+            "ItemTransferCurrentBagTransfer": "UseConsumableUseSelectItemSlot2"
+        },
+        "next": [
+            "ItemTransferBagSearchCurrentPage"
+        ]
+    },
+    "UseConsumableUseSkipSlot2": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableSlot2Disabled"
+        ],
+        "next": [
+            "UseConsumableUseStartSlot3",
+            "UseConsumableUseSkipSlot3"
+        ]
+    },
+    "UseConsumableUseNotFoundSlot2": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableUseStartSlot3",
+            "UseConsumableUseSkipSlot3"
+        ]
+    },
+    "UseConsumableUseSelectItemSlot2": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableFindItemSlot2"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseClickUseButtonSlot2"
+        ]
+    },
+    "UseConsumableUseClickUseButtonSlot2": {
+        "recognition": "And",
+        "all_of": [
+            "UseConsumableUseMark",
+            "UseConsumableUseText"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseOperatorDialogReadySlot2"
+        ]
+    },
+    "UseConsumableUseOperatorDialogReadySlot2": {
+        "recognition": "OCR",
+        "roi": [
+            340,
+            210,
+            600,
+            80
+        ],
+        "expected": [
+            "请选择使用战术物品的干员",
+            "Select the operator to use the tactical on.",
+            "どのオペレーターに使用しますか？",
+            "전술 아이템을 사용할 오퍼레이터를 선택하세요.",
+            "請選擇使用戰術物品的幹員"
+        ],
+        "next": [
+            "UseConsumableUseOperator2"
+        ]
+    },
+    "UseConsumableUseOperator2": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            717,
+            327
+        ],
+        "next": [
+            "UseConsumableUseConfirmButtonSlot2"
+        ]
+    },
+    "UseConsumableUseConfirmButtonSlot2": {
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseConfirmButtonNormal",
+            "UseConsumableUseConfirmButtonHover"
+        ],
+        "action": "Click",
+        "next": [
+            "UseConsumableUseCancelButtonSlot2"
+        ]
+    },
+    "UseConsumableUseCancelButtonSlot2": {
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseCancelButtonNormal",
+            "UseConsumableUseCancelButtonHover"
+        ],
+        "action": "Click",
+        "next": [
+            "UseConsumableUseBackpackGridAfterCancelSlot2"
+        ]
+    },
+    "UseConsumableUseBackpackGridAfterCancelSlot2": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableUseCancelButtonGone"
+        ],
+        "next": [
+            "UseConsumableUseStartSlot3",
+            "UseConsumableUseSkipSlot3"
+        ]
+    },
+    "UseConsumableUseStartSlot3": {
+        "enabled": true,
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "anchor": {
+            "MouseMoveResetAnchor": "MouseMoveReset",
+            "ItemTransferCurrentBagFind": "UseConsumableFindItemSlot3",
+            "ItemTransferCurrentBagNotFound": "UseConsumableUseNotFoundSlot3",
+            "ItemTransferCurrentBagTransfer": "UseConsumableUseSelectItemSlot3"
+        },
+        "next": [
+            "ItemTransferBagSearchCurrentPage"
+        ]
+    },
+    "UseConsumableUseSkipSlot3": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableSlot3Disabled"
+        ],
+        "next": [
+            "UseConsumableUseStartSlot4",
+            "UseConsumableUseSkipSlot4"
+        ]
+    },
+    "UseConsumableUseNotFoundSlot3": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableUseStartSlot4",
+            "UseConsumableUseSkipSlot4"
+        ]
+    },
+    "UseConsumableUseSelectItemSlot3": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableFindItemSlot3"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseClickUseButtonSlot3"
+        ]
+    },
+    "UseConsumableUseClickUseButtonSlot3": {
+        "recognition": "And",
+        "all_of": [
+            "UseConsumableUseMark",
+            "UseConsumableUseText"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseOperatorDialogReadySlot3"
+        ]
+    },
+    "UseConsumableUseOperatorDialogReadySlot3": {
+        "recognition": "OCR",
+        "roi": [
+            340,
+            210,
+            600,
+            80
+        ],
+        "expected": [
+            "请选择使用战术物品的干员",
+            "Select the operator to use the tactical on.",
+            "どのオペレーターに使用しますか？",
+            "전술 아이템을 사용할 오퍼레이터를 선택하세요.",
+            "請選擇使用戰術物品的幹員"
+        ],
+        "next": [
+            "UseConsumableUseOperator3"
+        ]
+    },
+    "UseConsumableUseOperator3": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            804,
+            327
+        ],
+        "next": [
+            "UseConsumableUseConfirmButtonSlot3"
+        ]
+    },
+    "UseConsumableUseConfirmButtonSlot3": {
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseConfirmButtonNormal",
+            "UseConsumableUseConfirmButtonHover"
+        ],
+        "action": "Click",
+        "next": [
+            "UseConsumableUseCancelButtonSlot3"
+        ]
+    },
+    "UseConsumableUseCancelButtonSlot3": {
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseCancelButtonNormal",
+            "UseConsumableUseCancelButtonHover"
+        ],
+        "action": "Click",
+        "next": [
+            "UseConsumableUseBackpackGridAfterCancelSlot3"
+        ]
+    },
+    "UseConsumableUseBackpackGridAfterCancelSlot3": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableUseCancelButtonGone"
+        ],
+        "next": [
+            "UseConsumableUseStartSlot4",
+            "UseConsumableUseSkipSlot4"
+        ]
+    },
+    "UseConsumableUseStartSlot4": {
+        "enabled": true,
+        "recognition": "And",
+        "all_of": [
+            "InBackpack"
+        ],
+        "anchor": {
+            "MouseMoveResetAnchor": "MouseMoveReset",
+            "ItemTransferCurrentBagFind": "UseConsumableFindItemSlot4",
+            "ItemTransferCurrentBagNotFound": "UseConsumableUseNotFoundSlot4",
+            "ItemTransferCurrentBagTransfer": "UseConsumableUseSelectItemSlot4"
+        },
+        "next": [
+            "ItemTransferBagSearchCurrentPage"
+        ]
+    },
+    "UseConsumableUseSkipSlot4": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableSlot4Disabled"
+        ],
+        "next": [
             "UseConsumableUseCloseBackpack"
         ]
     },
-    "UseConsumableUseCancelButtonNormal": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            601,
-            404,
-            230,
-            136
-        ],
-        "template": "Common/Button/CancelButtonType2.png",
-        "threshold": 0.8
+    "UseConsumableUseNotFoundSlot4": {
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableUseCloseBackpack"
+        ]
     },
-    "UseConsumableUseCancelButtonHover": {
-        "recognition": "TemplateMatch",
-        "roi": [
-            601,
-            404,
-            230,
-            136
+    "UseConsumableUseSelectItemSlot4": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableFindItemSlot4"
         ],
-        "template": "Common/Button/CancelButtonType2Hover.png",
-        "threshold": 0.8
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseClickUseButtonSlot4"
+        ]
+    },
+    "UseConsumableUseClickUseButtonSlot4": {
+        "recognition": "And",
+        "all_of": [
+            "UseConsumableUseMark",
+            "UseConsumableUseText"
+        ],
+        "box_index": 1,
+        "action": "Click",
+        "next": [
+            "UseConsumableUseOperatorDialogReadySlot4"
+        ]
+    },
+    "UseConsumableUseOperatorDialogReadySlot4": {
+        "recognition": "OCR",
+        "roi": [
+            340,
+            210,
+            600,
+            80
+        ],
+        "expected": [
+            "请选择使用战术物品的干员",
+            "Select the operator to use the tactical on.",
+            "どのオペレーターに使用しますか？",
+            "전술 아이템을 사용할 오퍼레이터를 선택하세요.",
+            "請選擇使用戰術物品的幹員"
+        ],
+        "next": [
+            "UseConsumableUseOperator4"
+        ]
+    },
+    "UseConsumableUseOperator4": {
+        "recognition": "DirectHit",
+        "action": "Click",
+        "target": [
+            897,
+            327
+        ],
+        "next": [
+            "UseConsumableUseConfirmButtonSlot4"
+        ]
+    },
+    "UseConsumableUseConfirmButtonSlot4": {
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseConfirmButtonNormal",
+            "UseConsumableUseConfirmButtonHover"
+        ],
+        "action": "Click",
+        "next": [
+            "UseConsumableUseCancelButtonSlot4"
+        ]
+    },
+    "UseConsumableUseCancelButtonSlot4": {
+        "recognition": "Or",
+        "any_of": [
+            "UseConsumableUseCancelButtonNormal",
+            "UseConsumableUseCancelButtonHover"
+        ],
+        "action": "Click",
+        "next": [
+            "UseConsumableUseBackpackGridAfterCancelSlot4"
+        ]
+    },
+    "UseConsumableUseBackpackGridAfterCancelSlot4": {
+        "recognition": "And",
+        "all_of": [
+            "InBackpack",
+            "UseConsumableUseCancelButtonGone"
+        ],
+        "next": [
+            "UseConsumableUseCloseBackpack"
+        ]
     },
     "UseConsumableUseCloseBackpack": {
-        "desc": "结束消耗品使用流程并关闭背包",
         "recognition": "And",
         "all_of": [
             "InBackpack",
             "CloseButtonType1"
         ],
         "box_index": 1,
-        "action": "Click"
+        "action": "Click",
+        "next": [
+            "UseConsumableFailureCollectorFinish"
+        ]
+    },
+    "UseConsumablePrecheckStartScan": {
+        "desc": "重置背包滚动状态，从顶部开始一次完整扫描",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "UseConsumablePrecheckBagReady": {
+                    "enabled": true
+                },
+                "ItemTransferBagTopReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumablePrecheckBagReady"
+                    ]
+                },
+                "ItemTransferBagBottomReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumablePrecheckFinish"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ItemTransferResetBagScanBoundaries"
+        ]
+    },
+    "UseConsumableStockWulingScanStart": {
+        "desc": "开始一次武陵仓库扫描",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "ItemTransferRepoTopReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockFindItemsPage"
+                    ]
+                },
+                "ItemTransferRepoBottomReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockWulingScanFinish"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ItemTransferResetRepoScanBoundaries"
+        ]
+    },
+    "UseConsumableStockFindItemsPage": {
+        "desc": "在当前仓库页同时检查所有仍缺少的消耗品",
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableStockFindItemSlot1",
+            "UseConsumableStockFindItemSlot2",
+            "UseConsumableStockFindItemSlot3",
+            "UseConsumableStockFindItemSlot4",
+            "ItemTransferRepoBottomReached",
+            "[JumpBack]ItemTransferScrollDownwardRepo",
+            "ItemTransferStop"
+        ]
+    },
+    "UseConsumableStockTransferCompleteSlot1": {
+        "desc": "结束该槽当前仓库搜索，继续扫描下一项",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableStockFindItemSlot1": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockFindItemsPage"
+        ]
+    },
+    "UseConsumableStockWulingMarkMissingSlot1": {
+        "desc": "武陵仓库未找到该槽位物品，标记为待查四号谷地",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot1": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot1": {
+                    "enabled": true
+                },
+                "UseConsumableNeedValleyIV": {
+                    "enabled": true
+                },
+                "UseConsumableStockFindItemSlot1": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockWulingResolveMissing"
+        ]
+    },
+    "UseConsumableStockTransferCompleteSlot2": {
+        "desc": "结束该槽当前仓库搜索，继续扫描下一项",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableStockFindItemSlot2": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockFindItemsPage"
+        ]
+    },
+    "UseConsumableStockWulingMarkMissingSlot2": {
+        "desc": "武陵仓库未找到该槽位物品，标记为待查四号谷地",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot2": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot2": {
+                    "enabled": true
+                },
+                "UseConsumableNeedValleyIV": {
+                    "enabled": true
+                },
+                "UseConsumableStockFindItemSlot2": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockWulingResolveMissing"
+        ]
+    },
+    "UseConsumableStockTransferCompleteSlot3": {
+        "desc": "结束该槽当前仓库搜索，继续扫描下一项",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableStockFindItemSlot3": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockFindItemsPage"
+        ]
+    },
+    "UseConsumableStockWulingMarkMissingSlot3": {
+        "desc": "武陵仓库未找到该槽位物品，标记为待查四号谷地",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot3": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot3": {
+                    "enabled": true
+                },
+                "UseConsumableNeedValleyIV": {
+                    "enabled": true
+                },
+                "UseConsumableStockFindItemSlot3": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockWulingResolveMissing"
+        ]
+    },
+    "UseConsumableStockTransferCompleteSlot4": {
+        "desc": "结束该槽当前仓库搜索，继续扫描下一项",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableStockFindItemSlot4": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockFindItemsPage"
+        ]
+    },
+    "UseConsumableStockWulingMarkMissingSlot4": {
+        "desc": "武陵仓库未找到该槽位物品，标记为待查四号谷地",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot4": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot4": {
+                    "enabled": true
+                },
+                "UseConsumableNeedValleyIV": {
+                    "enabled": true
+                },
+                "UseConsumableStockFindItemSlot4": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockWulingResolveMissing"
+        ]
+    },
+    "UseConsumableStockWulingScanFinish": {
+        "desc": "武陵仓库整轮扫描结束，转入一次背包确认",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "ItemTransferRepoTopReached": {
+                    "next": [
+                        "ItemTransferRepoScanFromTop"
+                    ]
+                },
+                "ItemTransferRepoBottomReached": {
+                    "next": [
+                        "[Anchor]ItemTransferCurrentRepoNotFound"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockWulingVerifyBagStart"
+        ]
+    },
+    "UseConsumableStockValleyIVScanStart": {
+        "desc": "只扫描武陵仓库未找到项目的四号谷地仓库",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "ItemTransferRepoTopReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockFindItemsPage"
+                    ]
+                },
+                "ItemTransferRepoBottomReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockValleyIVScanFinish"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ItemTransferResetRepoScanBoundaries"
+        ]
+    },
+    "UseConsumableStockValleyIVMarkMissingSlot1": {
+        "desc": "四号谷地仓库未找到该槽位物品，跳过该槽位并记录任务失败",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedValleyIVSlot1": {
+                    "enabled": false
+                },
+                "UseConsumableUseStartSlot1": {
+                    "enabled": false
+                },
+                "UseConsumableSlot1Disabled": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableRecordMissingSlot1"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.UseConsumable.focus.usable_item_not_found"
+        }
+    },
+    "UseConsumableRecordMissingSlot1": {
+        "desc": "将缺失的消耗品记录到最终任务失败汇总",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "FailureCollectorRunTask",
+        "custom_action_param": {
+            "key": "UseConsumable",
+            "task": "UseConsumableFailureProbe",
+            "failure_task": "UseConsumableFailureNotification"
+        },
+        "next": [
+            "[JumpBack]UseConsumableStockValleyIVResolveMissing"
+        ]
+    },
+    "UseConsumableStockValleyIVMarkMissingSlot2": {
+        "desc": "四号谷地仓库未找到该槽位物品，跳过该槽位并记录任务失败",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedValleyIVSlot2": {
+                    "enabled": false
+                },
+                "UseConsumableUseStartSlot2": {
+                    "enabled": false
+                },
+                "UseConsumableSlot2Disabled": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableRecordMissingSlot2"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.UseConsumable.focus.usable_item_not_found"
+        }
+    },
+    "UseConsumableRecordMissingSlot2": {
+        "desc": "将缺失的消耗品记录到最终任务失败汇总",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "FailureCollectorRunTask",
+        "custom_action_param": {
+            "key": "UseConsumable",
+            "task": "UseConsumableFailureProbe",
+            "failure_task": "UseConsumableFailureNotification"
+        },
+        "next": [
+            "[JumpBack]UseConsumableStockValleyIVResolveMissing"
+        ]
+    },
+    "UseConsumableStockValleyIVMarkMissingSlot3": {
+        "desc": "四号谷地仓库未找到该槽位物品，跳过该槽位并记录任务失败",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedValleyIVSlot3": {
+                    "enabled": false
+                },
+                "UseConsumableUseStartSlot3": {
+                    "enabled": false
+                },
+                "UseConsumableSlot3Disabled": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableRecordMissingSlot3"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.UseConsumable.focus.usable_item_not_found"
+        }
+    },
+    "UseConsumableRecordMissingSlot3": {
+        "desc": "将缺失的消耗品记录到最终任务失败汇总",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "FailureCollectorRunTask",
+        "custom_action_param": {
+            "key": "UseConsumable",
+            "task": "UseConsumableFailureProbe",
+            "failure_task": "UseConsumableFailureNotification"
+        },
+        "next": [
+            "[JumpBack]UseConsumableStockValleyIVResolveMissing"
+        ]
+    },
+    "UseConsumableStockValleyIVMarkMissingSlot4": {
+        "desc": "四号谷地仓库未找到该槽位物品，跳过该槽位并记录任务失败",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedValleyIVSlot4": {
+                    "enabled": false
+                },
+                "UseConsumableUseStartSlot4": {
+                    "enabled": false
+                },
+                "UseConsumableSlot4Disabled": {
+                    "enabled": true
+                }
+            }
+        },
+        "next": [
+            "UseConsumableRecordMissingSlot4"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.UseConsumable.focus.usable_item_not_found"
+        }
+    },
+    "UseConsumableRecordMissingSlot4": {
+        "desc": "将缺失的消耗品记录到最终任务失败汇总",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "FailureCollectorRunTask",
+        "custom_action_param": {
+            "key": "UseConsumable",
+            "task": "UseConsumableFailureProbe",
+            "failure_task": "UseConsumableFailureNotification"
+        },
+        "next": [
+            "[JumpBack]UseConsumableStockValleyIVResolveMissing"
+        ]
+    },
+    "UseConsumableStockValleyIVScanFinish": {
+        "desc": "四号谷地仓库整轮扫描结束，转入一次背包确认",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "ItemTransferRepoTopReached": {
+                    "next": [
+                        "ItemTransferRepoScanFromTop"
+                    ]
+                },
+                "ItemTransferRepoBottomReached": {
+                    "next": [
+                        "[Anchor]ItemTransferCurrentRepoNotFound"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockValleyIVVerifyBagStart"
+        ]
+    },
+    "UseConsumableFailureCollectorReset": {
+        "desc": "重置本次缺失消耗品失败记录",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "FailureCollectorReset",
+        "custom_action_param": {
+            "key": "UseConsumable"
+        },
+        "next": [
+            "UseConsumableTaskStart"
+        ]
+    },
+    "UseConsumableFailureProbe": {
+        "desc": "缺失消耗品的失败探针",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "FalseAction"
+    },
+    "UseConsumableFailureNotification": {
+        "desc": "缺失消耗品失败提示已在缺项节点输出",
+        "recognition": "DirectHit"
+    },
+    "UseConsumableFailureCollectorFinish": {
+        "desc": "在使用流程完成后汇总缺失消耗品并返回任务状态",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "FailureCollectorFinish",
+        "custom_action_param": {
+            "key": "UseConsumable"
+        },
+        "focus": {
+            "Node.PipelineNode.Failed": {
+                "trace": false
+            }
+        }
+    },
+    "UseConsumableStockWulingResolveMissing": {
+        "desc": "武陵背包确认完成，汇总仍缺少的消耗品",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "UseConsumableNeedStockSlot1": {
+                    "next": [
+                        "UseConsumableStockWulingMarkMissingSlot1"
+                    ]
+                },
+                "UseConsumableNeedStockSlot2": {
+                    "next": [
+                        "UseConsumableStockWulingMarkMissingSlot2"
+                    ]
+                },
+                "UseConsumableNeedStockSlot3": {
+                    "next": [
+                        "UseConsumableStockWulingMarkMissingSlot3"
+                    ]
+                },
+                "UseConsumableNeedStockSlot4": {
+                    "next": [
+                        "UseConsumableStockWulingMarkMissingSlot4"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "UseConsumableNeedStockSlot1",
+            "UseConsumableNeedStockSlot2",
+            "UseConsumableNeedStockSlot3",
+            "UseConsumableNeedStockSlot4",
+            "UseConsumableNeedValleyIV",
+            "UseConsumableStockFinish"
+        ]
+    },
+    "UseConsumableStockVerifyBagPage": {
+        "desc": "当前背包页同时确认所有仍待满足的消耗品",
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumablePrecheckStartSlot1",
+            "UseConsumablePrecheckStartSlot2",
+            "UseConsumablePrecheckStartSlot3",
+            "UseConsumablePrecheckStartSlot4",
+            "ItemTransferBagBottomReached",
+            "[JumpBack]ItemTransferScrollDownwardBag",
+            "ItemTransferStop"
+        ]
+    },
+    "UseConsumableStockVerifyBagFoundSlot1": {
+        "desc": "背包确认槽位1的消耗品已到位",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot1": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot1": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot1": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot1": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockVerifyBagPage"
+        ]
+    },
+    "UseConsumableStockVerifyBagFoundSlot2": {
+        "desc": "背包确认槽位2的消耗品已到位",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot2": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot2": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot2": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot2": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockVerifyBagPage"
+        ]
+    },
+    "UseConsumableStockVerifyBagFoundSlot3": {
+        "desc": "背包确认槽位3的消耗品已到位",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot3": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot3": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot3": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot3": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockVerifyBagPage"
+        ]
+    },
+    "UseConsumableStockVerifyBagFoundSlot4": {
+        "desc": "背包确认槽位4的消耗品已到位",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "patch": {
+                "UseConsumableNeedStockSlot4": {
+                    "enabled": false
+                },
+                "UseConsumableNeedValleyIVSlot4": {
+                    "enabled": false
+                },
+                "UseConsumableStockFindItemSlot4": {
+                    "enabled": false
+                },
+                "UseConsumablePrecheckStartSlot4": {
+                    "enabled": false
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockVerifyBagPage"
+        ]
+    },
+    "UseConsumableStockWulingVerifyBagStart": {
+        "desc": "开始一次武陵仓库取物后的合并背包确认",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "UseConsumableStockVerifyBagPage": {
+                    "enabled": true
+                },
+                "ItemTransferBagTopReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockVerifyBagPage"
+                    ]
+                },
+                "ItemTransferBagBottomReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockWulingVerifyBagFinish"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot1": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot1"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot2": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot2"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot3": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot3"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot4": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot4"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ItemTransferResetBagScanBoundaries"
+        ]
+    },
+    "UseConsumableStockWulingVerifyBagFinish": {
+        "desc": "武陵背包确认完成，恢复通用扫描出口",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "ItemTransferBagTopReached": {
+                    "next": [
+                        "ItemTransferBagScanFromTop"
+                    ]
+                },
+                "UseConsumableStockVerifyBagPage": {
+                    "enabled": false
+                },
+                "ItemTransferBagBottomReached": {
+                    "next": [
+                        "[Anchor]ItemTransferCurrentBagNotFound"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot1": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot1"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot2": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot2"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot3": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot3"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot4": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot4"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockWulingResolveMissing"
+        ]
+    },
+    "UseConsumableStockValleyIVResolveMissing": {
+        "desc": "四号谷地背包确认完成，汇总仍缺少的消耗品",
+        "recognition": "DirectHit",
+        "next": [
+            "UseConsumableNeedValleyIVSlot1",
+            "UseConsumableNeedValleyIVSlot2",
+            "UseConsumableNeedValleyIVSlot3",
+            "UseConsumableNeedValleyIVSlot4",
+            "UseConsumableStockFinish"
+        ]
+    },
+    "UseConsumableStockValleyIVVerifyBagStart": {
+        "desc": "开始一次四号谷地仓库取物后的合并背包确认",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "UseConsumableStockVerifyBagPage": {
+                    "enabled": true
+                },
+                "ItemTransferBagTopReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockVerifyBagPage"
+                    ]
+                },
+                "ItemTransferBagBottomReached": {
+                    "attach": {
+                        "ready": false
+                    },
+                    "next": [
+                        "UseConsumableStockValleyIVVerifyBagFinish"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot1": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot1"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot2": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot2"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot3": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot3"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot4": {
+                    "next": [
+                        "UseConsumableStockVerifyBagFoundSlot4"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ItemTransferResetBagScanBoundaries"
+        ]
+    },
+    "UseConsumableStockValleyIVVerifyBagFinish": {
+        "desc": "四号谷地背包确认完成，恢复通用扫描出口",
+        "recognition": "DirectHit",
+        "action": "Custom",
+        "custom_action": "PipelineOverrideAction",
+        "custom_action_param": {
+            "allow_next": true,
+            "patch": {
+                "ItemTransferBagTopReached": {
+                    "next": [
+                        "ItemTransferBagScanFromTop"
+                    ]
+                },
+                "UseConsumableStockVerifyBagPage": {
+                    "enabled": false
+                },
+                "ItemTransferBagBottomReached": {
+                    "next": [
+                        "[Anchor]ItemTransferCurrentBagNotFound"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot1": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot1"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot2": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot2"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot3": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot3"
+                    ]
+                },
+                "UseConsumablePrecheckStartSlot4": {
+                    "next": [
+                        "UseConsumablePrecheckFoundSlot4"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "UseConsumableStockValleyIVResolveMissing"
+        ]
+    },
+    "UseConsumableStockTransferMoveMouseAwaySlot1": {
+        "recognition": "DirectHit",
+        "pre_delay": 200,
+        "action": "TouchMove",
+        "target": [
+            10,
+            10,
+            1,
+            1
+        ],
+        "post_delay": 200,
+        "next": [
+            "UseConsumableStockTransferCompleteSlot1"
+        ]
+    },
+    "UseConsumableStockTransferMoveMouseAwaySlot2": {
+        "recognition": "DirectHit",
+        "pre_delay": 200,
+        "action": "TouchMove",
+        "target": [
+            10,
+            10,
+            1,
+            1
+        ],
+        "post_delay": 200,
+        "next": [
+            "UseConsumableStockTransferCompleteSlot2"
+        ]
+    },
+    "UseConsumableStockTransferMoveMouseAwaySlot3": {
+        "recognition": "DirectHit",
+        "pre_delay": 200,
+        "action": "TouchMove",
+        "target": [
+            10,
+            10,
+            1,
+            1
+        ],
+        "post_delay": 200,
+        "next": [
+            "UseConsumableStockTransferCompleteSlot3"
+        ]
+    },
+    "UseConsumableStockTransferMoveMouseAwaySlot4": {
+        "recognition": "DirectHit",
+        "pre_delay": 200,
+        "action": "TouchMove",
+        "target": [
+            10,
+            10,
+            1,
+            1
+        ],
+        "post_delay": 200,
+        "next": [
+            "UseConsumableStockTransferCompleteSlot4"
+        ]
     }
 }

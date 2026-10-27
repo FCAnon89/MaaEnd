@@ -1873,7 +1873,6 @@
     "option.UseConsumableOperators.cases.OperatorSlot2.label": "2번 슬롯",
     "option.UseConsumableOperators.cases.OperatorSlot3.label": "3번 슬롯",
     "option.UseConsumableOperators.cases.OperatorSlot4.label": "4번 슬롯",
-    "option.UseConsumableOperators.label": "소모품을 사용할 오퍼레이터",
     "option.UseConsumableRegion.cases.ValleyIV.label": "밸리 IV",
     "option.UseConsumableRegion.cases.Wuling.label": "무릉",
     "option.UseConsumableRegion.label": "사용할 지역",

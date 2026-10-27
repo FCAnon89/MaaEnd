@@ -142,112 +142,113 @@ def sync_usable_items_task_options(data_dir: Path) -> None:
     if not isinstance(items, dict):
         raise click.ClickException(f"{source_path} 的 items 必须是对象")
 
-    cases: list[dict[str, Any]] = []
-    for item_id, item in sorted(items.items()):
-        if not isinstance(item, dict):
-            raise click.ClickException(f"{source_path} 中 {item_id} 的记录必须是对象")
-        name = item.get("name")
-        if not isinstance(name, str) or not name:
-            raise click.ClickException(f"{source_path} 中 {item_id} 缺少物品名称")
-        icon_params = {
-            "grid_type": "transfer",
-            "item_ids": [item_id],
-            "item_recheck_filters": ["Normal:Usable"],
-            "deduplicate": True,
-        }
-        cases.append(
-            {
-                "name": item_id,
-                "label": f"$iconRecognition.name.{item_id}",
-                "pipeline_override": {
-                    "UseConsumableHasItem": {"enabled": True},
-                    **{
+    def cases_for_slot(slot: int) -> list[dict[str, Any]]:
+        cases: list[dict[str, Any]] = []
+        for item_id, item in sorted(items.items()):
+            if not isinstance(item, dict):
+                raise click.ClickException(f"{source_path} 中 {item_id} 的记录必须是对象")
+            name = item.get("name")
+            if not isinstance(name, str) or not name:
+                raise click.ClickException(f"{source_path} 中 {item_id} 缺少物品名称")
+            icon_params = {
+                "grid_type": "transfer",
+                "item_ids": [item_id],
+                "item_recheck_filters": ["Normal:Usable"],
+                "deduplicate": True,
+            }
+            cases.append(
+                {
+                    "name": item_id,
+                    "label": f"$iconRecognition.name.{item_id}",
+                    "pipeline_override": {
                         node: {
                             "recognition": {
                                 "param": {"custom_recognition_param": icon_params}
                             }
                         }
                         for node in (
-                            "UseConsumablePrecheckFindItem",
-                            "UseConsumableStockWulingFindItem",
-                            "UseConsumableStockValleyIVFindItem",
-                            "UseConsumableUseFindItem",
+                            f"UseConsumableFindItemSlot{slot}",
+                            f"UseConsumableStockFindItemSlot{slot}",
                         )
-                    }
-                },
-            }
-        )
+                    },
+                }
+            )
+        if not cases:
+            raise click.ClickException(f"{source_path} 中没有可供选择的主动可用道具")
+        return cases
 
-    if not cases:
-        raise click.ClickException(f"{source_path} 中没有可供选择的主动可用道具")
+    def replace_cases(text: str, option_name: str, cases: list[dict[str, Any]]) -> str:
+        option = re.search(rf'"{re.escape(option_name)}"\s*:\s*\{{', text)
+        cases_match = re.search(r'"cases"\s*:\s*\[', text[option.end() :]) if option else None
+        if option is None or cases_match is None:
+            raise click.ClickException(f"{task_path} 缺少 {option_name}")
+        cases_start = option.end() + cases_match.start()
+        array_start = text.index("[", cases_start)
 
-    option = re.search(r'"UseConsumableItem"\s*:\s*\{', task_text)
-    cases_match = re.search(r'"cases"\s*:\s*\[', task_text[option.end() :]) if option else None
-    if option is None or cases_match is None:
-        raise click.ClickException(f"{task_path} 缺少 UseConsumableItem")
-    cases_start = option.end() + cases_match.start()
-    array_start = task_text.index("[", cases_start)
-
-    # 任务文件是 JSONC；只定位并替换 cases 数组，保留其他任务注释。
-    depth = 0
-    in_string = False
-    escaped = False
-    array_end = -1
-    for index in range(array_start, len(task_text)):
-        char = task_text[index]
-        if in_string:
-            if escaped:
-                escaped = False
-            elif char == "\\":
-                escaped = True
+        # 任务文件是 JSONC；只定位并替换 cases 数组，保留其他任务注释。
+        depth = 0
+        in_string = False
+        escaped = False
+        array_end = -1
+        for index in range(array_start, len(text)):
+            char = text[index]
+            if in_string:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    in_string = False
             elif char == '"':
-                in_string = False
-        elif char == '"':
-            in_string = True
-        elif char == "[":
-            depth += 1
-        elif char == "]":
-            depth -= 1
-            if depth == 0:
-                array_end = index
-                break
-    if array_end < 0:
-        raise click.ClickException(f"{task_path} 中可用道具 cases 数组没有闭合")
+                in_string = True
+            elif char == "[":
+                depth += 1
+            elif char == "]":
+                depth -= 1
+                if depth == 0:
+                    array_end = index
+                    break
+        if array_end < 0:
+            raise click.ClickException(f"{task_path} 中 {option_name}.cases 数组没有闭合")
+
+        current_cases = text[array_start : array_end + 1]
+        try:
+            parsed_cases = json.loads(current_cases)
+        except ValueError:
+            parsed_cases = None
+        if parsed_cases != cases:
+            property_start = text.rfind("\n", 0, cases_start) + 1
+            property_indent = text[property_start:cases_start]
+            formatted_cases = json.dumps(cases, ensure_ascii=False, indent=4).splitlines()
+            replacement = formatted_cases[0] + "\n" + "\n".join(
+                property_indent + line for line in formatted_cases[1:]
+            )
+            text = text[:array_start] + replacement + text[array_end + 1 :]
+            default_case_search_start = array_start + len(replacement)
+        else:
+            default_case_search_start = array_end + 1
+
+        default_case = cases[0]["name"]
+        default_case_match = re.search(
+            r'\s*,\s*"default_case"\s*:\s*"([^"]*)"',
+            text[default_case_search_start:],
+        )
+        if default_case_match is None:
+            raise click.ClickException(f"{task_path} 缺少 {option_name}.default_case")
+        if default_case_match.group(1) != default_case:
+            value_start = default_case_search_start + default_case_match.start(1)
+            value_end = default_case_search_start + default_case_match.end(1)
+            text = (
+                text[:value_start]
+                + json.dumps(default_case, ensure_ascii=False)[1:-1]
+                + text[value_end:]
+            )
+        return text
 
     original_task_text = task_text
-    current_cases = task_text[array_start : array_end + 1]
-    try:
-        parsed_cases = json.loads(current_cases)
-    except ValueError:
-        parsed_cases = None
-    if parsed_cases != cases:
-        property_start = task_text.rfind("\n", 0, cases_start) + 1
-        property_indent = task_text[property_start:cases_start]
-        formatted_cases = json.dumps(cases, ensure_ascii=False, indent=4).splitlines()
-        replacement = formatted_cases[0] + "\n" + "\n".join(
-            property_indent + line for line in formatted_cases[1:]
-        )
-        task_text = task_text[:array_start] + replacement + task_text[array_end + 1 :]
-        default_case_search_start = array_start + len(replacement)
-    else:
-        default_case_search_start = array_end + 1
-
-    default_case = cases[0]["name"]
-    default_case_match = re.search(
-        r'\s*,\s*"default_case"\s*:\s*"([^"]*)"',
-        task_text[default_case_search_start:],
-    )
-    if default_case_match is None:
-        raise click.ClickException(
-            f"{task_path} 缺少 UseConsumableItem.default_case"
-        )
-    if default_case_match.group(1) != default_case:
-        default_case_start = default_case_search_start + default_case_match.start(1)
-        default_case_end = default_case_search_start + default_case_match.end(1)
-        task_text = (
-            task_text[:default_case_start]
-            + json.dumps(default_case, ensure_ascii=False)[1:-1]
-            + task_text[default_case_end:]
+    for slot in range(1, 5):
+        task_text = replace_cases(
+            task_text, f"UseConsumableSlot{slot}Item", cases_for_slot(slot)
         )
 
     if task_text != original_task_text:

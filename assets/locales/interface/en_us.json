@@ -1873,7 +1873,6 @@
     "option.UseConsumableOperators.cases.OperatorSlot2.label": "Slot 2",
     "option.UseConsumableOperators.cases.OperatorSlot3.label": "Slot 3",
     "option.UseConsumableOperators.cases.OperatorSlot4.label": "Slot 4",
-    "option.UseConsumableOperators.label": "Operators to Use the Consumable",
     "option.UseConsumableRegion.cases.ValleyIV.label": "Valley IV",
     "option.UseConsumableRegion.cases.Wuling.label": "Wuling",
     "option.UseConsumableRegion.label": "Region to Use In",
