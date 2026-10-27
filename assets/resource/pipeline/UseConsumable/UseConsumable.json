@@ -51,12 +51,12 @@
             606,
             601
         ],
-        "template": "UseConsumable/ItemIntroMark.png",
+        "template": "UseConsumable/StockMark.png",
         "method": 5,
         "threshold": 0.85
     },
     "UseConsumableUseText": {
-        "desc": "在书签图标下方限定区域识别使用按钮",
+        "desc": "在仓库图标的右方限定区域识别使用按钮",
         "recognition": "OCR",
         "roi": "UseConsumableUseMark",
         "roi_offset": [

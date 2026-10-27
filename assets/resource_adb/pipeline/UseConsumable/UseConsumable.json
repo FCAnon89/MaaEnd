@@ -366,7 +366,7 @@
             669,
             534
         ],
-        "template": "UseConsumable/ItemIntroMarkADB.png",
+        "template": "UseConsumable/StockMarkADB.png",
         "green_mask": false,
         "method": 5,
         "threshold": 0.85
