@@ -16,9 +16,11 @@
             ]
         },
         {
-            "name": "单点位画面无桌位状态词",
+            "name": "单点位订单中第3桌用餐中",
             "image": "缘缘庄_经营中_单点位订单.png",
-            "hits": []
+            "hits": [
+                "RestaurantTable3Dining"
+            ]
         }
     ]
 }

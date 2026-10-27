@@ -1536,10 +1536,10 @@
     "RestaurantMenuStartBusiness": {
         "recognition": "OCR",
         "roi": [
-            1005,
-            640,
-            205,
-            45
+            966,
+            597,
+            258,
+            105
         ],
         "expected": [
             "开始经营",
@@ -1569,6 +1569,21 @@
         ],
         "on_error": [
             "FailedNode"
+        ]
+    },
+    "RestaurantMenuStartBusinessWarning": {
+        "desc": "开始经营按钮上的未满足要求标记",
+        "recognition": "TemplateMatch",
+        "roi": [
+            966,
+            597,
+            258,
+            105
+        ],
+        "template": "Restaurant/EmphaticMark.png",
+        "next": [
+            "RestaurantMenuStartBusinessWarning",
+            "RestaurantMenuStartBusiness"
         ]
     },
     // 720p 固定派单按钮坐标；重复点击由 wait_nodes 确认面板就绪或游戏结束。
@@ -1800,6 +1815,7 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantMenuStartBusinessWarning",
             "RestaurantMenuStartBusiness"
         ]
     },

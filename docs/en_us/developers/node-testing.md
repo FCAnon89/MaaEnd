@@ -19,7 +19,8 @@ tests/
 |- MaaEndTestset/
 |  |- Win32/Official_CN/*.png
 |  |- Win32/Official_CN/<image subdirectory>/*.png
-|  `- ADB/Official_CN/*.png
+|  |- ADB/Official_CN/*.png
+|  `- CloudADB/Official_CN/*.png
 |- Common/Button/test_close_button.json
 |- DeliveryJobs/test_region.json
 `- ...
@@ -35,6 +36,7 @@ With the current config:
 
 - `controller = "Win32"` maps to `tests/MaaEndTestset/Win32/`.
 - `controller = "ADB"` maps to `tests/MaaEndTestset/ADB/`.
+- `controller = "CloudADB"` maps to `tests/MaaEndTestset/CloudADB/`.
 - `controller = ["Win32", "ADB"]` runs the same cases once under each controller directory.
 - `resource = "官服"` maps to `tests/MaaEndTestset/*/Official_CN/`.
 - When `configs.imageRoot = "RestaurantDaily"`, images are read from `tests/MaaEndTestset/*/Official_CN/RestaurantDaily/`.
@@ -76,7 +78,7 @@ The file structure is validated by `tools/schema/test.schema.json`. The top leve
 
 - `name`: optional test group name; recommended because it makes CLI output easier to read.
 - `resource`: resource server name. It can be either a single string or an array of strings. The current repo uses `官服`.
-- `controller`: controller type. It can be either a single string or an array of strings. The current repo uses `Win32` and `ADB`.
+- `controller`: controller type. It can be either a single string or an array of strings. The current repo uses `Win32`, `ADB`, and `CloudADB`.
 - `imageRoot`: optional image subdirectory under the resource directory, such as `RestaurantDaily`.
 
 When `controller` or `resource` is an array, `tests/scripts/loader.mts` expands the file into multiple test groups using the Cartesian product of controller and resource values.
