@@ -180,6 +180,13 @@ func Run(args []string) bool {
 		Str("component", component).
 		Msg("MAA framework initialized")
 
+	// 无显示器时/部分DP显示器关闭后，系统判断显示器断开，启动器窗口不绘制，所有截图方案均不可用
+	if !hasActiveMonitor() {
+		log.Warn().
+			Str("component", component).
+			Msg("未检测到显示器，可能无法识别启动器画面 / No monitor detected, the launcher screen may not be recognized")
+	}
+
 	if info.launchURL != "" {
 		if err := openLaunchURL(info.launchURL); err != nil {
 			log.Error().
@@ -494,7 +501,7 @@ func runLauncherPipeline(hWnd unsafe.Pointer) bool {
 }
 
 func runPipeline(hWnd unsafe.Pointer) error {
-	// 鼠标用 Seize（SendInput 真实输入），DP 显示器息屏后点击可唤醒显示器；PostMessage 不算用户输入，无法唤醒
+	// 鼠标用 Seize（SendInput 真实输入），显示器息屏后点击可唤醒显示器；PostMessage 不算用户输入，无法唤醒
 	ctrl, err := maa.NewWin32Controller(hWnd, win32.ScreencapPrintWindow, win32.InputSeize, win32.InputPostMessage)
 	if err != nil {
 		return err

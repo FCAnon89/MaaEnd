@@ -394,10 +394,5 @@
             289,
             139
         ]
-    },
-    "UseConsumableUseCancelButtonGone": {
-        "any_of": [
-            "UseConsumableUseCancelButtonNormal"
-        ]
     }
 }

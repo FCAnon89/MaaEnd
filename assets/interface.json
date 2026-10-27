@@ -60,8 +60,7 @@
             "name": "PlayCover",
             "type": "PlayCover",
             "attach_resource_path": [
-                "./resource_adb",
-                "./resource_playcover"
+                "./resource_adb"
             ],
             "playcover": {
                 "uuid": "maa.playcover"
@@ -216,6 +215,7 @@
         "tasks/GearAssembly.json",
         "tasks/Weapon.json",
         "tasks/BatchUseDetector.json",
+        "tasks/SanityExtractor.json",
         "tasks/EssenceFilter.json",
         "tasks/DecomposeWeaponEssence.json",
         // group: open_world
@@ -245,6 +245,7 @@
         "tasks/AutoEssence/Location/WLYinglungPass.json",
         "tasks/AutoEssence/Location/WLNorthWulingExclusionZone.json",
         "tasks/AutoEssence/Location/WLSnowyForest.json",
+        "tasks/AutoEssence/Location/WLSisPainting.json",
         "tasks/AutoEssence/Target/Target.json",
         "tasks/ProtocolSpace.json",
         // group: dijiang_ship
@@ -284,6 +285,7 @@
         "tasks/preset/DailyFull.json",
         "tasks/preset/QuickDaily.json",
         "tasks/preset/RealtimeAssist.json",
+        "tasks/preset/IndependentTasks.json",
         // setting
         "tasks/setting/Keymap.json",
         "tasks/setting/Zipline.json"

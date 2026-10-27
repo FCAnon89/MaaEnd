@@ -455,6 +455,7 @@ uv run map-navigator --port 9000 --no-browser
 | `heading_source` | `"character"` | 整次调用的导航与滑索架瞄准朝向来源：`"character"` 使用角色朝向，`"camera"` 使用镜头朝向；不会相互回退 |
 | `arrival_timeout` | `60000` | 单个点允许的最长到达时间，超时判定失败，单位毫秒 |
 | `sprint_threshold` | `16.0` | 自动冲刺的判定阈值，依据**前方连续可跑段的长度**而非当前点的直线距离 |
+| `enable_sprint` | `true` | 是否允许冲刺。填 `false` 则整次导航从头到尾都不冲刺：自动冲刺不触发，路线里的 `SPRINT` 点也直接跳过 |
 | `interact_text` | 空 | 整条路线的交互提示文字默认值，见[异步交互](#异步交互-interact) |
 | `interact_scan` | 空 | 整条路线的行进预筛节点默认值，见[换掉图标预筛](#换掉图标预筛) |
 | `interact_rec` | `false` | 整条路线的 `INTERACT` 点是否只认提示不按键，见[只认提示不按键](#只认提示不按键rec-模式) |
@@ -630,7 +631,7 @@ uv run map-navigator --port 9000 --no-browser
 
 - `agent/cpp-algo/source/MapNavigator/navi_domain_types.h`：`ActionType` 枚举，`COLLECT` / `DIG` 在此声明。
 - `agent/cpp-algo/source/MapNavigator/navi_config.h`：子任务入口名、`pipeline_override`、采集后等待时间等常量。
-- `agent/cpp-algo/source/MapNavigator/semantic_nodes.cpp`：到达采集点后的执行逻辑。
+- `agent/cpp-algo/source/MapNavigator/semantic/semantic_nodes.cpp`：到达采集点后的执行逻辑。
 
 ### 注意事项
 
@@ -858,11 +859,12 @@ OCR 不总是可靠，所以这个字段本来就是**一组**正则，而不是
 
 以下文件由 cpp-algo 维护者负责，路线作者无需修改：
 
-- `agent/cpp-algo/source/MapNavigator/async_prompt_action.h` / `.cpp`：提示驱动动作的公共实现，`COLLECT` 与异步 `INTERACT` 共用一套。
-- `agent/cpp-algo/source/MapNavigator/prompt_scan_profile.h` / `.cpp`：从 Pipeline 节点读预筛参数与交互文字表，以及那一串校验。
+- `agent/cpp-algo/source/MapNavigator/semantic/async_prompt_action.h` / `.cpp`：提示驱动动作的公共实现，`COLLECT` 与异步 `INTERACT` 共用一套。
+- `agent/cpp-algo/source/MapNavigator/sensing/prompt_scan_profile.h` / `.cpp`：从 Pipeline 节点读预筛参数，以及那一串校验。
+- `agent/cpp-algo/source/MapNavigator/sensing/pipeline_node_reader.h` / `.cpp`：读 Pipeline 节点的 ROI、识别类型与交互文字表。
 - `agent/cpp-algo/source/MapNavigator/navi_config.h`：子任务节点名、预筛节拍与兜底常量、判定值等。
 - `agent/cpp-algo/source/MapNavigator/navi_param_parser.cpp`：`interact_text` / `interact_scan` / `interact_rec` 的解析与路线级默认值下发，以及开跑前把点名的 OCR 节点读成文字表。
-- `agent/cpp-algo/source/MapNavigator/semantic_nodes.cpp`：到点后的兜底执行逻辑。
+- `agent/cpp-algo/source/MapNavigator/semantic/semantic_nodes.cpp`：到点后的兜底执行逻辑。
 
 ---
 
@@ -956,7 +958,7 @@ OCR 不总是可靠，所以这个字段本来就是**一组**正则，而不是
 | 业务自己的路线 JSON | `MapNavigateAction` 的 `path`、`FIND` 点与 `find_*` 字段 | 新增寻找点、换目标 |
 | 业务自己的识别节点 | `find_target` / `find_stop` 点名的节点 | 目标或提示的 ROI、文本变化 |
 | `assets/resource/pipeline/MapNavigator/Find.json` | 内联文本用的内置 OCR 节点 `MapNavigatorFind`；仅由导航按帧调用，从不单独派发 | 内联文本的默认 ROI |
-| `agent/cpp-algo/source/MapNavigator/find_action.cpp` | 搜索与接近的实现、退出时的记账清理 | 由 cpp-algo 维护者根据实机表现调参 |
+| `agent/cpp-algo/source/MapNavigator/semantic/find_action.cpp` | 搜索与接近的实现、退出时的记账清理 | 由 cpp-algo 维护者根据实机表现调参 |
 
 ---
 
@@ -1015,7 +1017,7 @@ OCR 不总是可靠，所以这个字段本来就是**一组**正则，而不是
 | ----------------------------------------------------- | -------------------------------------------- | ------------------------ |
 | 业务自己的路线 JSON | `MapNavigateAction` 的 `path`、`TRIGGER` 点与 `trigger_node` | 新增触发终点、换识别节点 |
 | 业务自己的识别节点 | `trigger_node` 点名的节点 | 命中画面的 ROI、文本变化 |
-| `agent/cpp-algo/source/MapNavigator/trigger_action.cpp` | 行进途中的识别与到点完成 | 由 cpp-algo 维护者维护 |
+| `agent/cpp-algo/source/MapNavigator/semantic/trigger_action.cpp` | 行进途中的识别与到点完成 | 由 cpp-algo 维护者维护 |
 
 ---
 
@@ -1081,7 +1083,7 @@ OCR 不总是可靠，所以这个字段本来就是**一组**正则，而不是
 | 文件 | 职责 | 何时需要修改 |
 | ------------------------------------------------------ | ---------------------------- | ---------------------- |
 | 业务自己的路线 JSON | `JUMP_PAD` 点与前后的接近点、落点 | 新增或调整跳板路段 |
-| `agent/cpp-algo/source/MapNavigator/jump_pad_action.cpp` | 站位、按跳、起飞与落地判定 | 由 cpp-algo 维护者维护 |
+| `agent/cpp-algo/source/MapNavigator/semantic/jump_pad_action.cpp` | 站位、按跳、起飞与落地判定 | 由 cpp-algo 维护者维护 |
 
 ---
 

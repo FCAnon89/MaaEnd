@@ -123,15 +123,6 @@
         "template": "Common/Button/CancelButtonType2Hover.png",
         "threshold": 0.8
     },
-    "UseConsumableUseCancelButtonGone": {
-        "desc": "确认干员选择弹窗已关闭",
-        "recognition": "Or",
-        "any_of": [
-            "UseConsumableUseCancelButtonNormal",
-            "UseConsumableUseCancelButtonHover"
-        ],
-        "inverse": true
-    },
     "UseConsumableUseTeleportStart": {
         "desc": "传送前确认玩家处于大世界",
         "recognition": "DirectHit",
@@ -617,12 +608,6 @@
             "UseConsumableNeedStockSlot2",
             "UseConsumableNeedStockSlot3",
             "UseConsumableNeedStockSlot4",
-            "UseConsumablePrecheckNoStock"
-        ]
-    },
-    "UseConsumablePrecheckNoStock": {
-        "recognition": "DirectHit",
-        "next": [
             "UseConsumablePrecheckCloseBackpackToUse"
         ]
     },
@@ -1060,17 +1045,12 @@
             "UseConsumableUseCancelButtonNormal",
             "UseConsumableUseCancelButtonHover"
         ],
-        "action": "Click",
-        "next": [
-            "UseConsumableUseBackpackGridAfterCancelSlot1"
-        ]
-    },
-    "UseConsumableUseBackpackGridAfterCancelSlot1": {
-        "recognition": "And",
-        "all_of": [
-            "InBackpack",
-            "UseConsumableUseCancelButtonGone"
-        ],
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "UseConsumableUseCancelButtonSlot1"
+        },
         "next": [
             "UseConsumableUseStartSlot2",
             "UseConsumableUseSkipSlot2"
@@ -1181,17 +1161,12 @@
             "UseConsumableUseCancelButtonNormal",
             "UseConsumableUseCancelButtonHover"
         ],
-        "action": "Click",
-        "next": [
-            "UseConsumableUseBackpackGridAfterCancelSlot2"
-        ]
-    },
-    "UseConsumableUseBackpackGridAfterCancelSlot2": {
-        "recognition": "And",
-        "all_of": [
-            "InBackpack",
-            "UseConsumableUseCancelButtonGone"
-        ],
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "UseConsumableUseCancelButtonSlot2"
+        },
         "next": [
             "UseConsumableUseStartSlot3",
             "UseConsumableUseSkipSlot3"
@@ -1302,17 +1277,12 @@
             "UseConsumableUseCancelButtonNormal",
             "UseConsumableUseCancelButtonHover"
         ],
-        "action": "Click",
-        "next": [
-            "UseConsumableUseBackpackGridAfterCancelSlot3"
-        ]
-    },
-    "UseConsumableUseBackpackGridAfterCancelSlot3": {
-        "recognition": "And",
-        "all_of": [
-            "InBackpack",
-            "UseConsumableUseCancelButtonGone"
-        ],
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "UseConsumableUseCancelButtonSlot3"
+        },
         "next": [
             "UseConsumableUseStartSlot4",
             "UseConsumableUseSkipSlot4"
@@ -1421,17 +1391,12 @@
             "UseConsumableUseCancelButtonNormal",
             "UseConsumableUseCancelButtonHover"
         ],
-        "action": "Click",
-        "next": [
-            "UseConsumableUseBackpackGridAfterCancelSlot4"
-        ]
-    },
-    "UseConsumableUseBackpackGridAfterCancelSlot4": {
-        "recognition": "And",
-        "all_of": [
-            "InBackpack",
-            "UseConsumableUseCancelButtonGone"
-        ],
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "UseConsumableUseCancelButtonSlot4"
+        },
         "next": [
             "UseConsumableUseCloseBackpack"
         ]
@@ -1460,17 +1425,11 @@
                     "enabled": true
                 },
                 "ItemTransferBagTopReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumablePrecheckBagReady"
                     ]
                 },
                 "ItemTransferBagBottomReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumablePrecheckFinish"
                     ]
@@ -1490,19 +1449,13 @@
             "allow_next": true,
             "patch": {
                 "ItemTransferRepoTopReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumableStockFindItemsPage"
                     ]
                 },
                 "ItemTransferRepoBottomReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
-                        "UseConsumableStockWulingScanFinish"
+                        "UseConsumableStockWulingVerifyBagStart"
                     ]
                 }
             }
@@ -1688,30 +1641,6 @@
             "UseConsumableStockWulingResolveMissing"
         ]
     },
-    "UseConsumableStockWulingScanFinish": {
-        "desc": "武陵仓库整轮扫描结束，转入一次背包确认",
-        "recognition": "DirectHit",
-        "action": "Custom",
-        "custom_action": "PipelineOverrideAction",
-        "custom_action_param": {
-            "allow_next": true,
-            "patch": {
-                "ItemTransferRepoTopReached": {
-                    "next": [
-                        "ItemTransferRepoScanFromTop"
-                    ]
-                },
-                "ItemTransferRepoBottomReached": {
-                    "next": [
-                        "[Anchor]ItemTransferCurrentRepoNotFound"
-                    ]
-                }
-            }
-        },
-        "next": [
-            "UseConsumableStockWulingVerifyBagStart"
-        ]
-    },
     "UseConsumableStockValleyIVScanStart": {
         "desc": "只扫描武陵仓库未找到项目的四号谷地仓库",
         "recognition": "DirectHit",
@@ -1721,19 +1650,13 @@
             "allow_next": true,
             "patch": {
                 "ItemTransferRepoTopReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumableStockFindItemsPage"
                     ]
                 },
                 "ItemTransferRepoBottomReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
-                        "UseConsumableStockValleyIVScanFinish"
+                        "UseConsumableStockValleyIVVerifyBagStart"
                     ]
                 }
             }
@@ -1896,30 +1819,6 @@
         },
         "next": [
             "[JumpBack]UseConsumableStockValleyIVResolveMissing"
-        ]
-    },
-    "UseConsumableStockValleyIVScanFinish": {
-        "desc": "四号谷地仓库整轮扫描结束，转入一次背包确认",
-        "recognition": "DirectHit",
-        "action": "Custom",
-        "custom_action": "PipelineOverrideAction",
-        "custom_action_param": {
-            "allow_next": true,
-            "patch": {
-                "ItemTransferRepoTopReached": {
-                    "next": [
-                        "ItemTransferRepoScanFromTop"
-                    ]
-                },
-                "ItemTransferRepoBottomReached": {
-                    "next": [
-                        "[Anchor]ItemTransferCurrentRepoNotFound"
-                    ]
-                }
-            }
-        },
-        "next": [
-            "UseConsumableStockValleyIVVerifyBagStart"
         ]
     },
     "UseConsumableFailureCollectorReset": {
@@ -2122,17 +2021,11 @@
                     "enabled": true
                 },
                 "ItemTransferBagTopReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumableStockVerifyBagPage"
                     ]
                 },
                 "ItemTransferBagBottomReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumableStockWulingVerifyBagFinish"
                     ]
@@ -2183,26 +2076,6 @@
                     "next": [
                         "[Anchor]ItemTransferCurrentBagNotFound"
                     ]
-                },
-                "UseConsumablePrecheckStartSlot1": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot1"
-                    ]
-                },
-                "UseConsumablePrecheckStartSlot2": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot2"
-                    ]
-                },
-                "UseConsumablePrecheckStartSlot3": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot3"
-                    ]
-                },
-                "UseConsumablePrecheckStartSlot4": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot4"
-                    ]
                 }
             }
         },
@@ -2233,17 +2106,11 @@
                     "enabled": true
                 },
                 "ItemTransferBagTopReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumableStockVerifyBagPage"
                     ]
                 },
                 "ItemTransferBagBottomReached": {
-                    "attach": {
-                        "ready": false
-                    },
                     "next": [
                         "UseConsumableStockValleyIVVerifyBagFinish"
                     ]
@@ -2293,26 +2160,6 @@
                 "ItemTransferBagBottomReached": {
                     "next": [
                         "[Anchor]ItemTransferCurrentBagNotFound"
-                    ]
-                },
-                "UseConsumablePrecheckStartSlot1": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot1"
-                    ]
-                },
-                "UseConsumablePrecheckStartSlot2": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot2"
-                    ]
-                },
-                "UseConsumablePrecheckStartSlot3": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot3"
-                    ]
-                },
-                "UseConsumablePrecheckStartSlot4": {
-                    "next": [
-                        "UseConsumablePrecheckFoundSlot4"
                     ]
                 }
             }
