@@ -4601,7 +4601,9 @@
         "categoryType": "Dish",
         "rarity": 2,
         "iconId": "item_inn_dish_1",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 1
     },
     "item_inn_dish_10": {
         "name": "糯米凉糕",
@@ -4610,7 +4612,9 @@
         "categoryType": "Dish",
         "rarity": 3,
         "iconId": "item_inn_dish_10",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 7
     },
     "item_inn_dish_11": {
         "name": "鲜奶炖蛋",
@@ -4619,7 +4623,9 @@
         "categoryType": "Dish",
         "rarity": 3,
         "iconId": "item_inn_dish_11",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 10
     },
     "item_inn_dish_12": {
         "name": "豌杂拌面",
@@ -4628,7 +4634,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_12",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 20
     },
     "item_inn_dish_13": {
         "name": "手抓饭",
@@ -4637,7 +4645,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_13",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 14
     },
     "item_inn_dish_14": {
         "name": "鳞肉水饺",
@@ -4646,7 +4656,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_14",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 16
     },
     "item_inn_dish_15": {
         "name": "炸薯条",
@@ -4655,7 +4667,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_15",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 17
     },
     "item_inn_dish_16": {
         "name": "酸菜鳞肉",
@@ -4664,7 +4678,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_16",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 18
     },
     "item_inn_dish_17": {
         "name": "烤肉串",
@@ -4673,7 +4689,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_17",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 21
     },
     "item_inn_dish_18": {
         "name": "鳞香肉丝",
@@ -4682,7 +4700,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_18",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 12
     },
     "item_inn_dish_19": {
         "name": "豆沙汤圆",
@@ -4691,7 +4711,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_19",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 15
     },
     "item_inn_dish_2": {
         "name": "手擀素面",
@@ -4700,7 +4722,9 @@
         "categoryType": "Dish",
         "rarity": 2,
         "iconId": "item_inn_dish_2",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 2
     },
     "item_inn_dish_20": {
         "name": "酸莓布丁",
@@ -4709,7 +4733,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_20",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 19
     },
     "item_inn_dish_21": {
         "name": "咸酪脆饼",
@@ -4718,7 +4744,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_21",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 13
     },
     "item_inn_dish_22": {
         "name": "雪绵豆沙",
@@ -4727,7 +4755,9 @@
         "categoryType": "Dish",
         "rarity": 4,
         "iconId": "item_inn_dish_22",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 22
     },
     "item_inn_dish_23": {
         "name": "老麻抄手",
@@ -4736,7 +4766,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_23",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 35
     },
     "item_inn_dish_24": {
         "name": "八宝饭",
@@ -4745,7 +4777,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_24",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 25
     },
     "item_inn_dish_25": {
         "name": "至臻鳞肉卷",
@@ -4754,7 +4788,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_25",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 28
     },
     "item_inn_dish_26": {
         "name": "界龙肉卷",
@@ -4763,7 +4799,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_26",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 43
     },
     "item_inn_dish_27": {
         "name": "果味沙拉",
@@ -4772,7 +4810,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_27",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 26
     },
     "item_inn_dish_28": {
         "name": "麻辣香锅",
@@ -4781,7 +4821,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_28",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 29
     },
     "item_inn_dish_29": {
         "name": "坛子肉",
@@ -4790,7 +4832,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_29",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 30
     },
     "item_inn_dish_3": {
         "name": "番茄炒蛋",
@@ -4799,7 +4843,9 @@
         "categoryType": "Dish",
         "rarity": 2,
         "iconId": "item_inn_dish_3",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 3
     },
     "item_inn_dish_30": {
         "name": "福寿全",
@@ -4808,7 +4854,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_30",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 39
     },
     "item_inn_dish_31": {
         "name": "糖醋宝鳞",
@@ -4817,7 +4865,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_31",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 41
     },
     "item_inn_dish_32": {
         "name": "“银耳莲子”羹",
@@ -4826,7 +4876,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_32",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 40
     },
     "item_inn_dish_33": {
         "name": "茄果鳞肉汤",
@@ -4835,7 +4887,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_33",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 31
     },
     "item_inn_dish_34": {
         "name": "酸辣汤",
@@ -4844,7 +4898,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_34",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 23
     },
     "item_inn_dish_35": {
         "name": "白瓜肉丸汤",
@@ -4853,7 +4909,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_35",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 32
     },
     "item_inn_dish_36": {
         "name": "奶油蘑菇汤",
@@ -4862,7 +4920,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_36",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 36
     },
     "item_inn_dish_37": {
         "name": "白鳞高汤",
@@ -4871,7 +4931,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_37",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 38
     },
     "item_inn_dish_38": {
         "name": "莓果甜汤",
@@ -4880,7 +4942,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_38",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 24
     },
     "item_inn_dish_39": {
         "name": "簇锦豆腐羹",
@@ -4889,7 +4953,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_39",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 42
     },
     "item_inn_dish_4": {
         "name": "红椒土豆丝",
@@ -4898,7 +4964,9 @@
         "categoryType": "Dish",
         "rarity": 2,
         "iconId": "item_inn_dish_4",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 4
     },
     "item_inn_dish_40": {
         "name": "金丝小贝",
@@ -4907,7 +4975,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_40",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 27
     },
     "item_inn_dish_41": {
         "name": "雪纱蛋黄月饼",
@@ -4916,7 +4986,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_41",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 33
     },
     "item_inn_dish_42": {
         "name": "千果珍珠圆",
@@ -4925,7 +4997,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_42",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 37
     },
     "item_inn_dish_43": {
         "name": "红蕊奶酪蛋糕",
@@ -4934,7 +5008,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_43",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 44
     },
     "item_inn_dish_44": {
         "name": "“勺里游”",
@@ -4943,7 +5019,9 @@
         "categoryType": "Dish",
         "rarity": 5,
         "iconId": "item_inn_dish_44",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 34
     },
     "item_inn_dish_5": {
         "name": "缘缘菜饭",
@@ -4952,7 +5030,9 @@
         "categoryType": "Dish",
         "rarity": 3,
         "iconId": "item_inn_dish_5",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 5
     },
     "item_inn_dish_6": {
         "name": "菌菇蒸饺",
@@ -4961,7 +5041,9 @@
         "categoryType": "Dish",
         "rarity": 3,
         "iconId": "item_inn_dish_6",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 8
     },
     "item_inn_dish_7": {
         "name": "青菜养生粥",
@@ -4970,7 +5052,9 @@
         "categoryType": "Dish",
         "rarity": 3,
         "iconId": "item_inn_dish_7",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 11
     },
     "item_inn_dish_8": {
         "name": "香煎鳞肉",
@@ -4979,7 +5063,9 @@
         "categoryType": "Dish",
         "rarity": 3,
         "iconId": "item_inn_dish_8",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 6
     },
     "item_inn_dish_9": {
         "name": "茄汁白瓜",
@@ -4988,7 +5074,9 @@
         "categoryType": "Dish",
         "rarity": 3,
         "iconId": "item_inn_dish_9",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -1100,
+        "sortId2": 9
     },
     "item_inn_drink_1": {
         "name": "大碗碎茶",
@@ -5107,7 +5195,9 @@
         "categoryType": "Drink",
         "rarity": 1,
         "iconId": "item_inn_drink_water",
-        "fluidIconId": ""
+        "fluidIconId": "",
+        "sortId1": -82,
+        "sortId2": 500
     },
     "item_iron_bottle": {
         "name": "蓝铁瓶",

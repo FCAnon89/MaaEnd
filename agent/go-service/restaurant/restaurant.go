@@ -244,9 +244,10 @@ func route(patch map[string]any, routes []string, selected string) {
 }
 
 func iconCandidates(patch map[string]any, name string, ids []string) {
+	filters := iconrecognition.StorageFilter()
 	patch[name] = map[string]any{"custom_recognition_param": iconrecognition.NewParams(
 		iconrecognition.WithGridType(iconrecognition.GridTypeSingleROI),
-		iconrecognition.WithItemFilters(iconrecognition.ItemFilter("Restaurant:*"), iconrecognition.StorageFilter().Normal.Usable),
+		iconrecognition.WithItemFilters(filters.Restaurant.Any, filters.Normal.Usable),
 		iconrecognition.WithItemIDs(ids...),
 	)}
 }

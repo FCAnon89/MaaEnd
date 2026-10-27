@@ -150,7 +150,7 @@ uv run zmdmap generate --only region3d \
 | `delivery_jobs.json` | 运送委托：地区、仓储节点、能装的物品 | 复制 |
 | `energy_point_gems.json` | 基质筛选的能量淤积点 | 复制 |
 | `environment_monitoring.json` | 环境监测的终端与观察点 | 复制 |
-| `item_mini_table.json` | 背包物品 → 图标、分类、五语名字 | 复制 |
+| `item_mini_table.json` | 背包物品与客栈菜品 / 饮品 → 图标、分类、五语名字 | 复制 |
 | `operator_growth.json` | 干员培养到目标状态要的素材 | 复制 |
 | `region3d.json` | 地区总览：每个子区域的 720p 多边形与点击点（另需 Lua / 解包资源） | 复制 |
 | `sell_product.json` | 据点售卖物品与匹配干员 | 复制 |
