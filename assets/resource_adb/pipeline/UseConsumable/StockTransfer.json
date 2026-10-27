@@ -1,16 +1,4 @@
 {
-    "UseConsumableFindItemSlot1": {
-        "recognition": {
-            "param": {
-                "roi": [
-                    800,
-                    178,
-                    430,
-                    344
-                ]
-            }
-        }
-    },
     "UseConsumableStockFindItemSlot1": {
         "recognition": {
             "param": {
@@ -22,22 +10,6 @@
                 ]
             }
         }
-    },
-    "UseConsumableUseOperator1": {
-        "target": [
-            612,
-            327
-        ]
-    },
-    "UseConsumableUseConfirmButtonSlot1": {
-        "any_of": [
-            "UseConsumableUseConfirmButtonNormal"
-        ]
-    },
-    "UseConsumableUseCancelButtonSlot1": {
-        "any_of": [
-            "UseConsumableUseCancelButtonNormal"
-        ]
     },
     "UseConsumableStockTransferBeginSlot1": {
         "desc": "触点 4 按住仓库中的物品一秒",
@@ -89,18 +61,6 @@
             "UseConsumableStockTransferCompleteSlot1"
         ]
     },
-    "UseConsumableFindItemSlot2": {
-        "recognition": {
-            "param": {
-                "roi": [
-                    800,
-                    178,
-                    430,
-                    344
-                ]
-            }
-        }
-    },
     "UseConsumableStockFindItemSlot2": {
         "recognition": {
             "param": {
@@ -112,22 +72,6 @@
                 ]
             }
         }
-    },
-    "UseConsumableUseOperator2": {
-        "target": [
-            728,
-            327
-        ]
-    },
-    "UseConsumableUseConfirmButtonSlot2": {
-        "any_of": [
-            "UseConsumableUseConfirmButtonNormal"
-        ]
-    },
-    "UseConsumableUseCancelButtonSlot2": {
-        "any_of": [
-            "UseConsumableUseCancelButtonNormal"
-        ]
     },
     "UseConsumableStockTransferBeginSlot2": {
         "desc": "触点 4 按住仓库中的物品一秒",
@@ -179,18 +123,6 @@
             "UseConsumableStockTransferCompleteSlot2"
         ]
     },
-    "UseConsumableFindItemSlot3": {
-        "recognition": {
-            "param": {
-                "roi": [
-                    800,
-                    178,
-                    430,
-                    344
-                ]
-            }
-        }
-    },
     "UseConsumableStockFindItemSlot3": {
         "recognition": {
             "param": {
@@ -202,22 +134,6 @@
                 ]
             }
         }
-    },
-    "UseConsumableUseOperator3": {
-        "target": [
-            849,
-            327
-        ]
-    },
-    "UseConsumableUseConfirmButtonSlot3": {
-        "any_of": [
-            "UseConsumableUseConfirmButtonNormal"
-        ]
-    },
-    "UseConsumableUseCancelButtonSlot3": {
-        "any_of": [
-            "UseConsumableUseCancelButtonNormal"
-        ]
     },
     "UseConsumableStockTransferBeginSlot3": {
         "desc": "触点 4 按住仓库中的物品一秒",
@@ -269,18 +185,6 @@
             "UseConsumableStockTransferCompleteSlot3"
         ]
     },
-    "UseConsumableFindItemSlot4": {
-        "recognition": {
-            "param": {
-                "roi": [
-                    800,
-                    178,
-                    430,
-                    344
-                ]
-            }
-        }
-    },
     "UseConsumableStockFindItemSlot4": {
         "recognition": {
             "param": {
@@ -292,22 +196,6 @@
                 ]
             }
         }
-    },
-    "UseConsumableUseOperator4": {
-        "target": [
-            965,
-            327
-        ]
-    },
-    "UseConsumableUseConfirmButtonSlot4": {
-        "any_of": [
-            "UseConsumableUseConfirmButtonNormal"
-        ]
-    },
-    "UseConsumableUseCancelButtonSlot4": {
-        "any_of": [
-            "UseConsumableUseCancelButtonNormal"
-        ]
     },
     "UseConsumableStockTransferBeginSlot4": {
         "desc": "触点 4 按住仓库中的物品一秒",
@@ -357,42 +245,6 @@
         "contact": 4,
         "next": [
             "UseConsumableStockTransferCompleteSlot4"
-        ]
-    },
-    "UseConsumableUseMark": {
-        "roi": [
-            608,
-            182,
-            669,
-            534
-        ],
-        "template": "UseConsumable/StockMarkADB.png",
-        "green_mask": false,
-        "method": 5,
-        "threshold": 0.85
-    },
-    "UseConsumableUseText": {
-        "roi_offset": [
-            153,
-            57,
-            90,
-            18
-        ]
-    },
-    "UseConsumableUseConfirmButtonNormal": {
-        "roi": [
-            861,
-            428,
-            288,
-            139
-        ]
-    },
-    "UseConsumableUseCancelButtonNormal": {
-        "roi": [
-            582,
-            432,
-            289,
-            139
         ]
     }
 }
