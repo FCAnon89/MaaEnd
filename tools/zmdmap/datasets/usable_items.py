@@ -4,7 +4,7 @@ from typing import Any
 
 import msgspec
 
-from ..utils.inputs import TableCfg
+from ..utils.inputs import FzWiki, TableCfg
 from .base import Dataset, DatasetError
 
 
@@ -35,9 +35,10 @@ class UsableItems(Dataset):
     """只包含可主动使用的持续增幅道具，不收被动回复与其他消耗品。"""
 
     @classmethod
-    def build(cls, table_cfg: TableCfg) -> dict[str, Any]:
+    def build(cls, table_cfg: TableCfg, fz_wiki: FzWiki) -> dict[str, Any]:
         use_items = table_cfg.table("UseItemTable", UseItemRow)
         items = table_cfg.table("ItemTable", ItemDisplayRow)
+        wiki_consumables = fz_wiki.consumable_item_names()
 
         output: dict[str, dict[str, Any]] = {}
         for item_id, use_item in sorted(use_items.items()):
@@ -53,6 +54,8 @@ class UsableItems(Dataset):
                 raise DatasetError(f"UseItemTable 中的主动增幅道具 {item_id} 不在 ItemTable 中")
             if not item.name.cn or not item.name.en or not item.icon_id:
                 raise DatasetError(f"主动增幅道具 {item_id} 缺少中英文名称或图标")
+            if item.name.cn not in wiki_consumables:
+                raise DatasetError(f"FZ Wiki 消耗品目录缺少主动增幅道具 {item_id}（{item.name.cn}）")
 
             output[item_id] = {
                 "name": item.name.cn,

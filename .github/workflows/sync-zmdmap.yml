@@ -301,7 +301,7 @@ jobs:
           body: |
             ## 摘要
 
-            本 PR 从最新的 BeyondTableCfg TableCfg 生成主动可用消耗品表，并同步任务下拉选项；同时更新 IconRecognition 图标目录、物品图片和本地化名称。
+            本 PR 结合 FZ Wiki 消耗品目录与最新 BeyondTableCfg TableCfg 生成主动可用消耗品表，并同步任务下拉选项；同时更新 IconRecognition 图标目录、物品图片和本地化名称。
 
             **生成内容：**
 

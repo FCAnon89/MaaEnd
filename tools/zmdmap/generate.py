@@ -46,7 +46,7 @@ from .utils.datafile import (
     write_json,
 )
 from .utils.injection import SERVICE_OPTIONS, Injection, InjectionError, parse_injection
-from .utils.inputs import Assets, JsonData, LuaScripts, TableCfg
+from .utils.inputs import Assets, FzWiki, JsonData, LuaScripts, TableCfg
 from .utils.log import logger
 from .utils.version import (
     data_version,
@@ -369,6 +369,7 @@ def generate_command(
                 "json_data": JsonData(json_data_dir),
                 "lua": LuaScripts(lua_dir),
                 "assets": Assets(assets_dir),
+                "fz_wiki": FzWiki(),
             },
             out_dir,
             version=version,

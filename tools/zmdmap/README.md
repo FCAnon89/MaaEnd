@@ -162,16 +162,16 @@ uv run zmdmap generate --only region3d \
 
 `region3d` 的生成时机、输入和产物形状见 [`datasets/region3d/README.md`](datasets/region3d/README.md)。
 
-独立任务 `UseConsumable` 的 `usable_items.json` 由 `.github/workflows/sync-zmdmap.yml` 从 `555me/beyondGameData` 的 `tableCfg` 子目录生成；入库时也会同步独立运行时数据表与 `UseConsumable` 任务下拉选项。
+独立任务 `UseConsumable` 的 `usable_items.json` 由 zmdmap 联合 FZ Wiki 的“消耗品”目录与 `555me/beyondGameData` 的 `TableCfg` 生成：Wiki 目录用于确认消耗品分类，TableCfg 用于筛出可主动使用的持续增幅道具并补充名称、图标等字段。入库时也会同步独立运行时数据表与 `UseConsumable` 任务下拉选项。
 
 ## 想加一份新数据
 
 1. 在 `datasets/` 下新建一个模块，名字就是数据名（也决定产物文件名，如 `datasets/foo.py` → `foo.json`）。
    一份数据要拆成好几个模块时改建成文件夹（如 `datasets/region3d/`），文件夹名就是数据名。
 2. 在里面定义 `Dataset` 的子类，实现 `@classmethod build`：参数写要用的输入服务，`generate` 按签名注入。
-   写类型注解（`table_cfg: TableCfg`、`json_data: JsonData`、`lua: LuaScripts`、`assets: Assets`）或直接
+   写类型注解（`table_cfg: TableCfg`、`json_data: JsonData`、`lua: LuaScripts`、`assets: Assets`、`fz_wiki: FzWiki`）或直接
    用同名参数都行，参数名可以和类型不同（`tables: TableCfg` 也认）；只声明自己要的，没写的不会被传进来。
-   读表、查文本、读资源都由这些对象负责，数据集里不拼文件系统路径（要换来源就给个同接口的对象）。
+   读表、查文本、读资源、获取 Wiki 分类都由这些对象负责，数据集里不拼文件系统路径（要换来源就给个同接口的对象）。
    文件夹数据集把子类写在 `__init__.py` 里。
 3. 需要投影就把 `needs_projection` 设成真，并用 `projection_containers` 列出条目数组在数据里的键。
    读不读 JsonData / Lua / 解包资源由 `build` 的参数决定：声明了 `json_data` 就会检查 JsonData 目录，
@@ -188,6 +188,7 @@ uv run zmdmap generate --only region3d \
 | --- | --- |
 | `缺少 TableCfg 目录` / `缺少 JsonData 目录` | 用 `--table-cfg-dir` / `--json-data-dir`（或环境变量）指到游戏数据解包后的目录 |
 | `缺少 LuaScripts 目录` / `缺少解包资源目录` | 只有 `region3d` 要它们；用 `--lua-dir` / `--assets-dir`（或环境变量）指到解包结果 |
+| `FZ Wiki 消耗品目录响应格式不正确` | 检查条目摘要接口是否仍返回 `articles[].title` |
 | `build 参数 'xxx' 没有对应的输入服务` | 数据集自己写错了：改注解（`TableCfg` / `JsonData` / `LuaScripts` / `Assets`）或改成同名参数 |
 | `旧 RAW 导出格式不再支持` | `region3d` 只认新包导出（嵌套 GameObject 的 JSON），把 `assets/` 重新解包成新格式 |
 | `上游还没有发布 xxx.json，跳过` | 那一份上游还没发，本地可以先 `uv run zmdmap generate --only xxx` 生成 |

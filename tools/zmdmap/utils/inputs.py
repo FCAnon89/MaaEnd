@@ -2,7 +2,7 @@
 
 数据集不拼文件系统路径，也不自己读 JSON：要表就从 :class:`TableCfg` 取，要关卡/交互数据从
 :class:`JsonData` 取，要 Lua 或解包资源从 :class:`LuaScripts` / :class:`Assets` 取。默认实现直接读本地
-解包目录（路径由命令行给出）；要换来源就给个同接口的对象，不必自己碰磁盘。
+解包目录（路径由命令行给出）；FZ Wiki 条目索引通过 :class:`FzWiki` 获取。要换来源就给个同接口的对象，不必自己碰磁盘。
 
 ``Dataset.build`` 在参数上声明自己要哪几份（``table_cfg: TableCfg`` 之类），``generate`` 按签名注入；
 规则见 :mod:`tools.zmdmap.utils.injection`，没声明的服务不会传进来。
@@ -10,11 +10,13 @@
 
 from collections.abc import Iterable, Iterator
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
+from urllib.parse import urlencode
 
 from .datafile import read_json
 from .errors import LocalDataError
 from .game_data import build_level_index, localized_text, ref_text, ref_texts, texts_of
+from .http import get
 from .log import logger
 from .tables import (
     InteractiveTemplate,
@@ -30,6 +32,35 @@ from .tables import (
 
 #: 解包导出的 Unity 资源后缀：新包把 ``x.prefab`` / ``x.anim`` 都导出成 ``x.json``。
 ASSET_SUFFIXES = (".prefab", ".anim")
+
+
+class FzWiki:
+    """FZ Wiki 的结构化条目索引。"""
+
+    API_ROOT = "https://api.fz.wiki/api/v1"
+    CONSUMABLE_PREFIX = "物品/消耗品/"
+
+    def consumable_item_names(self) -> set[str]:
+        """返回 FZ Wiki 消耗品目录中的物品名。"""
+        query = urlencode({"ns": 0, "prefix": self.CONSUMABLE_PREFIX})
+        response = get(f"{self.API_ROOT}/articles/summaries?{query}")
+        response.raise_for_status()
+        payload: Any = response.json()
+        if not isinstance(payload, dict):
+            raise ValueError("FZ Wiki 消耗品目录响应格式不正确")
+        articles: Any = cast(dict[str, Any], payload).get("articles")
+        if not isinstance(articles, list):
+            raise ValueError("FZ Wiki 消耗品目录响应格式不正确")
+
+        names: set[str] = set()
+        for raw_article in cast(list[Any], articles):
+            if not isinstance(raw_article, dict):
+                raise ValueError("FZ Wiki 消耗品目录响应格式不正确")
+            title = cast(dict[str, Any], raw_article).get("title")
+            if not isinstance(title, str) or not title.startswith(self.CONSUMABLE_PREFIX):
+                raise ValueError("FZ Wiki 消耗品目录响应格式不正确")
+            names.add(title[len(self.CONSUMABLE_PREFIX) :])
+        return names
 
 
 class TableCfg:
