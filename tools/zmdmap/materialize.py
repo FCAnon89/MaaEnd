@@ -97,7 +97,7 @@ def copy_plain(
         return 0
     try:
         written = _copy(raw_dir, data_dir, file_names, force=force)
-        if "usable_items.json" in file_names:
+        if "usable_items.json" in file_names and data_dir.resolve() == ZMDMAP_DATA_DIR.resolve():
             sync_usable_items_task_options(data_dir)
         return written
     except (OSError, ValueError) as error:
