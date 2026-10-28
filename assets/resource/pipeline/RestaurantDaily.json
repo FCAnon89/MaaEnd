@@ -6,7 +6,7 @@
         "custom_action": "RestaurantDecisionAction",
         "custom_action_param": {
             "step": "initialize",
-            "max_rounds": 0
+            "max_rounds": 1
         },
         "post_delay": 0,
         "rate_limit": 0,
@@ -289,12 +289,6 @@
             "wait_node": "RestaurantOpenCounter"
         },
         "target": true,
-        "target_offset": [
-            11,
-            11,
-            -21,
-            -21
-        ],
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
@@ -560,12 +554,6 @@
             "wait_node": "RestaurantCloseTheme"
         },
         "target": true,
-        "target_offset": [
-            13,
-            13,
-            -26,
-            -26
-        ],
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
@@ -1295,48 +1283,6 @@
             "RestaurantPlanMenu"
         ]
     },
-    "RestaurantMenuDishesActive": {
-        "recognition": "ColorMatch",
-        "roi": [
-            582,
-            112,
-            21,
-            11
-        ],
-        "method": 4,
-        "lower": [
-            160,
-            120,
-            0
-        ],
-        "upper": [
-            255,
-            225,
-            100
-        ],
-        "count": 30
-    },
-    "RestaurantMenuDrinksActive": {
-        "recognition": "ColorMatch",
-        "roi": [
-            1137,
-            112,
-            21,
-            11
-        ],
-        "method": 4,
-        "lower": [
-            160,
-            120,
-            0
-        ],
-        "upper": [
-            255,
-            225,
-            100
-        ],
-        "count": 30
-    },
     "RestaurantMenuSelectDishTab": {
         "recognition": "OCR",
         "roi": [
@@ -1449,10 +1395,7 @@
         ]
     },
     "RestaurantMenuSelectDishLoop": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantMenuDishesActive"
-        ],
+        "recognition": "DirectHit",
         "pre_delay": 0,
         "action": "Custom",
         "custom_action": "RestaurantDecisionAction",
@@ -1510,10 +1453,7 @@
         ]
     },
     "RestaurantMenuSelectDrinkLoop": {
-        "recognition": "And",
-        "all_of": [
-            "RestaurantMenuDrinksActive"
-        ],
+        "recognition": "DirectHit",
         "pre_delay": 0,
         "action": "Custom",
         "custom_action": "RestaurantDecisionAction",

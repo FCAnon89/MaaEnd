@@ -7,12 +7,11 @@
     },
     "cases": [
         {
-            "name": "老饕、用餐中与点餐中并存",
+            "name": "老饕与用餐中并存",
             "image": "缘缘庄_经营中_桌位与厨房状态.png",
             "hits": [
                 "RestaurantTable2Gourmand",
-                "RestaurantTable3Dining",
-                "RestaurantTable4Ordering"
+                "RestaurantTable3Dining"
             ]
         },
         {

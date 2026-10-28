@@ -50,9 +50,8 @@ type runtimeState struct {
 }
 
 type tableOrder struct {
-	Items    []string `json:"items,omitempty"`
-	Ordering bool     `json:"ordering,omitempty"`
-	Ignored  bool     `json:"ignored,omitempty"`
+	Items   []string `json:"items,omitempty"`
+	Ignored bool     `json:"ignored,omitempty"`
 }
 
 var (
@@ -105,9 +104,9 @@ func (a *DecisionAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 		}
 		patch["RestaurantRoundGate"] = map[string]any{"max_hit": param.MaxRounds}
 	case "requirements":
-		err = prepareMenu(state, observed)
+		err = prepareMenu(state, readText(observed, "RestaurantMenuRequirementOCR"))
 	case "menu_page":
-		err = readMenuPage(state, param.Kind, observed, patch)
+		err = readMenuPage(state, param.Kind, patch)
 	case "menu_card":
 		err = chooseMenuCard(state, observed, patch)
 	case "menu_confirm":
@@ -253,15 +252,21 @@ func iconCandidates(patch map[string]any, name string, ids []string) {
 }
 
 // Menu decisions preserve UI order; Pipeline selects and confirms each card.
-func prepareMenu(state *session, observed observations) error {
-	text := strings.Join(strings.Fields(readText(observed, "RestaurantMenuRequirementOCR")), "")
+func prepareMenu(state *session, text string) error {
+	text = strings.Join(strings.Fields(text), "")
 	for _, pattern := range menuSizeRequirementPatterns {
 		sizes := pattern.FindStringSubmatch(text)
 		if len(sizes) != 3 {
 			continue
 		}
-		dishes, _ := strconv.Atoi(sizes[1])
-		drinks, _ := strconv.Atoi(sizes[2])
+		dishes, err := strconv.Atoi(sizes[1])
+		if err != nil {
+			return fmt.Errorf("invalid menu quantities %q", text)
+		}
+		drinks, err := strconv.Atoi(sizes[2])
+		if err != nil {
+			return fmt.Errorf("invalid menu quantities %q", text)
+		}
 		if dishes <= 0 || dishes > 6 {
 			return fmt.Errorf("invalid menu quantities %q", text)
 		}
@@ -271,7 +276,7 @@ func prepareMenu(state *session, observed observations) error {
 	return fmt.Errorf("could not read menu quantities from %q", text)
 }
 
-func readMenuPage(state *session, kind string, _ observations, patch map[string]any) error {
+func readMenuPage(state *session, kind string, patch map[string]any) error {
 	if (kind != "dish" && kind != "drink") || state.Menu.PendingID != "" {
 		return fmt.Errorf("invalid menu page state")
 	}
@@ -408,9 +413,6 @@ func setTableObservation(patch map[string]any, table int, order tableOrder) {
 			nodes = []string{prefix + "Dining", "RestaurantObservationEmpty"}
 		} else {
 			nodes = []string{prefix + "Gourmand", prefix + "SingleOrder", prefix + "DoubleOrder"}
-			if !order.Ordering {
-				nodes = append(nodes, prefix+"Ordering")
-			}
 			nodes = append(nodes, "RestaurantObservationEmpty")
 		}
 	}
@@ -474,9 +476,6 @@ func observeTables(current *runtimeState, observed observations, patch map[strin
 			*order = tableOrder{Items: items}
 			setTableObservation(patch, table, *order)
 			log.Debug().Int("table", table).Strs("items", items).Msg("table order filed")
-		} else if !order.Ordering && observed.hit(prefix+"Ordering") {
-			order.Ordering = true
-			setTableObservation(patch, table, *order)
 		}
 	}
 	return nil

@@ -1021,7 +1021,6 @@
             "RestaurantTable1Gourmand",
             "RestaurantTable1SingleOrder",
             "RestaurantTable1DoubleOrder",
-            "RestaurantTable1Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -1349,7 +1348,6 @@
             "RestaurantTable2Gourmand",
             "RestaurantTable2SingleOrder",
             "RestaurantTable2DoubleOrder",
-            "RestaurantTable2Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -1677,7 +1675,6 @@
             "RestaurantTable3Gourmand",
             "RestaurantTable3SingleOrder",
             "RestaurantTable3DoubleOrder",
-            "RestaurantTable3Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -2005,7 +2002,6 @@
             "RestaurantTable4Gourmand",
             "RestaurantTable4SingleOrder",
             "RestaurantTable4DoubleOrder",
-            "RestaurantTable4Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -2333,7 +2329,6 @@
             "RestaurantTable5Gourmand",
             "RestaurantTable5SingleOrder",
             "RestaurantTable5DoubleOrder",
-            "RestaurantTable5Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -2661,7 +2656,6 @@
             "RestaurantTable6Gourmand",
             "RestaurantTable6SingleOrder",
             "RestaurantTable6DoubleOrder",
-            "RestaurantTable6Ordering",
             "RestaurantObservationEmpty"
         ]
     },
@@ -2894,22 +2888,6 @@
             "미식가"
         ]
     },
-    "RestaurantTable1Ordering": {
-        "recognition": "OCR",
-        "roi": [
-            188,
-            68,
-            94,
-            26
-        ],
-        "expected": [
-            "点餐中",
-            "Ordering",
-            "オーダー中",
-            "주문 중",
-            "點餐中"
-        ]
-    },
     "RestaurantTable2Gourmand": {
         "recognition": "OCR",
         "roi": [
@@ -2923,22 +2901,6 @@
             "Gourmand",
             "食通",
             "미식가"
-        ]
-    },
-    "RestaurantTable2Ordering": {
-        "recognition": "OCR",
-        "roi": [
-            282,
-            68,
-            94,
-            26
-        ],
-        "expected": [
-            "点餐中",
-            "Ordering",
-            "オーダー中",
-            "주문 중",
-            "點餐中"
         ]
     },
     "RestaurantTable3Gourmand": {
@@ -2956,22 +2918,6 @@
             "미식가"
         ]
     },
-    "RestaurantTable3Ordering": {
-        "recognition": "OCR",
-        "roi": [
-            377,
-            68,
-            94,
-            26
-        ],
-        "expected": [
-            "点餐中",
-            "Ordering",
-            "オーダー中",
-            "주문 중",
-            "點餐中"
-        ]
-    },
     "RestaurantTable4Gourmand": {
         "recognition": "OCR",
         "roi": [
@@ -2985,22 +2931,6 @@
             "Gourmand",
             "食通",
             "미식가"
-        ]
-    },
-    "RestaurantTable4Ordering": {
-        "recognition": "OCR",
-        "roi": [
-            471,
-            68,
-            94,
-            26
-        ],
-        "expected": [
-            "点餐中",
-            "Ordering",
-            "オーダー中",
-            "주문 중",
-            "點餐中"
         ]
     },
     "RestaurantTable5Gourmand": {
@@ -3018,22 +2948,6 @@
             "미식가"
         ]
     },
-    "RestaurantTable5Ordering": {
-        "recognition": "OCR",
-        "roi": [
-            566,
-            68,
-            94,
-            26
-        ],
-        "expected": [
-            "点餐中",
-            "Ordering",
-            "オーダー中",
-            "주문 중",
-            "點餐中"
-        ]
-    },
     "RestaurantTable6Gourmand": {
         "recognition": "OCR",
         "roi": [
@@ -3047,22 +2961,6 @@
             "Gourmand",
             "食通",
             "미식가"
-        ]
-    },
-    "RestaurantTable6Ordering": {
-        "recognition": "OCR",
-        "roi": [
-            660,
-            68,
-            94,
-            26
-        ],
-        "expected": [
-            "点餐中",
-            "Ordering",
-            "オーダー中",
-            "주문 중",
-            "點餐中"
         ]
     }
 }
