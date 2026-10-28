@@ -1,68 +1,57 @@
-"""主动可用道具表（``usable_items.json``）。"""
+"""主动持续增幅道具表（``usable_items.json``），只读取本地 TableCfg。
+
+``UseItemTable`` 的 ``Buff`` / ``Alive`` 与 ``isPersistentBuff`` 一起区分主动增幅道具，
+排除治疗、复活和被动触发的回复道具。物品名称按 ``ItemTable.name`` 的文本引用查询五语文本表，
+图标与稀有度沿用物品表。
+"""
 
 from typing import Any
 
 import msgspec
 
-from ..utils.inputs import FzWiki, TableCfg
+from ..utils.inputs import TableCfg
+from ..utils.log import logger
+from ..utils.tables import ItemRow
 from .base import Dataset, DatasetError
 
 
 class UseItemRow(msgspec.Struct, frozen=True, rename="camel"):
     """``UseItemTable`` 中区分持续增幅道具的字段。"""
 
-    effect_type: str | int = ""
-    ui_type: str | int = ""
+    effect_type: str = ""
+    ui_type: str = ""
     is_persistent_buff: bool = False
-
-
-class ItemNameRow(msgspec.Struct, frozen=True):
-    """``ItemTable.name`` 中的中英文名称。"""
-
-    cn: str = ""
-    en: str = ""
-
-
-class ItemDisplayRow(msgspec.Struct, frozen=True, rename="camel"):
-    """生成下拉列表所需的物品显示字段。"""
-
-    name: ItemNameRow = ItemNameRow()
-    icon_id: str = ""
-    rarity: str | int = ""
 
 
 class UsableItems(Dataset):
     """只包含可主动使用的持续增幅道具，不收被动回复与其他消耗品。"""
 
     @classmethod
-    def build(cls, table_cfg: TableCfg, fz_wiki: FzWiki) -> dict[str, Any]:
+    def build(cls, table_cfg: TableCfg) -> dict[str, Any]:
         use_items = table_cfg.table("UseItemTable", UseItemRow)
-        items = table_cfg.table("ItemTable", ItemDisplayRow)
-        wiki_consumables = fz_wiki.consumable_item_names()
+        items = table_cfg.table("ItemTable", ItemRow)
 
         output: dict[str, dict[str, Any]] = {}
         for item_id, use_item in sorted(use_items.items()):
-            if not (
-                use_item.is_persistent_buff
-                and str(use_item.effect_type) == "2"
-                and str(use_item.ui_type) == "3"
-            ):
+            if not (use_item.is_persistent_buff and use_item.effect_type == "Buff" and use_item.ui_type == "Alive"):
                 continue
 
             item = items.get(item_id)
             if item is None:
                 raise DatasetError(f"UseItemTable 中的主动增幅道具 {item_id} 不在 ItemTable 中")
-            if not item.name.cn or not item.name.en or not item.icon_id:
-                raise DatasetError(f"主动增幅道具 {item_id} 缺少中英文名称或图标")
-            if item.name.cn not in wiki_consumables:
-                raise DatasetError(f"FZ Wiki 消耗品目录缺少主动增幅道具 {item_id}（{item.name.cn}）")
+            if not item.icon_id:
+                raise DatasetError(f"主动增幅道具 {item_id} 缺少图标")
+            names = cls.plain_names(table_cfg.ref_texts(item.name), f"主动增幅道具 {item_id}")
 
             output[item_id] = {
-                "name": item.name.cn,
-                "names": {"CN": item.name.cn, "EN": item.name.en},
+                "name": names["CN"],
+                "names": names,
                 "category": "ActiveBuff",
                 "iconId": item.icon_id,
-                "rarity": str(item.rarity),
+                "rarity": item.rarity,
             }
 
+        if not output:
+            raise DatasetError("UseItemTable 中没有可主动使用的持续增幅道具")
+        logger.info(f"主动持续增幅道具 {len(output)} 条")
         return {"items": output}

@@ -9,8 +9,6 @@
 下载来的。
 """
 
-import json
-import re
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
@@ -96,10 +94,7 @@ def copy_plain(
     if not file_names:
         return 0
     try:
-        written = _copy(raw_dir, data_dir, file_names, force=force)
-        if "usable_items.json" in file_names and data_dir.resolve() == ZMDMAP_DATA_DIR.resolve():
-            sync_usable_items_task_options(data_dir)
-        return written
+        return _copy(raw_dir, data_dir, file_names, force=force)
     except (OSError, ValueError) as error:
         raise click.ClickException(str(error)) from error
 
@@ -124,139 +119,6 @@ def _copy(raw_dir: Path, data_dir: Path, file_names: Sequence[str], *, force: bo
         logger.info(f"{file_name} -> {output_path}")
         written += 1
     return written
-
-
-def sync_usable_items_task_options(data_dir: Path) -> None:
-    """把生成的主动可用道具表放入资源目录并更新消耗品任务选项。"""
-    source_path = data_dir / "usable_items.json"
-    data_path = REPO_ROOT / "assets" / "data" / "UseConsumable" / "usable_items.json"
-    task_path = REPO_ROOT / "assets" / "tasks" / "UseConsumable.json"
-    try:
-        data_text = source_path.read_text(encoding="utf-8")
-        data = json.loads(data_text)
-        task_text = task_path.read_text(encoding="utf-8")
-    except (OSError, ValueError) as error:
-        raise click.ClickException(f"同步消耗品任务数据失败：{error}") from error
-
-    items = data.get("items") if isinstance(data, dict) else None
-    if not isinstance(items, dict):
-        raise click.ClickException(f"{source_path} 的 items 必须是对象")
-
-    def cases_for_slot(slot: int) -> list[dict[str, Any]]:
-        cases: list[dict[str, Any]] = []
-        for item_id, item in sorted(items.items()):
-            if not isinstance(item, dict):
-                raise click.ClickException(f"{source_path} 中 {item_id} 的记录必须是对象")
-            name = item.get("name")
-            if not isinstance(name, str) or not name:
-                raise click.ClickException(f"{source_path} 中 {item_id} 缺少物品名称")
-            icon_params = {
-                "grid_type": "transfer",
-                "item_ids": [item_id],
-                "item_recheck_filters": ["Normal:Usable"],
-                "deduplicate": True,
-            }
-            cases.append(
-                {
-                    "name": item_id,
-                    "label": f"$iconRecognition.name.{item_id}",
-                    "pipeline_override": {
-                        node: {
-                            "recognition": {
-                                "param": {"custom_recognition_param": icon_params}
-                            }
-                        }
-                        for node in (
-                            f"UseConsumableFindItemSlot{slot}",
-                            f"UseConsumableStockFindItemSlot{slot}",
-                        )
-                    },
-                }
-            )
-        if not cases:
-            raise click.ClickException(f"{source_path} 中没有可供选择的主动可用道具")
-        return cases
-
-    def replace_cases(text: str, option_name: str, cases: list[dict[str, Any]]) -> str:
-        option = re.search(rf'"{re.escape(option_name)}"\s*:\s*\{{', text)
-        cases_match = re.search(r'"cases"\s*:\s*\[', text[option.end() :]) if option else None
-        if option is None or cases_match is None:
-            raise click.ClickException(f"{task_path} 缺少 {option_name}")
-        cases_start = option.end() + cases_match.start()
-        array_start = text.index("[", cases_start)
-
-        # 任务文件是 JSONC；只定位并替换 cases 数组，保留其他任务注释。
-        depth = 0
-        in_string = False
-        escaped = False
-        array_end = -1
-        for index in range(array_start, len(text)):
-            char = text[index]
-            if in_string:
-                if escaped:
-                    escaped = False
-                elif char == "\\":
-                    escaped = True
-                elif char == '"':
-                    in_string = False
-            elif char == '"':
-                in_string = True
-            elif char == "[":
-                depth += 1
-            elif char == "]":
-                depth -= 1
-                if depth == 0:
-                    array_end = index
-                    break
-        if array_end < 0:
-            raise click.ClickException(f"{task_path} 中 {option_name}.cases 数组没有闭合")
-
-        current_cases = text[array_start : array_end + 1]
-        try:
-            parsed_cases = json.loads(current_cases)
-        except ValueError:
-            parsed_cases = None
-        if parsed_cases != cases:
-            property_start = text.rfind("\n", 0, cases_start) + 1
-            property_indent = text[property_start:cases_start]
-            formatted_cases = json.dumps(cases, ensure_ascii=False, indent=4).splitlines()
-            replacement = formatted_cases[0] + "\n" + "\n".join(
-                property_indent + line for line in formatted_cases[1:]
-            )
-            text = text[:array_start] + replacement + text[array_end + 1 :]
-            default_case_search_start = array_start + len(replacement)
-        else:
-            default_case_search_start = array_end + 1
-
-        default_case = cases[0]["name"]
-        default_case_match = re.search(
-            r'\s*,\s*"default_case"\s*:\s*"([^"]*)"',
-            text[default_case_search_start:],
-        )
-        if default_case_match is None:
-            raise click.ClickException(f"{task_path} 缺少 {option_name}.default_case")
-        if default_case_match.group(1) != default_case:
-            value_start = default_case_search_start + default_case_match.start(1)
-            value_end = default_case_search_start + default_case_match.end(1)
-            text = (
-                text[:value_start]
-                + json.dumps(default_case, ensure_ascii=False)[1:-1]
-                + text[value_end:]
-            )
-        return text
-
-    original_task_text = task_text
-    for slot in range(1, 5):
-        task_text = replace_cases(
-            task_text, f"UseConsumableSlot{slot}Item", cases_for_slot(slot)
-        )
-
-    if task_text != original_task_text:
-        task_path.write_text(task_text, encoding="utf-8", newline="\n")
-
-    if source_path.resolve() != data_path.resolve():
-        data_path.parent.mkdir(parents=True, exist_ok=True)
-        data_path.write_text(data_text, encoding="utf-8", newline="\n")
 
 
 def report_data_changes(data_dir: Path, file_names: Sequence[str]) -> None:

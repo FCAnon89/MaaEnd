@@ -10,13 +10,11 @@
 | --- | --- | --- |
 | ``collect_points`` | ``collect_points.json`` | 投影 |
 | ``delivery_destinations`` | ``delivery_destinations.json`` | 投影 |
-| ``energy_points`` | ``energy_points.json`` | 投影 |
 | ``teleport_anchors`` | ``teleport_anchors.json`` | 投影 |
 | ``delivery_jobs`` | ``delivery_jobs.json`` | 复制 |
 | ``energy_point_gems`` | ``energy_point_gems.json`` | 复制 |
 | ``environment_monitoring`` | ``environment_monitoring.json`` | 复制 |
 | ``item_mini_table`` | ``item_mini_table.json`` | 复制 |
-| ``usable_items`` | ``usable_items.json`` | 复制 |
 | ``operator_growth`` | ``operator_growth.json`` | 复制 |
 | ``region3d`` | ``region3d.json`` | 复制 |
 | ``sell_product`` | ``sell_product.json`` | 复制 |
@@ -26,8 +24,8 @@
 每份数据先出原始形态（只带游戏世界坐标）进 ``raw/``，再由入库步骤进 ``data/``：需要投影的按 BaseNav 的
 zone 表投影，其余原样复制。要加一份新数据，就在 ``datasets/`` 下加一个同名模块（模块多就加同名文件夹）、
 定义 ``Dataset`` 子类并实现 ``build``：参数上写要用的输入服务（``table_cfg: TableCfg``、``lua: LuaScripts``
-或 ``fz_wiki: FzWiki`` 之类），``generate`` 按签名注入，没写的不会传（规则见 :mod:`tools.zmdmap.utils.injection`）。表、Wiki、
-JsonData、Lua 与解包资源的读取方法在 ``utils/inputs.py``，关卡索引在 ``JsonData.level_index()``，五语文本
+之类），``generate`` 按签名注入，没写的不会传（规则见 :mod:`tools.zmdmap.utils.injection`）。表、JsonData、
+Lua 与解包资源的读取方法在 ``utils/inputs.py``，关卡索引在 ``JsonData.level_index()``，五语文本
 ``localized_names`` 与组装错误 ``DatasetError`` 在 ``base.py`` 的 ``Dataset`` 上。
 """
 

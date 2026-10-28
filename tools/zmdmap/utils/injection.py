@@ -3,11 +3,11 @@
 数据集不接收一个装满输入的容器，而是在 :meth:`~tools.zmdmap.datasets.base.Dataset.build` 的参数上直接写
 自己需要什么：
 
-- 参数写类型注解 ``TableCfg`` / ``JsonData`` / ``LuaScripts`` / ``Assets`` / ``FzWiki``（可以用 ``Annotated`` 包一层）；
-- 或者不写注解、参数名正好是 ``table_cfg`` / ``json_data`` / ``lua`` / ``assets`` / ``fz_wiki``。
+- 参数写类型注解 ``TableCfg`` / ``JsonData`` / ``LuaScripts`` / ``Assets``（可以用 ``Annotated`` 包一层）；
+- 或者不写注解、参数名正好是 ``table_cfg`` / ``json_data`` / ``lua`` / ``assets``。
 
 生成前先把签名解析成「参数 -> 服务」，运行时按参数名传进去；认不出来的参数、以及没声明要的服务都不会传。
-有默认值的参数当作普通参数，不参与注入。命令行也按这份解析结果预检所需的本地输入目录；远端服务不需要目录。
+有默认值的参数当作普通参数，不参与注入。命令行要知道「这次要检查哪些输入目录」时也读这份解析结果，所以
 数据集不必再声明 ``requires_lua`` 之类的开关。
 """
 
@@ -16,27 +16,25 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Annotated, Any, get_args, get_origin
 
-from .inputs import Assets, FzWiki, JsonData, LuaScripts, TableCfg
+from .inputs import Assets, JsonData, LuaScripts, TableCfg
 
 #: 参数注解（类型）-> 服务名。
 SERVICE_TYPES: dict[Any, str] = {
     TableCfg: "table_cfg",
-    FzWiki: "fz_wiki",
     JsonData: "json_data",
     LuaScripts: "lua",
     Assets: "assets",
 }
 
 #: 没写注解时按参数名认的服务。
-SERVICE_NAMES: tuple[str, ...] = ("table_cfg", "json_data", "lua", "assets", "fz_wiki")
+SERVICE_NAMES: tuple[str, ...] = ("table_cfg", "json_data", "lua", "assets")
 
-#: 服务名 -> ``--list`` 展示的额外输入说明。
+#: 服务名 -> 命令行里对应的目录选项（``--list`` 与报错提示用）。
 SERVICE_OPTIONS: dict[str, str] = {
     "table_cfg": "--table-cfg-dir",
     "json_data": "--json-data-dir",
     "lua": "--lua-dir",
     "assets": "--assets-dir",
-    "fz_wiki": "FZ Wiki API（联网）",
 }
 
 
@@ -74,7 +72,7 @@ def parse_injection(build: Callable[..., Any]) -> Injection:
                 # 有默认值：当作普通参数，用默认值，不参与注入。
                 continue
             raise InjectionError(
-                f"{name!r} 没有对应的输入服务：写类型注解（TableCfg / JsonData / LuaScripts / Assets / FzWiki），"
+                f"{name!r} 没有对应的输入服务：写类型注解（TableCfg / JsonData / LuaScripts / Assets），"
                 f"或者用同名参数（可用：{_names()}）"
             )
         pairs.append((name, service))

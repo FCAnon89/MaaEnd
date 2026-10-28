@@ -8,8 +8,7 @@ MaaEnd 使用由 zmdmap 数据 CI 生成并发布的精简游戏数据，落在 
 - `sell_product.json`：据点、可售物品、据点特性与匹配干员；
 - `teleport_anchors.json`：营地（地图传送锚点）的底图像素 `u` / `v`、传送 ID，以及所在区域与关卡的各语言名称；
 - `collect_points.json`：可交互采集物的底图像素 `u` / `v` 与世界高度 `y`，以及按采集物类别列出的产物、采集方式、图标、各语言名称与产物的类型、展示分类、稀有度；
-- `energy_points.json`：基质刷取各地区激发点的底图像素 `u` / `v` 与世界高度 `y`；
-- `usable_items.json`：独立消耗品任务的主动持续增幅道具，不含被动回复道具；由 `sync-zmdmap` 工作流从 `555me/beyondGameData` 的 `tableCfg/UseItemTable` 生成，并同步任务选项。
+- `energy_points.json`：基质刷取各地区激发点的底图像素 `u` / `v` 与世界高度 `y`。
 
 这些文件都是按任务需要裁剪出的游戏数据，不是完整的上游数据快照：除了最前面的两个元数据字段（`version`：这份数据来自哪一版游戏数据；`sha256`：这份数据**原始形态**（只带世界坐标的那一份）的内容指纹，入库投影后照抄、不重算），不放别的来源元数据，字段说明也不放进 JSON（字段含义见 [`tools/zmdmap`](../zmdmap/README.md) 与各数据集模块）。
 
