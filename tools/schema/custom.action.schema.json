@@ -391,7 +391,6 @@
                             "step": {
                                 "enum": [
                                     "initialize",
-                                    "requirements",
                                     "menu_page",
                                     "menu_card",
                                     "menu_confirm",
