@@ -2654,7 +2654,7 @@
     "task.ResourceRecycleStation.focus.ValleyIVStart": "開始收取四號谷地資源回收站",
     "task.ResourceRecycleStation.focus.WulingStart": "開始收取武陵資源回收站",
     "task.ResourceRecycleStation.label": "🦉資源回收站",
-    "task.RestaurantDaily.description": "用於消耗每日客源、賺取煙火錢。自動配置廚房和菜單，並根據桌位訂單與補充標記自動選擇要加入廚房佇列的菜品。需客棧等級達到四級。",
+    "task.RestaurantDaily.description": "用於清理每日客源、賺取煙火錢。自動配置廚房和菜單，並根據桌位訂單與補充標記自動選擇要加入廚房佇列的菜品。需客棧等級達到四級且三個廚房全解鎖。",
     "task.RestaurantDaily.label": "🍽️緣緣莊客棧經營",
     "task.RestaurantDaily.option.MaxRounds.label": "設定最大循環次數",
     "task.RestaurantDaily.option.MaxRounds.pattern_msg": "請填入1-1000的整數。",
