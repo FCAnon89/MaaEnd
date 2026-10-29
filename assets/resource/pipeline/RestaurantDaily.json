@@ -286,6 +286,32 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantOpenCounter",
+            "RestaurantCounterPromptApproach"
+        ]
+    },
+    // 到达导航点后若未识别到交互提示，最多短按前进 5 次；每次按完都检查提示。
+    "RestaurantCounterPromptApproach": {
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RepeatUntilFoundAction",
+        "custom_action_param": {
+            "custom_action": "SubTask",
+            "custom_action_param": {
+                "sub": [
+                    "__CharacterControllerAxisLongPressForwardAction"
+                ]
+            },
+            "wait_nodes": [
+                "RestaurantOpenCounter"
+            ],
+            "repeat_count": 5,
+            "interval_ms": 500
+        },
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
             "RestaurantOpenCounter"
         ]
     },
