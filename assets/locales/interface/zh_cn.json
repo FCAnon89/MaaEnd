@@ -2654,7 +2654,7 @@
     "task.ResourceRecycleStation.focus.ValleyIVStart": "开始收取四号谷地资源回收站",
     "task.ResourceRecycleStation.focus.WulingStart": "开始收取武陵资源回收站",
     "task.ResourceRecycleStation.label": "🦉资源回收站",
-    "task.RestaurantDaily.description": "自动配置厨房和菜单，并根据桌位订单与补充标记挂机点菜。老饕订单会忽略。",
+    "task.RestaurantDaily.description": "用于清理每日客源，刷烟火钱。自动配置厨房和菜单，并根据桌位订单与补充标记挂机点菜。需客栈等级达到四级。",
     "task.RestaurantDaily.label": "🍽️缘缘庄经营",
     "task.RestaurantDaily.option.MaxRounds.label": "设定最大循环次数",
     "task.RestaurantDaily.option.MaxRounds.pattern_msg": "请填入1-1000的整数。",

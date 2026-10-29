@@ -28,6 +28,14 @@
                 "RestaurantThemeSettings",
                 "RestaurantPatronageOCR"
             ]
+        },
+        {
+            "name": "席间小酌已选中",
+            "image": "缘缘庄_主题设定_席间小酌.png",
+            "hits": [
+                "RestaurantThemeFindTopic",
+                "RestaurantThemeSelected"
+            ]
         }
     ]
 }

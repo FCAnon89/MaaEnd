@@ -2654,7 +2654,7 @@
     "task.ResourceRecycleStation.focus.ValleyIVStart": "Collecting Valley IV Resource Recycle Station",
     "task.ResourceRecycleStation.focus.WulingStart": "Collecting Wuling Resource Recycle Station",
     "task.ResourceRecycleStation.label": "🦉Resource Recycle Station",
-    "task.RestaurantDaily.description": "Automatically configure the kitchens and menu, then select dishes to queue based on table orders and restock markers. Gourmand orders are ignored.",
+    "task.RestaurantDaily.description": "Use this task to spend your daily patron supply and earn Spirit Money. It automatically configures the kitchens and menu, then selects dishes to queue based on table orders and restock markers. Requires Inn Level 4.",
     "task.RestaurantDaily.label": "🍽️Yuanyuan Manor Innkeeping",
     "task.RestaurantDaily.option.MaxRounds.label": "Set maximum rounds",
     "task.RestaurantDaily.option.MaxRounds.pattern_msg": "Please enter an integer from 1 to 1000.",
