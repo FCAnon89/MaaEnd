@@ -405,6 +405,13 @@
                                     "drink"
                                 ]
                             },
+                            "category": {
+                                "enum": [
+                                    "staple",
+                                    "vegetable",
+                                    "dessert"
+                                ]
+                            },
                             "max_rounds": {
                                 "type": "integer",
                                 "minimum": 1,

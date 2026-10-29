@@ -63,8 +63,7 @@
                 "RestaurantMenuScreenReady",
                 "RestaurantMenuStartBusinessWarning",
                 "RestaurantMenuStartBusiness",
-                "RestaurantMenuFilterSearch",
-                "RestaurantMenuFilterScrollDown"
+                "RestaurantMenuFilterConfirm"
             ]
         }
     ]

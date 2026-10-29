@@ -18,7 +18,8 @@
             "image": "缘缘庄_主题设定_缘缘本色.png",
             "hits": [
                 "RestaurantThemeSettings",
-                "RestaurantPatronageOCR"
+                "RestaurantPatronageOCR",
+                "RestaurantThemeFindTopic"
             ]
         },
         {
@@ -26,7 +27,8 @@
             "image": "缘缘庄_主题设定_客源不足.png",
             "hits": [
                 "RestaurantThemeSettings",
-                "RestaurantPatronageOCR"
+                "RestaurantPatronageOCR",
+                "RestaurantThemeFindTopic"
             ]
         },
         {
@@ -34,6 +36,8 @@
             "image": "缘缘庄_主题设定_席间小酌.png",
             "hits": [
                 "RestaurantThemeFindTopic",
+                "RestaurantThemeSettings",
+                "RestaurantPatronageOCR",
                 "RestaurantThemeSelected"
             ]
         }

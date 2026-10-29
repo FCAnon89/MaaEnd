@@ -474,7 +474,11 @@
             554
         ],
         "expected": [
-            "席间小酌"
+            "席间小酌",
+            "Drinking Social",
+            "宴に一献",
+            "반주 한 잔",
+            "席間小酌"
         ],
         "pre_delay": 0,
         "action": "Custom",
@@ -551,7 +555,11 @@
             62
         ],
         "expected": [
-            "席间小酌"
+            "席间小酌",
+            "Drinking Social",
+            "宴に一献",
+            "반주 한 잔",
+            "席間小酌"
         ],
         "pre_delay": 0,
         "post_delay": 0,
@@ -1529,7 +1537,9 @@
             66
         ],
         "expected": [
-            "主食"
+            "主食",
+            "Entree",
+            "메인"
         ],
         "pre_delay": 0,
         "action": "Custom",
@@ -1593,7 +1603,11 @@
             67
         ],
         "expected": [
-            "菜肴"
+            "菜肴",
+            "Side",
+            "副食",
+            "사이드",
+            "菜餚"
         ],
         "pre_delay": 0,
         "action": "Custom",
@@ -1657,7 +1671,10 @@
             67
         ],
         "expected": [
-            "甜品"
+            "甜品",
+            "Dessert",
+            "デザート",
+            "디저트"
         ],
         "pre_delay": 0,
         "action": "Custom",
