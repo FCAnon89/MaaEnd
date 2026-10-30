@@ -15,18 +15,18 @@
                 "Linux-Wlroots"
             ],
             "option": [
-                "RestaurantMaxRounds"
+                "RestaurantMaxRounds",
+                "RestaurantBuyShopDiscountedItems"
             ]
         }
     ],
     "option": {
         "RestaurantMaxRounds": {
             "type": "input",
-            "label": "$task.RestaurantDaily.option.MaxRounds.label",
             "inputs": [
                 {
                     "name": "MaxRounds",
-                    "label": "$task.RestaurantDaily.option.MaxRounds.pattern_msg",
+                    "label": "$task.RestaurantDaily.option.MaxRounds.label",
                     "default": "5",
                     "pipeline_type": "int",
                     "verify": "^(?:[1-9][0-9]{0,2}|1000)$",
@@ -41,6 +41,35 @@
                     }
                 }
             }
+        },
+        "RestaurantBuyShopDiscountedItems": {
+            "type": "switch",
+            "label": "$task.RestaurantDaily.option.BuyShopDiscountedItems.label",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "option": [
+                        "RestaurantUseDailyRefresh"
+                    ]
+                },
+                {
+                    "name": "No"
+                }
+            ],
+            "default_case": "No"
+        },
+        "RestaurantUseDailyRefresh": {
+            "type": "switch",
+            "label": "$task.RestaurantDaily.option.UseDailyRefresh.label",
+            "cases": [
+                {
+                    "name": "Yes"
+                },
+                {
+                    "name": "No"
+                }
+            ],
+            "default_case": "No"
         }
     }
 }
