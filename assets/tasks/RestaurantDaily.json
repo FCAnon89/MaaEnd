@@ -23,10 +23,11 @@
     "option": {
         "RestaurantMaxRounds": {
             "type": "input",
+            "label": "$task.RestaurantDaily.option.MaxRounds.label",
             "inputs": [
                 {
                     "name": "MaxRounds",
-                    "label": "$task.RestaurantDaily.option.MaxRounds.label",
+                    "label": "$task.RestaurantDaily.option.MaxRounds.pattern_msg",
                     "default": "5",
                     "pipeline_type": "int",
                     "verify": "^(?:[1-9][0-9]{0,2}|1000)$",
