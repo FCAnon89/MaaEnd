@@ -2127,6 +2127,7 @@
         "rate_limit": 0,
         "next": [
             "RestaurantRoundGate",
+            "RestaurantShopAfterRounds",
             "StopNode"
         ]
     },

@@ -51,10 +51,20 @@
                     "name": "Yes",
                     "option": [
                         "RestaurantUseDailyRefresh"
-                    ]
+                    ],
+                    "pipeline_override": {
+                        "RestaurantShopAfterRounds": {
+                            "enabled": true
+                        }
+                    }
                 },
                 {
-                    "name": "No"
+                    "name": "No",
+                    "pipeline_override": {
+                        "RestaurantShopAfterRounds": {
+                            "enabled": false
+                        }
+                    }
                 }
             ],
             "default_case": "No"
@@ -64,10 +74,20 @@
             "label": "$task.RestaurantDaily.option.UseDailyRefresh.label",
             "cases": [
                 {
-                    "name": "Yes"
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "RestaurantShopRefreshAvailable": {
+                            "enabled": true
+                        }
+                    }
                 },
                 {
-                    "name": "No"
+                    "name": "No",
+                    "pipeline_override": {
+                        "RestaurantShopRefreshAvailable": {
+                            "enabled": false
+                        }
+                    }
                 }
             ],
             "default_case": "No"
