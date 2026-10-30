@@ -21,7 +21,7 @@
 # 环境监测（EnvironmentMonitoring）                                     @he0119
 # ---------------------------------------------------------------------------
 # `/assets/resource*/` 里的 `*` 只匹配资源包名这一段（不跨 `/`），一条规则同时覆盖
-# resource、resource_adb、resource_cloud_adb、resource_playcover，新增控制器资源包不必再改本文件。
+# resource、resource_adb、resource_cloud、resource_playcover，新增控制器资源包不必再改本文件。
 /assets/resource*/pipeline/EnvironmentMonitoring/                 @he0119
 /assets/resource*/pipeline/EnvironmentMonitoring.json             @he0119
 /assets/tasks/EnvironmentMonitoring.json                          @he0119
@@ -116,6 +116,35 @@
 /assets/resource*/pipeline/IMS/                                   @overflow65537
 /assets/locales/go-service/HTML/ims-*.html                        @overflow65537
 /docs/*/developers/components/ims.md                              @overflow65537
+
+# ---------------------------------------------------------------------------
+# 地图定位与导航（MapLocator / MapNavigator）                             @Lemon-miaow
+# ---------------------------------------------------------------------------
+/agent/cpp-algo/source/MapLocator/                                @Lemon-miaow
+/agent/cpp-algo/source/MapNavigator/                              @Lemon-miaow
+/agent/cpp-algo/source/Navmesh/                                   @Lemon-miaow
+/agent/cpp-algo/source/Zipline/                                   @Lemon-miaow
+/assets/resource*/pipeline/MapNavigator/                          @Lemon-miaow
+/assets/resource*/image/MapNavigator/                             @Lemon-miaow
+/assets/resource*/image/MapLocator/                               @Lemon-miaow
+/assets/data/MapNavigator/                                        @Lemon-miaow
+/assets/tasks/setting/Zipline.json                                @Lemon-miaow
+/tools/MapNavigator/                                              @Lemon-miaow
+/docs/*/developers/components/map-navigator.md                    @Lemon-miaow
+/docs/*/developers/components/map-locator.md                      @Lemon-miaow
+/.agents/skills/map-navigator-guide/                              @Lemon-miaow
+
+# ---------------------------------------------------------------------------
+# 大地图识别（WorldMap）                                                  @Lemon-miaow
+# ---------------------------------------------------------------------------
+/agent/cpp-algo/source/WorldMap/                                  @Lemon-miaow
+/tools/schema/components/world_map.schema.json                    @Lemon-miaow
+/docs/*/developers/components/world-map.md                        @Lemon-miaow
+
+# ---------------------------------------------------------------------------
+# 采集路线生成器（AutoCollectRoute）                                      @Lemon-miaow
+# ---------------------------------------------------------------------------
+/tools/AutoCollectRoute/                                          @Lemon-miaow
 
 # ---------------------------------------------------------------------------
 # 仓库级工具与脚本                                                        @he0119

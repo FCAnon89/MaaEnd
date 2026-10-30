@@ -1396,7 +1396,9 @@
             "ReceptionRoomSendClueFour",
             "ReceptionRoomSendClueFive",
             "ReceptionRoomSendClueSix",
-            "ReceptionRoomSendClueSeven"
+            "ReceptionRoomSendClueSeven",
+            "[JumpBack]ReceptionRoomSendCluesSwipe",
+            "ReceptionRoomSendExit"
         ]
     },
     "ReceptionRoomSendClueOne": {
@@ -1850,8 +1852,8 @@
         "next": [
             "[JumpBack]ReceptionRoomSendCluesQuickGiveDuplicates",
             "[JumpBack]ReceptionRoomSendCluesSendMain",
-            "[JumpBack]ReceptionRoomSendCluesSwipe",
-            "ReceptionRoomSendExit"
+            "ReceptionRoomSendExit",
+            "InReceptionRoom"
         ]
     },
     "ReceptionRoomSendCluesQuickGiveDuplicates": {

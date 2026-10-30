@@ -18,6 +18,7 @@
                 "Win32-Front"
             ],
             "option": [
+                "CollectValleyFarm",
                 "CollectWulingCityFarm",
                 "CollectSisPaintingFarm",
                 "CollectRanch"
@@ -25,14 +26,15 @@
         }
     ],
     "option": {
-        "CollectWulingCityFarm": {
+        "CollectValleyFarm": {
             "type": "switch",
-            "label": "$task.AutoEcoFarm.option.CollectWulingCityFarm.label",
+            "label": "$task.AutoEcoFarm.option.CollectValleyFarm.label",
+            "description": "$task.AutoEcoFarm.option.CollectValleyFarm.description",
             "cases": [
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "__AutoEcoFarmWulingCityFarmStart": {
+                        "AutoEcoFarmValleyFarmJob": {
                             "enabled": true
                         }
                     }
@@ -40,7 +42,30 @@
                 {
                     "name": "No",
                     "pipeline_override": {
-                        "__AutoEcoFarmWulingCityFarmStart": {
+                        "AutoEcoFarmValleyFarmJob": {
+                            "enabled": false
+                        }
+                    }
+                }
+            ],
+            "default_case": "No"
+        },
+        "CollectWulingCityFarm": {
+            "type": "switch",
+            "label": "$task.AutoEcoFarm.option.CollectWulingCityFarm.label",
+            "cases": [
+                {
+                    "name": "Yes",
+                    "pipeline_override": {
+                        "AutoEcoFarmWulingCityFarmJob": {
+                            "enabled": true
+                        }
+                    }
+                },
+                {
+                    "name": "No",
+                    "pipeline_override": {
+                        "AutoEcoFarmWulingCityFarmJob": {
                             "enabled": false
                         }
                     }
@@ -55,7 +80,7 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "__AutoEcoFarmSisPaintingFarmStart": {
+                        "AutoEcoFarmSisPaintingFarmJob": {
                             "enabled": true
                         }
                     }
@@ -63,7 +88,7 @@
                 {
                     "name": "No",
                     "pipeline_override": {
-                        "__AutoEcoFarmSisPaintingFarmStart": {
+                        "AutoEcoFarmSisPaintingFarmJob": {
                             "enabled": false
                         }
                     }
@@ -78,7 +103,7 @@
                 {
                     "name": "Yes",
                     "pipeline_override": {
-                        "__AutoEcoFarmRanchStart": {
+                        "AutoEcoFarmRanchJob": {
                             "enabled": true
                         }
                     }
@@ -86,7 +111,7 @@
                 {
                     "name": "No",
                     "pipeline_override": {
-                        "__AutoEcoFarmRanchStart": {
+                        "AutoEcoFarmRanchJob": {
                             "enabled": false
                         }
                     }

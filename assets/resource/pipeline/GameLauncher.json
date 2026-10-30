@@ -1,100 +1,49 @@
 {
-    "GameLauncherMain": {
-        "desc": "在鹰角启动器中启动终末地",
+    "GameLauncherWakeMain": {
+        "desc": "Windows 第一阶段（前台截图+前台输入）：息屏时点击唤醒显示器，直到看到左侧终末地图标",
+        "pre_delay": 0,
+        "post_delay": 0,
         "next": [
-            "GameLauncherSelectEndfield",
+            "GameLauncherEndfieldIconVisible",
             "GameLauncherBlackScreenClick"
         ]
     },
-    "GameLauncherBlackScreenClick": {
-        "desc": "DP 显示器息屏后启动器截图为黑屏，点击任意位置激活",
-        "recognition": "And",
-        "all_of": [
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    0,
-                    0,
-                    40,
-                    40
-                ],
-                "lower": [
-                    0,
-                    0,
-                    0
-                ],
-                "upper": [
-                    10,
-                    10,
-                    10
-                ],
-                "connected": true,
-                "count": 400
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    -40,
-                    0,
-                    40,
-                    40
-                ],
-                "lower": [
-                    0,
-                    0,
-                    0
-                ],
-                "upper": [
-                    10,
-                    10,
-                    10
-                ],
-                "connected": true,
-                "count": 400
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    0,
-                    -40,
-                    40,
-                    40
-                ],
-                "lower": [
-                    0,
-                    0,
-                    0
-                ],
-                "upper": [
-                    10,
-                    10,
-                    10
-                ],
-                "connected": true,
-                "count": 400
-            },
-            {
-                "recognition": "ColorMatch",
-                "roi": [
-                    -40,
-                    -40,
-                    40,
-                    40
-                ],
-                "lower": [
-                    0,
-                    0,
-                    0
-                ],
-                "upper": [
-                    10,
-                    10,
-                    10
-                ],
-                "connected": true,
-                "count": 400
-            }
+    "GameLauncherEndfieldIconVisible": {
+        "desc": "左侧终末地图标可见，唤醒阶段结束",
+        "recognition": "TemplateMatch",
+        "roi": [
+            20,
+            60,
+            100,
+            600
         ],
+        "template": "GameLauncher/EndfieldIcon.png",
+        "green_mask": true,
+        "pre_delay": 0,
+        "post_delay": 0
+    },
+    "GameLauncherMain": {
+        "desc": "在鹰角启动器中启动终末地；Windows 第二阶段（后台截图+后台输入）",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "GameLauncherSelectEndfield",
+            "[JumpBack]GameLauncherBlackScreenClick"
+        ]
+    },
+    "GameLauncherBlackScreenClick": {
+        "desc": "DP 显示器息屏后启动器截图为黑屏，找不到左侧终末地图标时点击激活，多次点击顺带解锁屏幕",
+        "max_hit": 10,
+        "recognition": "TemplateMatch",
+        "roi": [
+            20,
+            60,
+            100,
+            600
+        ],
+        "template": "GameLauncher/EndfieldIcon.png",
+        "green_mask": true,
+        "inverse": true,
         "action": "Click",
         "target": [
             640,
@@ -102,8 +51,11 @@
             1,
             1
         ],
+        // 显示器从息屏唤醒需要 1~3 秒，期间画面一直是黑屏不变，无法用 post_wait_freezes 等待
+        "post_delay": 2000,
         "next": [
-            "GameLauncherSelectEndfield"
+            "GameLauncherEndfieldIconVisible",
+            "GameLauncherBlackScreenClick"
         ]
     },
     "GameLauncherSelectEndfield": {
@@ -190,13 +142,14 @@
         ]
     },
     "GameLauncherMinimized": {
-        "desc": "启动器点击开始游戏后会最小化，截图右下角为黑屏，视为启动成功",
+        "desc": "启动器点击开始游戏后会最小化，截图变为全黑，开始游戏按钮所在区域几乎全黑时视为启动成功",
+        // 启动器窗口为圆角，未最小化时截图四角也是黑边，不能只看角落
         "recognition": "ColorMatch",
         "roi": [
-            -40,
-            -40,
-            40,
-            40
+            -320,
+            -140,
+            320,
+            140
         ],
         "lower": [
             0,
@@ -209,7 +162,7 @@
             10
         ],
         "connected": true,
-        "count": 400
+        "count": 40000
     },
     "GameLauncherExit": {
         "desc": "不写这个节点 CI 会报错"
