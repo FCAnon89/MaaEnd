@@ -53,11 +53,22 @@
     "RestaurantShopWaitOpenGoods": {
         "recognition": "DirectHit",
         "pre_delay": 0,
+        "action": "Custom",
+        "custom_action": "RepeatUntilFoundAction",
+        "custom_action_param": {
+            "action": "DoNothing",
+            "wait_nodes": [
+                "RestaurantShopOpenGoods"
+            ],
+            "repeat_count": 3
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
-            "RestaurantShopOpenGoods",
-            "RestaurantShopWaitOpenGoods"
+            "RestaurantShopOpenGoods"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantShopOpenGoods": {

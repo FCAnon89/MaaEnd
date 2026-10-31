@@ -1862,6 +1862,8 @@
         "custom_action_param": {
             "action": "DoNothing",
             "wait_nodes": [
+                "RestaurantGameEnded",
+                "RestaurantKitchenPanelReady",
                 "RestaurantStartBusinessConfirm",
                 "RestaurantBusinessStarted"
             ],
