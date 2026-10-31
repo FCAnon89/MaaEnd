@@ -1849,9 +1849,21 @@
             105
         ],
         "template": "Restaurant/EmphaticMark.png",
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "DoNothing",
+            "wait_node": "RestaurantMenuStartBusinessWarning",
+            "repeat_count": 3
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.RestaurantDaily.focus.menu_requirements_unmet"
+        },
         "next": [
-            "RestaurantMenuStartBusinessWarning",
             "RestaurantMenuStartBusiness"
+        ],
+        "on_error": [
+            "FailedNode"
         ]
     },
     "RestaurantWaitForBusinessState": {
