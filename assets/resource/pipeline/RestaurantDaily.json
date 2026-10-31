@@ -2187,7 +2187,8 @@
             "RestaurantMenuDishesComplete",
             "RestaurantMenuDrinksComplete",
             "RestaurantMenuClickCard",
-            "RestaurantMenuReadCard"
+            "RestaurantMenuReadCard",
+            "RestaurantMenuInsufficient"
         ],
         "on_error": [
             "FailedNode"
@@ -2246,11 +2247,25 @@
             "RestaurantMenuDishesComplete",
             "RestaurantMenuDrinksComplete",
             "RestaurantMenuClickCard",
-            "RestaurantMenuReadCard"
+            "RestaurantMenuReadCard",
+            "RestaurantMenuInsufficient"
         ],
         "on_error": [
             "FailedNode"
         ]
+    },
+    "RestaurantMenuInsufficient": {
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "FailedNode"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.RestaurantDaily.focus.menu_items_insufficient"
+        }
     },
     "RestaurantRuntimeObserve": {
         "recognition": "And",
