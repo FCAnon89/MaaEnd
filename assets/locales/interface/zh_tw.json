@@ -2359,7 +2359,7 @@
     "task.DailyRewards.label": "📅日常獎勵領取",
     "task.DecomposeWeaponEssence.description": "武器基質數量高於設定值時反覆分解非金色基質，每次最多 200 個，直到不高於設定值。若已經沒有可分解的基質且庫存仍高於設定值，則停止並提示。預設 1800。",
     "task.DecomposeWeaponEssence.focus.insufficient": "<span style=\"color: red; font-weight: bold;\">任務失敗：沒有可分解的基質，庫存仍高於閾值</span>",
-    "task.DecomposeWeaponEssence.label": "分解武器基質",
+    "task.DecomposeWeaponEssence.label": "♻️基質分解回收",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.description": "選擇目前報價達到或高於閾值時如何處理。",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.label": "達到或高於閾值時",
     "task.DeliveryJobs.AutoDeliveryFailed": "🚚 自動送貨未能送達",

@@ -2359,7 +2359,7 @@
     "task.DailyRewards.label": "📅 일일 보상 수령",
     "task.DecomposeWeaponEssence.description": "무기 기질 수량이 설정값보다 높은 동안 금색이 아닌 기질을 한 번에 최대 200개씩 분해하고, 설정값 이하가 될 때까지 반복합니다. 분해할 기질이 없고 수량이 여전히 설정값보다 높을 때만 중지하고 알립니다. 기본값은 1800입니다.",
     "task.DecomposeWeaponEssence.focus.insufficient": "<span style=\"color: red; font-weight: bold;\">작업 실패: 분해할 기질이 없고, 수량이 여전히 설정값보다 높습니다</span>",
-    "task.DecomposeWeaponEssence.label": "무기 기질 분해",
+    "task.DecomposeWeaponEssence.label": "♻️ 기질 분해 회수",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.description": "선택된 입찰가가 기준 이상일 때 처리 방법을 선택합니다.",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.label": "기준 이상일 때",
     "task.DeliveryJobs.AutoDeliveryFailed": "🚚 자동 배송이 목적지에 도달하지 못했습니다",

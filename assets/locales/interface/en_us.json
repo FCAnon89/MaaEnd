@@ -2359,7 +2359,7 @@
     "task.DailyRewards.label": "📅 Claim Daily Rewards",
     "task.DecomposeWeaponEssence.description": "Repeatedly decomposes non-golden weapon essences, up to 200 at a time, until the count is no longer above the threshold. Stops with a notice only when nothing remains to decompose and the count is still above the threshold. Default is 1800.",
     "task.DecomposeWeaponEssence.focus.insufficient": "<span style=\"color: red; font-weight: bold;\">Task failed: nothing left to decompose, and the count is still above the threshold</span>",
-    "task.DecomposeWeaponEssence.label": "Decompose Weapon Essence",
+    "task.DecomposeWeaponEssence.label": "♻️ Essence Decomposition Recycling",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.description": "Choose what to do when the selected bid is at or above the threshold.",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.label": "At or Above the Threshold",
     "task.DeliveryJobs.AutoDeliveryFailed": "🚚 Automatic delivery could not reach the destination.",

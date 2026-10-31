@@ -2359,7 +2359,7 @@
     "task.DailyRewards.label": "📅 デイリー報酬受け取り",
     "task.DecomposeWeaponEssence.description": "武器基質の所持数が設定値を超えている間、金色以外を 1 回最大 200 個ずつ分解し、設定値以下になるまで繰り返します。分解できる基質が残っておらず、所持数がまだ設定値を超えている場合だけ停止して知らせます。初期値は 1800 です。",
     "task.DecomposeWeaponEssence.focus.insufficient": "<span style=\"color: red; font-weight: bold;\">タスク失敗：分解できる基質がなく、所持数はまだ設定値を超えています</span>",
-    "task.DecomposeWeaponEssence.label": "武器基質を分解",
+    "task.DecomposeWeaponEssence.label": "♻️基質分解回収",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.description": "選択中の入札額がしきい値以上の場合の処理を選択します。",
     "task.DeliveryJobs.AtLeastMinimumQuoteAction.label": "しきい値以上の場合",
     "task.DeliveryJobs.AutoDeliveryFailed": "🚚 自動配達で届けられませんでした",
