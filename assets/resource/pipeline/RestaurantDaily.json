@@ -1937,7 +1937,7 @@
             "RestaurantOpenKitchenPanel"
         ]
     },
-    // 720p 固定派单按钮坐标；重复点击由 wait_nodes 确认面板就绪或游戏结束。
+    // 720p 固定派单按钮坐标；最多点击 10 次（默认间隔 3 秒），覆盖约 30 秒加载动画。
     "RestaurantOpenKitchenPanel": {
         "recognition": "And",
         "all_of": [
@@ -1951,7 +1951,8 @@
             "wait_nodes": [
                 "RestaurantKitchenPanelReady",
                 "RestaurantGameEnded"
-            ]
+            ],
+            "repeat_count": 10
         },
         "target": [
             867,
@@ -1974,7 +1975,7 @@
             "RestaurantKitchenPanelReady"
         ],
         "on_error": [
-            "RestaurantOpenKitchenPanel"
+            "FailedNode"
         ]
     },
     "RestaurantKitchenPanelReady": {

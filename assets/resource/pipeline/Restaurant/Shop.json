@@ -209,6 +209,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -222,6 +223,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -254,6 +256,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -267,6 +270,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -299,6 +303,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -312,6 +317,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -344,6 +350,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -357,6 +364,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -389,6 +397,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -402,6 +411,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -434,6 +444,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -447,6 +458,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -479,6 +491,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -492,6 +505,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -524,6 +538,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -537,6 +552,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -569,6 +585,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -582,6 +599,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -614,6 +632,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -627,6 +646,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -659,6 +679,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -672,6 +693,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -704,6 +726,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -717,6 +740,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -749,6 +773,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -762,6 +787,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
@@ -794,6 +820,7 @@
                     54,
                     30
                 ],
+                // OCR full-text example: -95%
                 // @i18n-skip
                 "expected": [
                     "-\\d+%"
@@ -807,6 +834,7 @@
                     78,
                     32
                 ],
+                // OCR full-text example: 库存5
                 // @i18n-skip
                 "expected": [
                     "^\\D*[1-9]\\d*$"
