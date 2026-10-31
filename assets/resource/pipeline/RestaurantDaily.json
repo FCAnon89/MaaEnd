@@ -1856,15 +1856,15 @@
             "wait_node": "RestaurantMenuStartBusinessWarning",
             "repeat_count": 3
         },
-        "focus": {
-            "Node.Recognition.Succeeded": "$task.RestaurantDaily.focus.menu_requirements_unmet"
-        },
         "next": [
             "RestaurantMenuStartBusiness"
         ],
         "on_error": [
             "FailedNode"
-        ]
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.RestaurantDaily.focus.menu_requirements_unmet"
+        }
     },
     "RestaurantWaitForBusinessState": {
         "recognition": "DirectHit",
