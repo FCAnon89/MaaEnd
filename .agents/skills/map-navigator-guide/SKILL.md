@@ -85,7 +85,7 @@ description: MaaEnd 自动寻路、地图定位、角色移动与路径导航开
 **C++** 代码位于 `agent/cpp-algo/source` 目录下，主要包含以下子目录：
 
 - `MapLocator` 目录：小地图定位实现；
-    - YOLO 前置鉴别、梯度域 ZNCC 模板匹配、MotionTracker 运动预测；
+    - YOLO 前置鉴别、局部对比度归一后的 ZNCC 模板匹配、MotionTracker 运动预测；
     - 对外暴露 `MapLocateRecognition` 与 `MapLocateAssertLocation` 两个节点。
 - `MapNavigator` 目录：导航状态机与路径执行；
     - `navi_param_parser.cpp`：`custom_action_param` 解析，含 `target_tier` 等字段；
@@ -94,7 +94,7 @@ description: MaaEnd 自动寻路、地图定位、角色移动与路径导航开
 - `semantic_nodes.cpp`：各语义点（`COLLECT`/`DIG`/`INTERACT` 等）到达后的执行逻辑；
 - `find_action.cpp`：`FIND` 的搜索与接近（按帧跑识别节点取框、转视角、前进脉冲），以及退出时的记账作废；
 - `trigger_action.cpp`：`TRIGGER` 的行进中识别与到点完成；
-    - `NavigationStateMachine`：到点判定、疾跑控制、失败与恢复。
+    - `state_machine/`（`Navigator` 与 `RunNavigator`）：到点判定、疾跑控制、失败与恢复。
 - `Navmesh` 目录：BaseNav 三角图寻路核心；
     - `BaseNavReader.cpp`：`.nav` / `.nav.gz` 二进制包解析（magic 为 `BNAV`）；
     - `BaseNavPack.cpp`：zone 索引与楼层高度查询（`floorYForZoneName`）；
@@ -134,7 +134,7 @@ MapNavigator 的位置输入完全来自 MapLocator 的逐帧识别结果。**�
 
 ### 资源路径
 
-`.nav` 数据包通过可执行文件相对路径定位（`get_exe_dir()` + `resource/` 前缀，优先 `.gz`），与 YOLO 模型的加载方式一致。开发时若从项目根目录运行，路径问题会被工作目录掩盖——验证资源加载改动时，应从其他工作目录、以可执行文件相对布局进行测试。
+`.nav` 数据包通过安装根目录相对路径定位（`common::InstallPath` + `resource/` 前缀，优先 `.gz`），与 YOLO 模型的加载方式一致。安装根目录即 agent 启动时的工作目录，由宿主保证；开发时从仓库根目录直接跑二进制会让它指向错误的位置——验证资源加载改动时，应以 `install/` 为工作目录启动。
 
 ### 日志改动要同步日志分析工具
 
@@ -148,4 +148,4 @@ MapNavigator 的位置输入完全来自 MapLocator 的逐帧识别结果。**�
 
 ### C++ 编码规范
 
-本目录下的代码遵循 `docs/zh_cn/developers/coding-standards.md`，另可参考 `cpp-algo-style` 技能。通用的 RAII 辅助设施（`ScopedImageBuffer` / `ScopedStringBuffer` / `to_mat` / `get_exe_dir`）统一放在 `source/utils.h`，**直接复用，不要在各自的 TU 里重新声明一份**。
+本目录下的代码遵循 `docs/zh_cn/developers/coding-standards.md`，另可参考 `cpp-algo-style` 技能。通用的 RAII 辅助设施（`ScopedImageBuffer` / `ScopedStringBuffer` / `to_mat`）统一放在 `source/utils.h`，路径基准统一用 `Common/paths.h` 的 `common::InstallPath` / `common::UserDataPath`，**直接复用，不要在各自的 TU 里重新声明一份**。

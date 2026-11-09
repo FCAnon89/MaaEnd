@@ -172,9 +172,10 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "autoEcoFarmInterruptibleSleep",
+                "custom_action": "CountDownAction",
                 "custom_action_param": {
-                    "durationSec": 120
+                    "duration": 120,
+                    "duration_type": 1
                 }
             }
         },

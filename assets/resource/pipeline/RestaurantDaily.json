@@ -1,4 +1,45 @@
 {
+    "RestaurantSchedule": {
+        "desc": "缘缘庄经营执行周期",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantScheduleEnabled",
+            "RestaurantScheduleEnd"
+        ]
+    },
+    "RestaurantScheduleEnabled": {
+        "desc": "缘缘庄经营执行周期命中",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "ScheduleRecognition",
+                "custom_recognition_param": {}
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantInitialize"
+        ],
+        "attach": {
+            "monday": false,
+            "tuesday": false,
+            "wednesday": false,
+            "thursday": false,
+            "friday": false,
+            "saturday": false,
+            "sunday": false
+        }
+    },
+    "RestaurantScheduleEnd": {
+        "desc": "缘缘庄经营执行周期跳过",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
     "RestaurantInitialize": {
         "desc": "初始化经营决策状态和经营次数。",
         "recognition": "DirectHit",
@@ -43,8 +84,23 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "RestaurantNoTasksConfigured",
             "RestaurantCancelMissionTracking"
         ]
+    },
+    "RestaurantNoTasksConfigured": {
+        "desc": "经营轮数为零且未启用商店时报告没有任务并正常结束。",
+        "enabled": false,
+        "recognition": "DirectHit",
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "StopNode"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "$task.RestaurantDaily.focus.no_tasks_configured"
+        }
     },
     "RestaurantRoundGate": {
         "desc": "检查经营循环次数是否允许继续。",
@@ -276,7 +332,29 @@
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
+            "NavigateSisPaintingYuanyuanManorTeleportNearby",
             "NavigateSisPaintingYuanyuanManorTeleport"
+        ]
+    },
+    "NavigateSisPaintingYuanyuanManorTeleportNearby": {
+        "desc": "玩家已在缘缘庄传送点附近时跳过传送。",
+        "recognition": "Custom",
+        "custom_recognition": "MapLocateAssertLocation",
+        "custom_recognition_param": {
+            "zone_id": "Wuling_Base",
+            "target": [
+                2186.33,
+                497.78,
+                29.14,
+                32.28
+            ]
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "RestaurantSkipBusinessAtManor",
+            "NavigateSisPaintingYuanyuanManorTarget"
         ]
     },
     "NavigateSisPaintingYuanyuanManorTeleport": {
@@ -1512,7 +1590,13 @@
         "method": 5,
         "threshold": 0.9,
         "pre_delay": 0,
-        "action": "Click",
+        "action": "Custom",
+        "custom_action": "RepeatUntilNotFoundAction",
+        "custom_action_param": {
+            "action": "Click",
+            "wait_node": "RestaurantMenuFilterIcon",
+            "repeat_count": 3
+        },
         "post_delay": 0,
         "rate_limit": 0,
         "next": [
